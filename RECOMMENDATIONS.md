@@ -58,51 +58,36 @@ After comprehensive research and analysis, **Ollama is recommended** over LM Stu
 ## Qwen3 8B 16K Think Mode Issue
 
 ### Problem
-The Qwen3 8B 16K model enters verbose thinking mode despite `/no_think` flag in Open Code CLI.
+The Qwen3 8B 16K model enters verbose thinking mode during code generation tasks.
 
 ### Root Cause
-The thinking mode is a **model behavior**, not an Open Code CLI issue. The Qwen3 model family has built-in thinking capabilities that are triggered by certain prompt patterns, and the `/no_think` flag may not be passed correctly to the model's tokenizer.
+The thinking mode is a **model behavior**, not an Open Code CLI issue. The Qwen3 model family has built-in thinking capabilities that are triggered by certain prompt patterns. Open Code CLI does not have a `/no_think` flag - only a `/thinking` toggle which enables additional thinking mode (not useful for suppression).
 
 ### Solutions (Ranked by Effectiveness)
 
-#### 1. Use `/mode build` (Most Effective)
-```bash
-opencode
-> /mode build
-> Create a hello.py file
-```
+#### 1. Accept the Model Behavior (Most Pragmatic)
 **Effectiveness:** ⭐⭐⭐⭐⭐
-- Explicitly tells Open Code to prioritize action over analysis
-- Reduces thinking mode activation by ~80%
-- No configuration changes needed
-
-#### 2. Explicit Prompt Directives (Very Effective)
-```bash
-> IMMEDIATELY create a hello.py file. No analysis needed. No thinking mode.
-```
-**Effectiveness:** ⭐⭐⭐⭐☆
-- Direct instruction to model
-- Reduces thinking mode by ~60-70%
-- Requires modifying every prompt
-
-#### 3. Use Alternative Models (Effective)
-Switch to models less prone to thinking mode:
-- **Mistral Nemo 12B**: Best code quality, minimal thinking mode
-- **Granite 3.1 MoE**: Fast, controlled output
-- **Qwen3 8B (standard)**: Less context but less thinking mode
-
-**Effectiveness:** ⭐⭐⭐⭐⭐
-- Eliminates the problem entirely
-- May sacrifice context window (for qwen3:8b) or speed
-
-#### 4. Accept the Verbosity (Pragmatic)
-**Effectiveness:** ⭐⭐⭐☆☆
-- Tasks complete correctly despite verbosity
+- Build agent is the default in Open Code CLI
+- Tasks complete correctly despite think mode verbosity
 - "Free documentation" of model's reasoning
 - Good for learning how the model thinks
 - Consider thinking mode output as structured analysis
 
-#### 5. Custom Modelfile (Advanced)
+**Note:** Use **Tab** key to switch between build and plan agents. Build is the default.
+
+#### 2. Use Alternative Models (Effective)
+Switch to models less prone to thinking mode:
+- **Mistral Nemo 12B**: Best code quality, minimal thinking mode (**read-only, no file creation**)
+- **Granite 3.1 MoE**: Fast, controlled output (**read-only, no file creation**)
+- **Qwen3 8B (standard)**: Less context but possibly less thinking mode (needs testing)
+- **Qwen3 4B**: Faster, smaller (needs testing)
+
+**Effectiveness:** ⭐⭐⭐⭐☆
+- May reduce thinking mode
+- Mistral/Granite CANNOT create files (analysis only)
+- Qwen3 variants should work but need testing
+
+#### 3. Custom Modelfile (Advanced)
 Create a custom model with thinking mode suppression:
 
 ```bash
@@ -125,10 +110,35 @@ ollama create qwen3:8b-16k-nothink -f qwen3-no-think.modelfile
 ### Recommended Approach
 
 **For most users:**
-1. Use `/mode build` for action-oriented tasks
-2. Use **mistral-nemo:12b** when thinking mode is problematic
-3. Use **qwen3:8b-16k** only for multi-file analysis where context is critical
-4. Accept some verbosity as trade-off for local/private LLM usage
+1. Accept that **build agent is the default** - use Tab key to switch to plan agent if needed
+2. Use **qwen3:8b-16k** for file creation/modification (only model with tool usage)
+3. Use **mistral-nemo:12b** for code review/analysis only (no file creation)
+4. Accept think mode verbosity as trade-off for local/private LLM usage with extended context
+
+**Available Open Code CLI slash commands (use `/` prefix):**
+
+| Command | Aliases | Description | Keybind |
+|---------|---------|-------------|---------|
+| `/compact` | `/summarize` | Compact the current session | ctrl+x c |
+| `/details` | — | Toggle tool execution details | ctrl+x d |
+| `/editor` | — | Open external editor for composing messages | ctrl+x e |
+| `/exit` | `/quit`, `/q` | Exit OpenCode | ctrl+x q |
+| `/export` | — | Export current conversation to Markdown | ctrl+x x |
+| `/help` | — | Show the help dialog | ctrl+x h |
+| `/init` | — | Create or update `AGENTS.md` file | ctrl+x i |
+| `/models` | — | List available models | ctrl+x m |
+| `/new` | `/clear` | Start a new session | ctrl+x n |
+| `/redo` | — | Redo a previously undone message | ctrl+x r |
+| `/sessions` | `/resume`, `/continue` | List and switch between sessions | ctrl+x l |
+| `/share` | — | Share current session | ctrl+x s |
+| `/themes` | — | List available themes | ctrl+x t |
+| `/undo` | — | Undo last message in the conversation | ctrl+x u |
+| `/unshare` | — | Unshare current session | — |
+
+**Navigation:**
+- **Tab** - Switch between build and plan agents
+
+**Note:** There is NO `/mode`, `/no_think`, `/thinking`, `/rename`, `/copy`, or `/timeline` command.
 
 ## Model Selection Strategy
 
@@ -242,16 +252,12 @@ Run tests using [test-opencode.md](test-opencode.md):
 opencode --model ollama/qwen3:4b
 > Create a todo.md file with 3 sample tasks
 
-# Test 2: Think mode validation
+# Test 2: Build mode validation (default mode)
 opencode --model ollama/qwen3:8b-16k
-> /no_think Create a hello.py file
-
-# Test 3: Build mode validation
-opencode --model ollama/qwen3:8b-16k
-> /mode build
 > Create a hello.py file
+# Note: Build mode is default, no need to set /mode build
 
-# Test 4: Quality comparison
+# Test 3: Quality comparison
 opencode --model ollama/mistral-nemo:12b
 > Create a Python class for user authentication with password hashing
 ```

@@ -404,7 +404,7 @@ When running `/init`, the agent may start in thinking/planning mode even though 
 - Takes 2-3 minutes just to analyze the codebase before acting
 - Generates verbose planning output before executing tasks
 
-**Cause**: The `/init` command may not properly respect the default mode configuration, or the agent interprets the initialization request as a planning task.
+**Cause**: The `/init` command may trigger plan agent behavior, or the agent interprets the initialization request as a planning task.
 
 **Solutions:**
 
@@ -414,9 +414,10 @@ When running `/init`, the agent may start in thinking/planning mode even though 
    # It will automatically read AGENTS.md if present
    ```
 
-2. **Use explicit mode switching** - After `/init` completes, switch to build mode:
+2. **Switch to build agent** - After `/init` completes, press Tab to ensure build agent is active:
    ```bash
-   /mode build
+   # Press Tab key to switch between plan and build agents
+   # Build agent is default for file creation tasks
    ```
 
 3. **Create `AGENTS.md` manually** - Instead of using `/init`, create or update `AGENTS.md` yourself:
@@ -424,13 +425,13 @@ When running `/init`, the agent may start in thinking/planning mode even though 
    - Add Open Code-specific configuration
    - Format for AI agent consumption (no Unicode characters)
 
-**Problem 1a: `/no_think` flag doesn't prevent thinking mode**
+**Problem 1a: Qwen3 models enter verbose thinking mode**
 
-Even when using the `/no_think` flag in `opencode run` commands, the agent may still display `<think>` tags and spend time analyzing before taking action.
+Qwen3 models display `<think>` tags and spend time analyzing before taking action. This is model behavior, not an Open Code CLI issue.
 
-**Example of the issue:**
+**Example:**
 ```bash
-opencode run "/no_think generate a todo.md file with the contents 'hello world, from qwen3' in it" --model ollama/qwen3:8b-16k
+opencode run "generate a todo.md file with the contents 'hello world, from qwen3' in it" --model ollama/qwen3:8b-16k
 # Output shows:
 # <think>
 # Okay, the user wants me to generate a todo.md file...
@@ -438,40 +439,23 @@ opencode run "/no_think generate a todo.md file with the contents 'hello world, 
 # </think>
 ```
 
-**Symptoms:**
-- `/no_think` flag is ignored
-- Agent still enters verbose thinking mode
-- Task executes correctly but slowly (10-30 seconds for simple operations)
-- Unnecessary token consumption from thinking output
+**Understanding:**
+- This is inherent to Qwen3 model behavior with extended context
+- Build mode is already the **default** in Open Code CLI
+- There is **no** `/no_think` flag in Open Code CLI (only `/thinking` toggle which enables MORE thinking)
+- Task executes correctly but with verbose output (10-30 seconds for simple operations)
 
-**Possible causes:**
-- The `/no_think` flag may only apply to interactive sessions, not `run` commands
-- Model may not recognize the system instruction to skip thinking
-- Open Code CLI may not properly pass the no-think directive to the model
+**Best Approach:**
+Accept the thinking mode as part of using Qwen3 models:
+- Tasks complete successfully despite verbosity
+- The thinking provides insight into model reasoning
+- Consider it "free documentation" of the decision-making process
+- Privacy benefits of local models outweigh the verbosity
 
-**Workarounds:**
-
-1. **Use more explicit prompts:**
-   ```bash
-   opencode run "Immediately create todo.md with content 'hello world'. No analysis needed, just write the file." --model ollama/qwen3:8b-16k
-   ```
-
-2. **Add instruction in the prompt:**
-   ```bash
-   opencode run "Without thinking or planning, create todo.md containing 'hello world, from qwen3'" --model ollama/qwen3:8b-16k
-   ```
-
-3. **Use interactive mode with explicit mode setting:**
-   ```bash
-   opencode
-   # Then in the session:
-   /mode build
-   create todo.md with content "hello world"
-   ```
-
-4. **Consider using Claude Code instead** - For simple file operations, Claude Code respects thinking mode controls better
-
-**Note**: This appears to be a limitation of Open Code CLI's current implementation. The task will complete successfully, but with unnecessary verbosity and slower execution
+**Alternative:** Use models with less thinking:
+- Mistral Nemo 12B: Minimal thinking but **cannot create files** (analysis only)
+- Granite 3.1 MoE: Fast but **cannot create files** (analysis only)
+- Qwen3:8b or Qwen3:4b: May have less thinking (needs testing, should support file creation)
 
 **Problem 2: "You must read the file before overwriting it" error**
 

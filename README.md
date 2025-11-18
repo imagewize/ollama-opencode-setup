@@ -189,6 +189,15 @@ opencode
 
 ## Documentation
 
+### [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) ⭐ NEW
+**Complete Open Code CLI commands reference:**
+- All built-in slash commands (15 commands documented)
+- Bash command integration (`!command`)
+- Agent switching (Tab key for build/plan agents)
+- Custom command creation (file-based and config-based)
+- Navigation and workflows
+- Troubleshooting command issues
+
 ### [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
 Comprehensive guide to local LLM setup:
 - Custom model creation
@@ -200,10 +209,10 @@ Comprehensive guide to local LLM setup:
 
 ### [docs/AGENTS.md](docs/AGENTS.md)
 Guide to using Open Code CLI agent modes:
-- Agent modes (interactive, build, plan, review)
+- Build and plan agents (Tab key switching)
 - Model capabilities for agent workflows
 - Agent workflow patterns
-- Controlling agent behavior (think mode, temperature, context)
+- Controlling agent behavior
 - Performance benchmarks by model
 - Best practices and troubleshooting
 
