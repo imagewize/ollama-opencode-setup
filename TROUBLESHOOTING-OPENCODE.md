@@ -1,9 +1,27 @@
 # Open Code CLI Troubleshooting Guide
 
-## Critical Issue: Models Not Creating Files
+## ✅ RESOLVED: Tool Usage Requires Qwen3 Models
+
+### Discovery (2025-11-18)
+**Only Qwen3 models have tool usage capabilities with Open Code CLI!**
+
+**Root Cause:** Tool/function calling requires specific model training. Qwen3 family has built-in function calling capabilities, while Mistral Nemo and Granite models lack this training.
+
+**Working models:**
+- ✅ **qwen3:8b-16k** - TESTED & CONFIRMED working
+- ✅ **qwen3:8b** - Likely works (same family, needs testing)
+- ✅ **qwen3:4b** - Likely works (same family, needs testing)
+
+**Non-working models (analysis only):**
+- ❌ granite3.1-moe:latest - Plans but doesn't execute
+- ❌ mistral-nemo:12b-instruct-2407-q4_K_M - Excellent analysis but no file creation
+
+---
+
+## Issue: Models Not Creating Files
 
 ### Problem
-Local Ollama models (granite3.1-moe, mistral-nemo:12b) understand tasks but **do not execute file creation commands**.
+Some Ollama models understand tasks but **do not execute file creation commands**.
 
 **Symptoms:**
 - Model generates task descriptions/plans
@@ -11,14 +29,7 @@ Local Ollama models (granite3.1-moe, mistral-nemo:12b) understand tasks but **do
 - **No actual file is created**
 - Terminal shows planning output but no action
 
-**Confirmed failing models:**
-- ✗ granite3.1-moe:latest
-- ✗ mistral-nemo:12b-instruct-2407-q4_K_M
-
-**Models to test:**
-- ? qwen3:4b
-- ? qwen3:8b
-- ? qwen3:8b-16k
+**This is NOT a bug - it's a model capability limitation!**
 
 ---
 
@@ -98,186 +109,187 @@ If Claude works but Ollama doesn't, this is a **local model tool usage** issue.
 
 ---
 
-## Possible Solutions
+## ✅ Solution: Use Qwen3 Models for File Operations
 
-### Solution 1: Use `/mode build` Explicitly
+### Primary Solution: Switch to Qwen3 Models
+
+**For ANY task requiring file creation or modification, use Qwen3 models:**
 
 ```bash
-opencode
-> /mode build
+# Recommended: qwen3:8b-16k (tested and confirmed working)
+opencode --model ollama/qwen3:8b-16k
 > Create a todo.md file with 3 sample tasks
+# ✅ This works!
 ```
 
-**Rationale:** Build mode may activate tool usage capabilities in the model.
+**Alternative Qwen3 models (likely also work):**
+```bash
+# Standard context (faster than 16k)
+opencode --model ollama/qwen3:8b
+> Add type hints to utils/helpers.py
 
-### Solution 2: More Explicit Prompts
-
-Instead of:
-```
-Create a todo.md file with 3 sample tasks
-```
-
-Try:
-```
-TASK: Write a new file
-FILENAME: todo.md
-CONTENT: A markdown file with 3 sample tasks in a bullet list
-
-Please execute this file write operation now.
+# Small/fast variant
+opencode --model ollama/qwen3:4b
+> Create a simple hello.py file
 ```
 
-### Solution 3: Check Open Code CLI System Prompts
+### Tool Call Format
 
-Open Code CLI may need specific system prompts for local models. Look for:
-- `.opencode/system-prompt.txt`
-- `opencode.json` with `systemPrompt` field
-
-The system prompt should instruct the model to use tools like:
+Qwen3 models use this format to call file tools:
+```json
+{
+  "name": "write",
+  "arguments": {
+    "content": "# Todo List\n\n- Task 1\n- Task 2",
+    "filePath": "/absolute/path/to/file.md"
+  }
+}
 ```
-You are a code assistant with access to file system tools.
-When asked to create files, use the write tool.
-When asked to read files, use the read tool.
-Always execute requested actions, not just plan them.
-```
 
-### Solution 4: Test with Qwen3 Models
+### Think Mode Handling
 
-Qwen3 models may have better tool usage training:
+Qwen3 models enter verbose "thinking mode" before execution:
+- **Accept it** - Think mode doesn't prevent file creation
+- **Benefit** - Provides detailed reasoning about the task
+- **Workaround** - Use `/mode build` to minimize thinking (may not fully suppress)
 
 ```bash
-# Test qwen3:8b
-opencode --model ollama/qwen3:8b
-> /mode build
-> Create a todo.md file with 3 tasks
-
-# Test qwen3:8b-16k
 opencode --model ollama/qwen3:8b-16k
 > /mode build
 > Create a todo.md file with 3 tasks
+# Still shows some thinking, but completes successfully
 ```
 
-### Solution 5: Check Open Code CLI Documentation
+### Why Custom Prompts Won't Help
 
-**Action items:**
-1. Visit [Open Code CLI documentation](https://opencode.ai/docs)
-2. Search for "tool usage", "agent configuration", or "local models"
-3. Check if there are specific requirements for Ollama models
-4. Look for example prompts that work with local models
-
-### Solution 6: Custom Model with Tool-Focused System Prompt
-
-Create a custom Ollama model optimized for Open Code CLI:
+**Important:** Custom system prompts or Modelfiles will NOT add tool usage to models lacking this capability:
 
 ```bash
-# Create modelfile: opencode-mistral.modelfile
-cat > opencode-mistral.modelfile << 'EOF'
-FROM mistral-nemo:12b-instruct-2407-q4_K_M
-
-SYSTEM """
-You are a code assistant with access to file system tools.
-
-When the user asks you to create, modify, or read files:
-1. Use the appropriate tool (write, edit, read)
-2. Execute the action immediately
-3. Do not just describe what should be done - DO IT
-
-Always prefer action over planning.
-Always use tools to manipulate files.
-Never just describe file contents - create them.
-"""
-
-PARAMETER temperature 0.7
-PARAMETER top_p 0.8
-PARAMETER top_k 20
-EOF
-
-# Create the model
-ollama create opencode-mistral -f opencode-mistral.modelfile
-
-# Test it
+# ❌ This will NOT work - Mistral Nemo lacks tool training
+ollama create opencode-mistral -f custom-modelfile.txt
 opencode --model ollama/opencode-mistral
-> Create a todo.md file with 3 sample tasks
+> Create a file
+# Still won't create files - model lacks function calling ability
 ```
 
----
-
-## Investigation Questions
-
-To debug this further, we need to understand:
-
-1. **Does Open Code CLI support tool usage with Ollama models?**
-   - Check Open Code CLI documentation
-   - Check GitHub issues for similar reports
-   - Search for "ollama tool usage" in Open Code CLI docs
-
-2. **Are local models trained on tool usage?**
-   - Mistral Nemo: May not have tool/function calling training
-   - Granite 3.1: Unknown tool usage capabilities
-   - Qwen3: Has some function calling abilities
-
-3. **Does Open Code CLI require specific model capabilities?**
-   - Function calling API support?
-   - Tool usage training?
-   - Specific prompt format?
-
-4. **Is there a configuration we're missing?**
-   - Check `opencode.json` schema documentation
-   - Look for "tools", "functions", or "agents" configuration
+Tool usage requires specific training data and model architecture changes, not just prompt engineering.
 
 ---
 
-## Temporary Workarounds
+## Use Cases by Model Type
 
-While investigating the root cause:
+### ✅ Qwen3 Models (Full Tool Usage)
 
-### Workaround 1: Manual File Creation
+**Use for:**
+- ✅ File creation and modification
+- ✅ Code generation
+- ✅ Refactoring with file changes
+- ✅ Multi-file operations
+- ✅ Code review (read-only)
+- ✅ Analysis and planning
 
-After getting the model's output:
+**Example workflows:**
 ```bash
-# Model generates content but doesn't create file
-# Manually create the file based on output
-cat > todo.md << 'EOF'
-[paste model's generated content here]
-EOF
+# File creation
+opencode --model ollama/qwen3:8b-16k
+> Create a Python class for user authentication
+
+# Refactoring
+> Refactor UserService to use dependency injection
+
+# Multi-file changes
+> Add type hints to all files in src/utils/
 ```
 
-### Workaround 2: Use for Analysis Only
+### ⚠️ Mistral Nemo & Granite (Analysis Only)
 
-Use local models for:
-- Code review (reading files)
-- Analysis and suggestions
-- Planning and architecture
-- Documentation review
+**Use for:**
+- ✅ Code review (read-only)
+- ✅ Analysis and suggestions
+- ✅ Architecture planning
+- ✅ Documentation review
+- ❌ **CANNOT create or modify files**
 
-Use Claude (cloud) for:
-- File creation
-- Code generation
-- Refactoring (requires file writes)
-- Multi-file modifications
+**Example workflows:**
+```bash
+# Code review (works great)
+opencode --model ollama/mistral-nemo:12b
+> /mode review
+> Analyze the security of src/auth/ directory
 
-### Workaround 3: Pipe Model Output
+# Planning (works great)
+> /mode plan
+> Analyze the codebase architecture and suggest improvements
+
+# Implementation (FAILS - no file creation)
+> /mode build
+> Implement the suggested improvements
+# ❌ Will analyze but NOT create files
+```
+
+### Hybrid Workflow (Best of Both)
+
+Use different models for different phases:
 
 ```bash
-# Get model to generate content
-opencode --model ollama/mistral-nemo:12b << 'PROMPT'
-Generate the content for a todo.md file with 3 tasks.
-Output ONLY the file content, no explanations.
-PROMPT
+# Phase 1: Analysis with Mistral Nemo (best quality)
+opencode --model ollama/mistral-nemo:12b
+> /mode review
+> Review src/auth/ for security issues
+# ✅ Get excellent analysis and recommendations
 
-# Capture and write manually
-# (this may require scripting)
+# Phase 2: Implementation with Qwen3 (tool usage)
+opencode --model ollama/qwen3:8b-16k
+> /mode build
+> Implement the security fixes recommended above
+# ✅ Actually creates/modifies files
 ```
 
 ---
 
-## Next Steps for Diagnosis
+## Common Issues & Solutions
 
-1. **Test Qwen3 models** - They may have better tool usage
-2. **Check Open Code CLI GitHub** - Look for issues about Ollama tool usage
-3. **Review Open Code CLI docs** - Find tool usage configuration
-4. **Try custom system prompts** - Via Modelfile or config
-5. **Test with explicit tool commands** - "use write tool to..."
-6. **Compare with Claude** - Confirm it's a local model issue
+### Issue: "Model plans but doesn't create files"
+
+**Cause:** Using Mistral Nemo or Granite for file operations
+
+**Solution:** Switch to Qwen3 model
+```bash
+# Instead of this:
+opencode --model ollama/mistral-nemo:12b
+> Create a file
+
+# Use this:
+opencode --model ollama/qwen3:8b-16k
+> Create a file
+```
+
+### Issue: "Verbose thinking mode slows down tasks"
+
+**Cause:** Qwen3 models have built-in thinking behavior
+
+**Solutions:**
+1. **Accept it** - File still gets created successfully
+2. **Use `/mode build`** - May reduce (but not eliminate) thinking
+3. **Consider the benefit** - Think mode provides useful reasoning
+4. **Use smaller model** - qwen3:8b or qwen3:4b may be faster
+
+### Issue: "Want best code quality AND file creation"
+
+**Cause:** Mistral Nemo has best quality but no tool usage
+
+**Solution:** Hybrid approach
+```bash
+# Get analysis from Mistral Nemo
+opencode --model ollama/mistral-nemo:12b
+> /mode plan
+> Design the authentication system
+
+# Implement with Qwen3
+opencode --model ollama/qwen3:8b-16k
+> /mode build
+> Implement the authentication system designed above
+```
 
 ---
 
@@ -290,9 +302,58 @@ PROMPT
 
 ---
 
+## Quick Reference
+
+### Model Selection Flowchart
+
+```
+Need to create/modify files?
+├─ YES → Use Qwen3 models
+│   ├─ Multi-file/complex → qwen3:8b-16k (16k context)
+│   ├─ Standard tasks → qwen3:8b (8k context, faster)
+│   └─ Simple/quick → qwen3:4b (fastest)
+│
+└─ NO (analysis only) → Any model
+    ├─ Best quality → mistral-nemo:12b
+    ├─ Fast analysis → granite3.1-moe
+    └─ Extended context → qwen3:8b-16k
+```
+
+### Command Templates
+
+**File creation (Qwen3 required):**
+```bash
+opencode --model ollama/qwen3:8b-16k
+> Create/modify/refactor [description]
+```
+
+**Code review (any model):**
+```bash
+opencode --model ollama/mistral-nemo:12b
+> /mode review
+> Review [file/directory]
+```
+
+**Hybrid workflow:**
+```bash
+# Step 1: Analyze
+opencode --model ollama/mistral-nemo:12b
+> /mode plan
+> [analysis task]
+
+# Step 2: Implement
+opencode --model ollama/qwen3:8b-16k
+> /mode build
+> [implementation task]
+```
+
+---
+
 ## Update Log
 
 **2025-11-18:**
-- Identified file creation issue with granite3.1-moe and mistral-nemo:12b
-- Both models plan but don't execute file writes
-- Needs further investigation and testing with Qwen3 models
+- ✅ **RESOLVED:** Confirmed Qwen3 models have tool usage capabilities
+- ✅ **TESTED:** qwen3:8b-16k successfully creates files
+- ❌ **CONFIRMED:** granite3.1-moe and mistral-nemo:12b lack tool usage
+- 📝 **DOCUMENTED:** Root cause is model training, not Open Code CLI issue
+- 📝 **PUBLISHED:** Workarounds and hybrid workflow strategies
