@@ -167,7 +167,7 @@ opencode run "Compare the implementation in src/utils/formatDate.ts with src/hel
 | Task | Model | Expected Time |
 |------|-------|---------------|
 | Single file review | `qwen3:8b` | 15-30s |
-| Single file review (detailed) | `mistral-nemo:12b` | 25-45s |
+| Single file review (detailed) | `mistral-nemo:12b-instruct-2407-q4_K_M` | 25-45s |
 | Multi-file review (3-5 files) | `qwen3:8b-16k` | 45-90s |
 | Quick syntax check | `qwen3:4b` | 8-15s |
 

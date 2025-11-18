@@ -52,19 +52,19 @@ Scripts and workflows for processing multiple files in batch mode:
 - Parallel processing
 - Template-based generation
 
-**Best models:** `qwen3:4b` (fast), `qwen3:8b` (balanced), `mistral-nemo:12b` (complex)
+**Best models:** `qwen3:4b` (fast), `qwen3:8b` (balanced), `mistral-nemo:12b-instruct-2407-q4_K_M` (complex)
 
 ## Quick Reference: Which Example to Use?
 
 | Task | Example File | Best Model |
 |------|--------------|------------|
-| Review single file for bugs | [code-review.md](code-review.md) | `mistral-nemo:12b` |
+| Review single file for bugs | [code-review.md](code-review.md) | `mistral-nemo:12b-instruct-2407-q4_K_M` |
 | Review multiple related files | [code-review.md](code-review.md) | `qwen3:8b-16k` |
 | Refactor single component | [refactoring.md](refactoring.md) | `qwen3:8b` |
-| Migrate JS to TypeScript | [refactoring.md](refactoring.md) | `mistral-nemo:12b` |
+| Migrate JS to TypeScript | [refactoring.md](refactoring.md) | `mistral-nemo:12b-instruct-2407-q4_K_M` |
 | Analyze authentication flow (3-5 files) | [multi-file-analysis.md](multi-file-analysis.md) | `qwen3:8b-16k` |
 | Understand component relationships | [multi-file-analysis.md](multi-file-analysis.md) | `qwen3:8b-16k` |
-| Generate tests for 10 files | [batch-processing.md](batch-processing.md) | `mistral-nemo:12b` |
+| Generate tests for 10 files | [batch-processing.md](batch-processing.md) | `mistral-nemo:12b-instruct-2407-q4_K_M` |
 | Add JSDoc to many files | [batch-processing.md](batch-processing.md) | `qwen3:8b` |
 | Quick formatting fixes | [batch-processing.md](batch-processing.md) | `qwen3:4b` |
 
@@ -176,9 +176,9 @@ chmod +x my-batch-script.sh
 | Task | Model | Time |
 |------|-------|------|
 | Quick review | `qwen3:8b` | 15-30s |
-| Detailed review | `mistral-nemo:12b` | 25-45s |
+| Detailed review | `mistral-nemo:12b-instruct-2407-q4_K_M` | 25-45s |
 | Simple refactor | `qwen3:8b` | 20-40s |
-| Complex refactor | `mistral-nemo:12b` | 30-60s |
+| Complex refactor | `mistral-nemo:12b-instruct-2407-q4_K_M` | 30-60s |
 
 ### Multi-File Operations
 | Task | Files | Model | Time |
@@ -190,7 +190,7 @@ chmod +x my-batch-script.sh
 | Task | Files | Model | Time |
 |------|-------|-------|------|
 | Add types | 10 | `qwen3:8b` | 2.5-3.5 min |
-| Generate tests | 10 | `mistral-nemo:12b` | 6.5-10 min |
+| Generate tests | 10 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 6.5-10 min |
 | Format code | 10 | `qwen3:4b` | 1.5-2 min |
 
 ## Local vs Cloud

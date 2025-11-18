@@ -287,7 +287,7 @@ opencode run "Update the JSDoc comments and README.md to reflect the refactoring
 |------|-------|---------------|
 | Simple rename/extract | `qwen3:4b` | 8-15s |
 | Single file refactor | `qwen3:8b` | 20-40s |
-| Complex refactor | `mistral-nemo:12b` | 30-60s |
+| Complex refactor | `mistral-nemo:12b-instruct-2407-q4_K_M` | 30-60s |
 | Multi-file refactor | `qwen3:8b-16k` | 60-120s |
 
 ## Common Pitfalls

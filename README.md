@@ -89,7 +89,7 @@ See [test-opencode.md](test-opencode.md) and [RECOMMENDATIONS.md](RECOMMENDATION
 | `qwen3:8b-16k` ⭐ | 5.2 GB | 16k | ✅ YES | File creation, multi-file analysis |
 | `qwen3:8b` | 5.2 GB | 8k | ✅ Likely | General file operations |
 | `qwen3:4b` | 2.5 GB | 8k | ✅ Likely | Quick file edits |
-| `mistral-nemo:12b` | 7.5 GB | 8k | ❌ NO | Code review (read-only) |
+| `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | ❌ NO | Code review (read-only) |
 | `granite3.1-moe` | 2.0 GB | 8k | ❌ NO | Fast analysis (read-only) |
 
 ## Common Commands
@@ -151,13 +151,13 @@ opencode
 - **Quick file edits** → `qwen3:4b` (fastest Qwen3 model)
 
 **Code Review/Analysis (Any model works):**
-- **Best quality review** → `mistral-nemo:12b` (excellent analysis)
+- **Best quality review** → `mistral-nemo:12b-instruct-2407-q4_K_M` (excellent analysis)
 - **Fast analysis** → `granite3.1-moe` (quickest)
 - **Comprehensive review** → `qwen3:8b-16k` (if planning changes too)
 
 **Performance expectations:**
 
-| Task | qwen3:8b | qwen3:8b-16k | mistral-nemo:12b | Claude Sonnet 4 |
+| Task | qwen3:8b | qwen3:8b-16k | mistral-nemo:12b-instruct-2407-q4_K_M | Claude Sonnet 4 |
 |------|----------|--------------|------------------|-----------------|
 | Simple file write | 15-30s | 45-90s | ❌ Can't create | 2-5s |
 | Code review (read-only) | 20-45s | 60-120s | 40-90s ⭐ | 5-15s |
@@ -165,7 +165,7 @@ opencode
 
 **Notes:**
 - qwen3:8b-16k enters verbose "thinking mode" before execution (slower but successful)
-- mistral-nemo:12b provides best quality analysis but cannot modify files
+- mistral-nemo:12b-instruct-2407-q4_K_M provides best quality analysis but cannot modify files
 - For file operations, Qwen3 models are required despite slower performance
 
 ## When to Use Local vs Cloud Models

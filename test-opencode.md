@@ -146,7 +146,7 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 | qwen3:4b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
 | qwen3:8b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
 | **qwen3:8b-16k** | ✅ **PASS** | ❓ | ❓ | ❓ | ✅ **Full tool usage** | Verbose think mode but executes successfully |
-| mistral-nemo:12b | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | Excellent analysis, no file creation |
+| mistral-nemo:12b-instruct-2407-q4_K_M | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | Excellent analysis, no file creation |
 | granite3.1-moe | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | JSON output, no file creation |
 
 ## Critical Findings
@@ -160,7 +160,7 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 
 **Non-working models (no tool usage):**
 - ❌ granite3.1-moe - Plans but doesn't execute
-- ❌ mistral-nemo:12b - Excellent analysis but no file creation
+- ❌ mistral-nemo:12b-instruct-2407-q4_K_M - Excellent analysis but no file creation
 
 **Root cause:**
 - Tool usage requires specific model training for function calling
@@ -203,17 +203,17 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 3. **qwen3:4b** (8k context) - Probably has tool usage (same family)
 
 **❌ NON-WORKING models (analysis only, no execution):**
-- **mistral-nemo:12b** - Excellent for planning/analysis, but cannot create files
+- **mistral-nemo:12b-instruct-2407-q4_K_M** - Excellent for planning/analysis, but cannot create files
 - **granite3.1-moe** - Fast for analysis, but cannot create files
 
 **Updated use cases:**
 
 **File creation & modification:**
 - ✅ Use: qwen3:8b-16k, qwen3:8b, or qwen3:4b
-- ❌ Avoid: mistral-nemo:12b, granite3.1-moe
+- ❌ Avoid: mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
 
 **Code review & analysis (read-only):**
-- ✅ All models work (mistral-nemo:12b is best quality)
+- ✅ All models work (mistral-nemo:12b-instruct-2407-q4_K_M is best quality)
 - Consider: Use faster models (granite, qwen3:4b) for quick reviews
 
 **Multi-file analysis with changes:**

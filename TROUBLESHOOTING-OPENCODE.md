@@ -213,7 +213,7 @@ opencode --model ollama/qwen3:8b-16k
 **Example workflows:**
 ```bash
 # Code review (works great)
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > /mode review
 > Analyze the security of src/auth/ directory
 
@@ -233,7 +233,7 @@ Use different models for different phases:
 
 ```bash
 # Phase 1: Analysis with Mistral Nemo (best quality)
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > /mode review
 > Review src/auth/ for security issues
 # ✅ Get excellent analysis and recommendations
@@ -256,7 +256,7 @@ opencode --model ollama/qwen3:8b-16k
 **Solution:** Switch to Qwen3 model
 ```bash
 # Instead of this:
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > Create a file
 
 # Use this:
@@ -281,7 +281,7 @@ opencode --model ollama/qwen3:8b-16k
 **Solution:** Hybrid approach
 ```bash
 # Get analysis from Mistral Nemo
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > /mode plan
 > Design the authentication system
 
@@ -314,7 +314,7 @@ Need to create/modify files?
 │   └─ Simple/quick → qwen3:4b (fastest)
 │
 └─ NO (analysis only) → Any model
-    ├─ Best quality → mistral-nemo:12b
+    ├─ Best quality → mistral-nemo:12b-instruct-2407-q4_K_M
     ├─ Fast analysis → granite3.1-moe
     └─ Extended context → qwen3:8b-16k
 ```
@@ -329,7 +329,7 @@ opencode --model ollama/qwen3:8b-16k
 
 **Code review (any model):**
 ```bash
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > /mode review
 > Review [file/directory]
 ```
@@ -337,7 +337,7 @@ opencode --model ollama/mistral-nemo:12b
 **Hybrid workflow:**
 ```bash
 # Step 1: Analyze
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > /mode plan
 > [analysis task]
 
@@ -354,6 +354,6 @@ opencode --model ollama/qwen3:8b-16k
 **2025-11-18:**
 - ✅ **RESOLVED:** Confirmed Qwen3 models have tool usage capabilities
 - ✅ **TESTED:** qwen3:8b-16k successfully creates files
-- ❌ **CONFIRMED:** granite3.1-moe and mistral-nemo:12b lack tool usage
+- ❌ **CONFIRMED:** granite3.1-moe and mistral-nemo:12b-instruct-2407-q4_K_M lack tool usage
 - 📝 **DOCUMENTED:** Root cause is model training, not Open Code CLI issue
 - 📝 **PUBLISHED:** Workarounds and hybrid workflow strategies

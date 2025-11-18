@@ -149,7 +149,7 @@ opencode
 > - Unit tests
 ```
 
-**Best models:** mistral-nemo:12b, qwen3:8b-16k
+**Best models:** mistral-nemo:12b-instruct-2407-q4_K_M, qwen3:8b-16k
 
 ### Pattern 2: Iterative Refinement
 Work with the agent to progressively improve code quality.
@@ -185,7 +185,7 @@ opencode
 > Implement the suggested index optimizations from the analysis
 ```
 
-**Best models:** qwen3:8b-16k (analysis), mistral-nemo:12b (implementation)
+**Best models:** qwen3:8b-16k (analysis), mistral-nemo:12b-instruct-2407-q4_K_M (implementation)
 
 ### Pattern 4: Batch Processing
 Execute multiple related tasks in sequence.
@@ -202,7 +202,7 @@ Create tests/test_auth.py with auth tests
 Update README.md with API documentation
 ```
 
-**Best models:** qwen3:8b (for simple batches), mistral-nemo:12b (for complex batches)
+**Best models:** qwen3:8b (for simple batches), mistral-nemo:12b-instruct-2407-q4_K_M (for complex batches)
 
 ## Controlling Agent Behavior
 
@@ -250,7 +250,7 @@ PARAMETER top_k 20
 - Avoid multi-file analysis
 - Break complex tasks into smaller chunks
 
-**8k context (qwen3:8b, mistral-nemo:12b):**
+**8k context (qwen3:8b, mistral-nemo:12b-instruct-2407-q4_K_M):**
 - Can handle 1-2 medium files simultaneously
 - Suitable for most development tasks
 - Good for refactoring single modules
@@ -265,7 +265,7 @@ PARAMETER top_k 20
 
 Based on real-world usage with Open Code CLI:
 
-| Task Type | qwen3:4b | qwen3:8b | qwen3:8b-16k | mistral-nemo:12b | granite3.1-moe |
+| Task Type | qwen3:4b | qwen3:8b | qwen3:8b-16k | mistral-nemo:12b-instruct-2407-q4_K_M | granite3.1-moe |
 |-----------|----------|----------|--------------|------------------|----------------|
 | Simple file creation | 5-15s | 15-30s | 45-90s | 25-60s | 6-18s |
 | Code review (1 file) | 10-25s | 20-45s | 60-120s | 40-90s | 15-35s |
@@ -284,7 +284,7 @@ Based on real-world usage with Open Code CLI:
 - **Quick edits:** qwen3:4b or granite3.1-moe
 - **Standard development:** qwen3:8b or granite3.1-moe
 - **Multi-file analysis:** qwen3:8b-16k
-- **Best quality:** mistral-nemo:12b
+- **Best quality:** mistral-nemo:12b-instruct-2407-q4_K_M
 - **Fast iteration:** granite3.1-moe
 
 ### 2. Provide Clear Context
@@ -362,7 +362,7 @@ opencode --batch batch-tasks.txt
 **Symptoms:** Bugs, security issues, poor practices
 
 **Solutions:**
-1. Switch to higher-quality model (mistral-nemo:12b)
+1. Switch to higher-quality model (mistral-nemo:12b-instruct-2407-q4_K_M)
 2. Provide more specific requirements
 3. Use `/mode review` after generation to check quality
 4. Ask agent to add tests and validation
@@ -414,7 +414,7 @@ opencode --model qwen3:8b-16k
 > Analyze the codebase and create a refactoring plan
 
 # Step 2: Execute with quality model
-opencode --model mistral-nemo:12b
+opencode --model mistral-nemo:12b-instruct-2407-q4_K_M
 > Implement the refactoring plan from plan.md
 
 # Step 3: Review with fast model

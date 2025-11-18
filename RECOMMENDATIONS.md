@@ -6,7 +6,7 @@
 
 **Testing results:**
 - ✅ **qwen3:8b-16k** - Successfully creates files, full tool usage
-- ❌ **mistral-nemo:12b** - Excellent analysis but NO file creation
+- ❌ **mistral-nemo:12b-instruct-2407-q4_K_M** - Excellent analysis but NO file creation
 - ❌ **granite3.1-moe** - Fast planning but NO file creation
 
 **Root cause:** Tool/function calling requires specific model training. Qwen3 models have this built-in, while Mistral Nemo and Granite models lack it.
@@ -112,7 +112,7 @@ ollama create qwen3:8b-16k-nothink -f qwen3-no-think.modelfile
 **For most users:**
 1. Accept that **build agent is the default** - use Tab key to switch to plan agent if needed
 2. Use **qwen3:8b-16k** for file creation/modification (only model with tool usage)
-3. Use **mistral-nemo:12b** for code review/analysis only (no file creation)
+3. Use **mistral-nemo:12b-instruct-2407-q4_K_M** for code review/analysis only (no file creation)
 4. Accept think mode verbosity as trade-off for local/private LLM usage with extended context
 
 **Available Open Code CLI slash commands (use `/` prefix):**
@@ -147,11 +147,11 @@ ollama create qwen3:8b-16k-nothink -f qwen3-no-think.modelfile
 | Your Need | Recommended Model | Rationale |
 |-----------|------------------|-----------|
 | **Fastest response** | granite3.1-moe | 2.0 GB, MoE efficiency |
-| **Best code quality** | mistral-nemo:12b | 7.5 GB, superior reasoning |
+| **Best code quality** | mistral-nemo:12b-instruct-2407-q4_K_M | 7.5 GB, superior reasoning |
 | **Multi-file analysis** | qwen3:8b-16k | 16k context window |
 | **Balanced general use** | qwen3:8b | 5.2 GB, good speed/quality |
 | **Simple quick tasks** | qwen3:4b | 2.5 GB, very fast |
-| **Minimal thinking mode** | mistral-nemo:12b | More controlled output |
+| **Minimal thinking mode** | mistral-nemo:12b-instruct-2407-q4_K_M | More controlled output |
 | **Privacy-critical work** | Any Ollama model | All run locally |
 
 ### **UPDATED Model Recommendations (Post-Testing)**
@@ -193,7 +193,7 @@ ollama create qwen3:8b-16k-nothink -f qwen3-no-think.modelfile
 #### Code Review Workflow (Read-Only Analysis)
 ```bash
 # Use Mistral Nemo for best quality analysis
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > /mode review
 > Analyze the security of src/auth/ directory
 # ✅ Works great - no file creation needed
@@ -229,7 +229,7 @@ opencode --model ollama/qwen3:8b
 #### Planning/Architecture (Use Any Model)
 ```bash
 # Use Mistral Nemo for best quality planning
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > /mode plan
 > Analyze the codebase architecture and suggest improvements
 # ✅ No file creation, just analysis
@@ -258,7 +258,7 @@ opencode --model ollama/qwen3:8b-16k
 # Note: Build mode is default, no need to set /mode build
 
 # Test 3: Quality comparison
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 > Create a Python class for user authentication with password hashing
 ```
 
@@ -271,7 +271,7 @@ Expected times (on Apple Silicon M-series):
 | qwen3:4b | 5-15s | 10-25s | N/A |
 | qwen3:8b | 15-30s | 20-45s | 40-90s |
 | qwen3:8b-16k | 45-90s | 60-120s | 90-180s |
-| mistral-nemo:12b | 25-60s | 40-90s | 60-150s |
+| mistral-nemo:12b-instruct-2407-q4_K_M | 25-60s | 40-90s | 60-150s |
 | granite3.1-moe | 6-18s | 15-35s | 25-60s |
 
 **Note:** Times include think mode overhead where applicable.
@@ -304,13 +304,13 @@ Expected times (on Apple Silicon M-series):
 **CRITICAL TAKEAWAYS:**
 
 1. **File creation/modification:** Use `qwen3:8b-16k` (or test qwen3:8b/4b)
-2. **Code review/analysis:** Any model works; `mistral-nemo:12b` has best quality
+2. **Code review/analysis:** Any model works; `mistral-nemo:12b-instruct-2407-q4_K_M` has best quality
 3. **Think mode:** Accept it - doesn't prevent execution, provides useful reasoning
 4. **Mistral & Granite models:** Excellent for analysis, but CANNOT create files
 
 **Updated model strategy:**
 - **Primary workhorse:** `qwen3:8b-16k` (proven to work for everything)
-- **Fast analysis:** `mistral-nemo:12b` or `granite3.1-moe` (read-only)
+- **Fast analysis:** `mistral-nemo:12b-instruct-2407-q4_K_M` or `granite3.1-moe` (read-only)
 - **Future testing:** `qwen3:8b` and `qwen3:4b` (likely have tool usage too)
 
 The configuration is solid, but tool usage is model-specific. The benefits of local, private LLM usage are preserved with Qwen3 models.

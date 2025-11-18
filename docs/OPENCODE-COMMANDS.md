@@ -130,7 +130,7 @@ Define commands in `opencode.jsonc`:
       "template": "Review the code at @$1 for security vulnerabilities and best practices",
       "description": "Security code review",
       "agent": "plan",
-      "model": "ollama/mistral-nemo:12b"
+      "model": "ollama/mistral-nemo:12b-instruct-2407-q4_K_M"
     }
   }
 }
@@ -211,7 +211,7 @@ opencode --batch tasks.txt
 - ✅ qwen3:8b-16k (tool usage support)
 - ✅ qwen3:8b (likely has tool usage, needs testing)
 - ✅ qwen3:4b (likely has tool usage, needs testing)
-- ❌ mistral-nemo:12b (analysis only, no file creation)
+- ❌ mistral-nemo:12b-instruct-2407-q4_K_M (analysis only, no file creation)
 - ❌ granite3.1-moe (analysis only, no file creation)
 
 ### Plan Agent
@@ -231,7 +231,7 @@ opencode --batch tasks.txt
 
 **Models that work:**
 - All models work for analysis (no file creation needed)
-- mistral-nemo:12b recommended for best analysis quality
+- mistral-nemo:12b-instruct-2407-q4_K_M recommended for best analysis quality
 
 ## Common Workflows
 
@@ -259,7 +259,7 @@ opencode --model ollama/qwen3:8b-16k
 ### 3. Code Review Only (Plan Agent)
 
 ```bash
-opencode --model ollama/mistral-nemo:12b
+opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 # Press Tab to switch to plan agent
 > Review src/auth/ for security vulnerabilities
 ```
@@ -300,7 +300,7 @@ opencode --model ollama/mistral-nemo:12b
 ### 2. Use the Right Model
 
 - **File creation/modification** → qwen3:8b-16k (only Qwen3 models have tool usage)
-- **Code review/analysis** → mistral-nemo:12b (best quality, but read-only)
+- **Code review/analysis** → mistral-nemo:12b-instruct-2407-q4_K_M (best quality, but read-only)
 - **Fast analysis** → granite3.1-moe (efficient, but read-only)
 
 ### 3. Manage Sessions

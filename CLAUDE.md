@@ -17,7 +17,7 @@ This repository does NOT contain application code - it's a reference repository 
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models**: qwen3:8b-16k, mistral-nemo:12b, qwen3:8b, granite3.1-moe, qwen3:4b
+- **Models**: qwen3:8b-16k, mistral-nemo:12b-instruct-2407-q4_K_M, qwen3:8b, granite3.1-moe, qwen3:4b
 
 When adding new models, update this file with the model name and display name.
 

@@ -5,7 +5,7 @@ Example prompts and workflows for analyzing multiple related files using extende
 ## Best Model for Multi-File Analysis
 
 **Primary:** `qwen3:8b-16k` (16k context window)
-**Alternative:** `mistral-nemo:12b-instruct-2407-q4_K_M` (8k context, use for smaller file sets)
+**Alternative:** `mistral-nemo:12b-instruct-2407-q4_K_M-instruct-2407-q4_K_M` (8k context, use for smaller file sets)
 
 ## Understanding Context Limits
 
@@ -386,7 +386,7 @@ If you exceed context limits:
 | 2-3 files | Small | `qwen3:8b` | 30-45s |
 | 3-5 files | Medium | `qwen3:8b-16k` | 45-90s |
 | 5-7 files | Medium | `qwen3:8b-16k` | 90-150s |
-| Complex analysis | 3-5 files | `mistral-nemo:12b` | 60-120s |
+| Complex analysis | 3-5 files | `mistral-nemo:12b-instruct-2407-q4_K_M` | 60-120s |
 
 ## When to Use Cloud Models
 
