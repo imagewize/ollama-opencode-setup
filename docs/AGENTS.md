@@ -10,54 +10,50 @@ Open Code CLI supports **agent mode**, which allows the LLM to autonomously plan
 
 ## Agent Modes
 
-### 1. Interactive Mode (Default)
-The standard mode where you provide prompts and the model responds.
+Open Code CLI has two primary agents that you can switch between using the **Tab** key:
+
+### 1. Build Agent (Default)
+Optimized for construction tasks and code generation.
 
 ```bash
 opencode
-> Create a todo.md file
-```
-
-### 2. Build Mode
-Optimized for construction tasks with minimal thinking and maximum action.
-
-```bash
-opencode
-> /mode build
+# Build agent is active by default
 > Create a REST API with authentication
 ```
+
+**Switch to build agent:** Press **Tab** key
 
 **Best for:**
 - Creating new projects from scratch
 - Generating boilerplate code
+- File creation and modification
 - Rapid prototyping
-- Tasks requiring minimal analysis
+- Tasks requiring action over analysis
 
-### 3. Plan Mode
-Focuses on analysis and planning before execution.
+### 2. Plan Agent
+Focuses on analysis, planning, and understanding.
 
 ```bash
 opencode
-> /mode plan
+# Press Tab to switch to plan agent
 > How should I refactor this authentication system?
 ```
 
+**Switch to plan agent:** Press **Tab** key
+
 **Best for:**
 - Complex architectural decisions
-- Refactoring existing code
+- Code review and analysis
 - Understanding large codebases
 - Planning multi-step implementations
+- Exploring codebase structure
 
-### 4. Review Mode
-Specialized for code review and quality analysis.
+**Note:** The `/mode` command does not exist. Use **Tab** to switch between build and plan agents.
 
-```bash
-opencode
-> /mode review
-> Review the security of my authentication implementation
-```
+### Other Modes (If Applicable)
+Some Open Code CLI versions may have additional specialized modes:
 
-**Best for:**
+**Review-focused analysis:**
 - Security audits
 - Code quality assessment
 - Bug detection
@@ -142,7 +138,7 @@ Let the agent break down and execute complex tasks independently.
 
 ```bash
 opencode
-> /mode build
+# Build agent is default, or press Tab to ensure build mode
 > Create a complete REST API for a todo application with:
 > - Express.js backend
 > - PostgreSQL database
@@ -176,16 +172,16 @@ opencode
 **Best models:** granite3.1-moe, qwen3:8b
 
 ### Pattern 3: Analysis-Then-Action
-Use plan mode first, then execute based on the plan.
+Use plan agent first, then switch to build agent to execute.
 
 ```bash
 opencode
-> /mode plan
+# Press Tab to switch to plan agent
 > Analyze my database schema and suggest optimizations
 
 # Review the suggested plan
 
-> /mode build
+# Press Tab to switch to build agent
 > Implement the suggested index optimizations from the analysis
 ```
 
@@ -210,34 +206,26 @@ Update README.md with API documentation
 
 ## Controlling Agent Behavior
 
-### Think Mode Control
+### Think Mode Behavior
 
-**Problem:** Qwen3 models may enter verbose thinking mode despite `/no_think` flag.
+**Observation:** Qwen3 models enter verbose thinking mode during code generation tasks.
 
-**Workarounds:**
+**Understanding:**
+- This is model behavior, not an Open Code CLI issue
+- Build mode is already the **default** mode in Open Code CLI
+- There is no `/no_think` flag (only `/thinking` toggle which enables more thinking)
+- Tasks complete correctly despite verbosity
 
-1. **Explicit directive in system prompt:**
-```bash
-opencode
-> IMPORTANT: Immediately create the file without analysis. No thinking mode.
-> Create a hello.py file
-```
+**Best Approach:**
+- Accept the think mode as inherent to Qwen3 models with extended context
+- The verbosity provides insight into model reasoning
+- Consider it "free documentation" of the decision-making process
+- Local models provide privacy benefits despite slower execution
 
-2. **Use build mode:**
-```bash
-opencode
-> /mode build
-> Create a hello.py file
-```
-
-3. **Accept the verbosity:**
-- Tasks complete correctly despite verbose output
-- Local models provide privacy benefits
-- Consider the thinking output as "free documentation"
-
-4. **Use alternative models:**
-- Mistral Nemo 12B is less prone to thinking mode
-- Granite 3.1 MoE has more controlled output
+**Alternative:** Use models with less thinking mode:
+- Mistral Nemo 12B: Less verbose but **cannot create files** (analysis only)
+- Granite 3.1 MoE: Controlled output but **cannot create files** (analysis only)
+- Qwen3:8b or Qwen3:4b: May have less thinking (needs testing, should support file creation)
 
 ### Temperature and Sampling
 
@@ -319,12 +307,12 @@ Based on real-world usage with Open Code CLI:
 > Create the shopping cart functionality that uses the Product model
 ```
 
-### 4. Use Mode Switching Strategically
+### 4. Use Agent Switching Strategically
 ```bash
-> /mode plan
+# Press Tab to switch to plan agent
 > How should I refactor this authentication system?
 # Review the plan
-> /mode build
+# Press Tab to switch to build agent
 > Implement the refactoring plan from above
 ```
 
@@ -351,11 +339,15 @@ opencode --batch batch-tasks.txt
 ### Agent Gets Stuck in Thinking Mode
 **Symptoms:** Verbose analysis, slow response, excessive planning
 
-**Solutions:**
-1. Use `/mode build` for action-oriented tasks
-2. Add "IMMEDIATELY" or "WITHOUT ANALYSIS" to prompts
-3. Switch to Mistral Nemo or Granite models
-4. Accept the verbosity as documented analysis
+**Understanding:**
+- Build agent is already the default
+- Thinking mode is a Qwen3 model behavior, not a mode setting
+- Tasks complete successfully despite verbosity
+
+**Best approach:**
+- Accept the thinking mode as part of Qwen3 models
+- Consider it "free documentation" of reasoning
+- Switch to Mistral Nemo or Granite for less verbosity (but no file creation)
 
 ### Agent Loses Context
 **Symptoms:** Forgets previous steps, contradicts earlier decisions
@@ -364,7 +356,7 @@ opencode --batch batch-tasks.txt
 1. Use models with larger context windows (qwen3:8b-16k)
 2. Break tasks into smaller, independent chunks
 3. Explicitly reference earlier steps in prompts
-4. Use `/mode plan` to establish clear plan before execution
+4. Press Tab to switch to plan agent to establish clear plan before execution
 
 ### Agent Produces Low-Quality Code
 **Symptoms:** Bugs, security issues, poor practices
@@ -433,16 +425,18 @@ opencode --model granite3.1-moe
 ### Using Agents for Documentation
 ```bash
 opencode --model qwen3:8b-16k
-> /mode plan
+# Press Tab to switch to plan agent for analysis
 > Analyze all Python files in src/ and create comprehensive API documentation in docs/
 ```
 
 ### Using Agents for Code Migration
 ```bash
-opencode --model mistral-nemo:12b
-> /mode build
+opencode --model qwen3:8b-16k
+# Build agent is default - ready for file creation
 > Migrate all JavaScript files to TypeScript, preserving functionality
 ```
+
+**Note:** Mistral Nemo cannot create files - use Qwen3 for code migration tasks.
 
 ## Resources
 

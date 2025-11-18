@@ -29,15 +29,53 @@ This file is used to test Open Code CLI functionality with local Ollama models.
 - Provides comprehensive analysis
 - Suggests organizational improvements
 
-### Test 4: Think Mode Validation
-**Prompt:** "/no_think Create a simple hello.py file that prints 'Hello World'"
+### Test 4: Think Mode Observation
+**Prompt:** "Create a simple hello.py file that prints 'Hello World'"
 
 **Expected behavior:**
-- Model should NOT enter thinking mode (no verbose analysis)
-- Creates simple Python file quickly
-- Completes task efficiently
+- Qwen3 models will likely enter thinking mode (verbose analysis)
+- Task completes successfully despite verbosity
+- Build mode is already default (no need to set `/mode build`)
 
-**Known issue:** Qwen3 models may ignore `/no_think` flag and enter verbose thinking mode anyway.
+**Note:** There is no `/no_think` flag in Open Code CLI. Build agent is the default. Think mode verbosity is model behavior.
+
+### Test 5: Bash Command Integration
+**Prompt:**
+```
+!git status
+Based on the output, tell me if there are any uncommitted changes
+```
+
+**Expected behavior:**
+- Git status output is included in conversation
+- Model analyzes the git status output
+- Provides clear answer about repository state
+
+### Test 6: Agent Switching
+**Instructions:**
+1. Start with build agent (default)
+2. Press **Tab** to switch to plan agent
+3. Ask: "What is the structure of this repository?"
+4. Press **Tab** to switch back to build agent
+5. Ask: "Create a CONTRIBUTING.md file based on the repository structure"
+
+**Expected behavior:**
+- Plan agent provides detailed analysis
+- Build agent creates the file
+- Tab key successfully switches between agents
+
+## Available Commands
+
+See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command reference.
+
+**Key commands:**
+- **Tab** - Switch between build and plan agents
+- `!command` - Run bash command and include output
+- `/help` - Show help dialog
+- `/models` - List available models
+- `/sessions` - List and resume sessions
+- `/export` - Export conversation to Markdown
+- `/undo` / `/redo` - Undo/redo messages
 
 ## Test Results
 

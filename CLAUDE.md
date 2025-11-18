@@ -74,22 +74,31 @@ ollama serve
 
 ## Documentation Structure
 
+### [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md)
+**Complete Open Code CLI commands reference:**
+- All 15 built-in slash commands with keybinds
+- Bash command integration using `!command` syntax
+- Agent switching with Tab key (build vs plan agents)
+- Custom command creation (file-based and config-based)
+- Advanced features (arguments, shell integration, file references)
+- Common workflows and best practices
+- Command troubleshooting
+
 ### [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
 - Open Code configuration
 - Custom model creation
 - Context window comparison
 - Model selection guidelines
 - Troubleshooting (Ollama not running, model not found, performance issues)
-- Known Open Code CLI issues (thinking mode, /no_think flag, binary file detection)
+- Known Open Code CLI issues (thinking mode behavior, binary file detection)
 
 ### [docs/AGENTS.md](docs/AGENTS.md)
-- Agent modes (interactive, build, plan, review)
+- Build and plan agents (Tab key switching)
 - Model capabilities for agent workflows
 - Agent workflow patterns (autonomous, iterative, analysis-then-action, batch)
-- Think mode control strategies
+- Think mode behavior understanding
 - Performance benchmarks by model
 - Best practices for autonomous task execution
-- LM Studio vs Ollama comparison
 
 ### [examples/](examples/)
 - [code-review.md](examples/code-review.md) - Code review workflows
@@ -113,10 +122,10 @@ mv file_clean.md file.md
 ```
 
 ### Open Code CLI Thinking Mode
-The Qwen3 8B 16K model may enter verbose thinking mode despite `/no_think` flag. This is a known limitation - tasks complete correctly but slower. Workarounds:
-- Use explicit prompts: "Immediately create X. No analysis needed."
-- Use interactive mode with `/mode build`
-- Accept the verbosity for local model usage
+The Qwen3 8B 16K model enters verbose thinking mode during code generation. This is model behavior, not a CLI issue. Build mode is already the default. Tasks complete correctly but slower. Best approach:
+- Accept the think mode as part of using local models with extended context
+- The verbosity provides useful insight into model reasoning
+- Tasks complete successfully despite the extra output
 
 ### Slow Performance
 Local models are 3-10x slower than cloud models:
