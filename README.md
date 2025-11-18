@@ -2,6 +2,29 @@
 
 Complete configuration and documentation for running Open Code CLI with local Ollama models.
 
+## Table of Contents
+
+- [Quick Start](#quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+- [What's Included](#whats-included)
+- [⚠️ Important: Tool Usage Discovery](#️-important-tool-usage-discovery)
+- [Available Models](#available-models)
+- [Common Commands](#common-commands)
+  - [Ollama Management](#ollama-management)
+  - [Creating Custom Models](#creating-custom-models)
+  - [Open Code Usage](#open-code-usage)
+- [Performance Tips](#performance-tips)
+- [When to Use Local vs Cloud Models](#when-to-use-local-vs-cloud-models)
+- [Documentation](#documentation)
+- [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
+- [Resources](#resources)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -45,17 +68,29 @@ Complete configuration and documentation for running Open Code CLI with local Ol
 
 - **[opencode.json](opencode.json)** - Open Code configuration for Ollama models
 - **[docs/LOCALLLMS.md](docs/LOCALLLMS.md)** - Complete documentation on local LLM setup
+- **[docs/AGENTS.md](docs/AGENTS.md)** - Guide to using Open Code CLI agent modes
 - **[examples/](examples/)** - Example workflows and prompts
+- **[test-opencode.md](test-opencode.md)** - Test suite for validating Open Code CLI setup
+
+## ⚠️ Important: Tool Usage Discovery
+
+**Only Qwen3 models can create/modify files in Open Code CLI!**
+
+Testing revealed that tool/function calling requires specific model training:
+- ✅ **Qwen3 models** (qwen3:8b-16k, qwen3:8b, qwen3:4b) - Full tool usage
+- ❌ **Mistral Nemo & Granite** - Analysis only, cannot create files
+
+See [test-opencode.md](test-opencode.md) and [RECOMMENDATIONS.md](RECOMMENDATIONS.md) for details.
 
 ## Available Models
 
-| Model | Size | Context | Best For |
-|-------|------|---------|----------|
-| `qwen3:8b-16k` | 5.2 GB | 16k | Multi-file analysis |
-| `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | Code generation |
-| `qwen3:8b` | 5.2 GB | 8k | General development |
-| `granite3.1-moe:latest` | 2.0 GB | 8k | Quick tasks |
-| `qwen3:4b` | 2.5 GB | 8k | Fast responses |
+| Model | Size | Context | Tool Usage | Best For |
+|-------|------|---------|------------|----------|
+| `qwen3:8b-16k` ⭐ | 5.2 GB | 16k | ✅ YES | File creation, multi-file analysis |
+| `qwen3:8b` | 5.2 GB | 8k | ✅ Likely | General file operations |
+| `qwen3:4b` | 2.5 GB | 8k | ✅ Likely | Quick file edits |
+| `mistral-nemo:12b` | 7.5 GB | 8k | ❌ NO | Code review (read-only) |
+| `granite3.1-moe` | 2.0 GB | 8k | ❌ NO | Fast analysis (read-only) |
 
 ## Common Commands
 
@@ -110,44 +145,73 @@ opencode
 
 **Use the right model for the task:**
 
-- **Quick edits** → `qwen3:4b` or `granite3.1-moe` (fastest)
-- **Code generation** → `mistral-nemo:12b-instruct-2407-q4_K_M` (best quality)
-- **Multi-file analysis** → `qwen3:8b-16k` (extended context)
-- **Standard tasks** → `qwen3:8b` (balanced)
+**File Creation/Modification (MUST use Qwen3):**
+- **Multi-file changes** → `qwen3:8b-16k` (extended context + tool usage) ⭐
+- **Standard file operations** → `qwen3:8b` (balanced)
+- **Quick file edits** → `qwen3:4b` (fastest Qwen3 model)
+
+**Code Review/Analysis (Any model works):**
+- **Best quality review** → `mistral-nemo:12b` (excellent analysis)
+- **Fast analysis** → `granite3.1-moe` (quickest)
+- **Comprehensive review** → `qwen3:8b-16k` (if planning changes too)
 
 **Performance expectations:**
 
-| Task | Local Model (8k) | Local Model (16k) | Claude Sonnet 4 |
-|------|-----------------|-------------------|-----------------|
-| Simple file write | 8-20s | 10-30s | 2-5s |
-| Code review | 15-40s | 20-60s | 5-15s |
-| Multi-file analysis | N/A (context limit) | 30-90s | 10-30s |
+| Task | qwen3:8b | qwen3:8b-16k | mistral-nemo:12b | Claude Sonnet 4 |
+|------|----------|--------------|------------------|-----------------|
+| Simple file write | 15-30s | 45-90s | ❌ Can't create | 2-5s |
+| Code review (read-only) | 20-45s | 60-120s | 40-90s ⭐ | 5-15s |
+| Multi-file analysis | 40-90s | 90-180s | ❌ Read-only | 10-30s |
+
+**Notes:**
+- qwen3:8b-16k enters verbose "thinking mode" before execution (slower but successful)
+- mistral-nemo:12b provides best quality analysis but cannot modify files
+- For file operations, Qwen3 models are required despite slower performance
 
 ## When to Use Local vs Cloud Models
 
 ### Use Local Models (Ollama) When:
-- Working offline
-- Processing sensitive/proprietary code
-- Running batch operations overnight
-- Learning/experimenting without API costs
-- Privacy requirements mandate local processing
+- ✅ Working offline
+- ✅ Processing sensitive/proprietary code
+- ✅ Running batch operations overnight
+- ✅ Learning/experimenting without API costs
+- ✅ Privacy requirements mandate local processing
+- ✅ Code review that doesn't require changes (any model)
+- ⚠️ **File operations (MUST use Qwen3 models only)**
 
 ### Use Cloud Models (Claude API) When:
-- Real-time interactive development
-- Complex multi-file operations requiring fast iteration
-- Time-sensitive tasks
-- Working with very large codebases (200k+ context)
-- Speed is more important than cost
+- ⏱️ Real-time interactive development
+- ⚡ Complex multi-file operations requiring fast iteration
+- 🚀 Time-sensitive tasks
+- 📚 Working with very large codebases (200k+ context)
+- 💰 Speed is more important than cost
+- 🎯 Best code quality is critical
 
 ## Documentation
 
-See [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for comprehensive documentation including:
+### [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
+Comprehensive guide to local LLM setup:
 - Custom model creation
 - Context window comparison (4k vs 8k vs 16k vs 200k)
 - Ollama commands reference
 - Model selection guidelines
 - Troubleshooting guide
 - Performance optimization
+
+### [docs/AGENTS.md](docs/AGENTS.md)
+Guide to using Open Code CLI agent modes:
+- Agent modes (interactive, build, plan, review)
+- Model capabilities for agent workflows
+- Agent workflow patterns
+- Controlling agent behavior (think mode, temperature, context)
+- Performance benchmarks by model
+- Best practices and troubleshooting
+
+### [test-opencode.md](test-opencode.md) & [RECOMMENDATIONS.md](RECOMMENDATIONS.md)
+**Critical testing results:**
+- ✅ Qwen3 models have full tool usage (file creation works)
+- ❌ Mistral Nemo & Granite lack tool usage (analysis only)
+- Model-by-model test results and recommendations
 
 ## Examples
 

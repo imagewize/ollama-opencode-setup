@@ -6,8 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **documentation and configuration repository** for running Open Code CLI with local Ollama models. It contains:
 - Open Code configuration ([opencode.json](opencode.json))
-- Comprehensive documentation ([docs/LOCALLLMS.md](docs/LOCALLLMS.md))
+- Comprehensive documentation ([docs/LOCALLLMS.md](docs/LOCALLLMS.md), [docs/AGENTS.md](docs/AGENTS.md))
 - Example workflows ([examples/](examples/))
+- Test suite ([test-opencode.md](test-opencode.md))
 
 This repository does NOT contain application code - it's a reference repository meant to be symlinked or copied into other projects.
 
@@ -73,7 +74,7 @@ ollama serve
 
 ## Documentation Structure
 
-All documentation is in [docs/LOCALLLMS.md](docs/LOCALLLMS.md):
+### [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
 - Open Code configuration
 - Custom model creation
 - Context window comparison
@@ -81,11 +82,26 @@ All documentation is in [docs/LOCALLLMS.md](docs/LOCALLLMS.md):
 - Troubleshooting (Ollama not running, model not found, performance issues)
 - Known Open Code CLI issues (thinking mode, /no_think flag, binary file detection)
 
-Examples are in [examples/](examples/):
+### [docs/AGENTS.md](docs/AGENTS.md)
+- Agent modes (interactive, build, plan, review)
+- Model capabilities for agent workflows
+- Agent workflow patterns (autonomous, iterative, analysis-then-action, batch)
+- Think mode control strategies
+- Performance benchmarks by model
+- Best practices for autonomous task execution
+- LM Studio vs Ollama comparison
+
+### [examples/](examples/)
 - [code-review.md](examples/code-review.md) - Code review workflows
 - [refactoring.md](examples/refactoring.md) - Refactoring patterns
 - [multi-file-analysis.md](examples/multi-file-analysis.md) - Multi-file analysis
 - [batch-processing.md](examples/batch-processing.md) - Batch operation scripts
+
+### [test-opencode.md](test-opencode.md)
+- Test suite for validating Open Code CLI setup
+- Performance benchmarks
+- Think mode validation
+- Comparison matrix for all models
 
 ## Common Issues
 
@@ -134,6 +150,8 @@ This repository is designed to be:
 
 When making changes:
 - Update [opencode.json](opencode.json) when adding/removing models
-- Update [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for documentation changes
+- Update [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for technical documentation changes
+- Update [docs/AGENTS.md](docs/AGENTS.md) for agent workflow and usage patterns
 - Add new workflows to [examples/](examples/) directory
+- Update [test-opencode.md](test-opencode.md) with new test cases
 - Keep [README.md](README.md) in sync with major changes
