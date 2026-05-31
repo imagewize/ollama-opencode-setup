@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.5.2] — 2026-05-31
+
+### Added
+- `docs/LOCALLLMS.md`: new "Setting Context with Open Code (why we bake num_ctx)" section — explains that Open Code's OpenAI-compatible (`/v1`) endpoint ignores `num_ctx`, so it can't be set via `opencode.json`; documents the Modelfile vs `OLLAMA_CONTEXT_LENGTH` env-var trade-off and why this repo bakes context per-model. References upstream feature request [opencode#3250](https://github.com/anomalyco/opencode/issues/3250)
+
+### Changed
+- `docs/LOCALLLMS.md`: Table of Contents now lists the "Creating Ministral 3 8B with Extended Context (16k)" subsection (previously missing) and the new context section
+
+---
+
 ## [0.5.1] — 2026-05-31
 
 ### Changed
