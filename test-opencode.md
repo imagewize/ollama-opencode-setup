@@ -154,9 +154,40 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 
 ---
 
+---
+
+### Model: ministral-3:8b
+
+**Tool-call test** (tested 2026-05-31, via `scripts/tool-call-test.sh` against Ollama's OpenAI-compatible endpoint)
+- Status: [✓] **PASS**
+- Time: ~7s cold, **~4s warm** (num_ctx=16384)
+- Notes:
+  - ✅ Emitted a valid `write` tool_call on the first try
+  - **Fastest tool-caller tested** — no `<think>` overhead (vs ~26s for qwen3:8b on the same task)
+  - Newer model than the Qwen3 family (Mistral, Dec-2025 build), 6.0 GB, fits M1 16GB with room for 16k context
+  - **Recommended as the new daily driver** for tool-use tasks
+
+---
+
+### Model: deepseek-coder-v2:16b
+
+**Tool-call test** (tested 2026-05-31, via `scripts/tool-call-test.sh`)
+- Status: [X] **FAIL** — no tool support
+- Notes:
+  - Ollama returns an API error: `registry.ollama.ai/library/deepseek-coder-v2:16b does not support tools`
+  - The model's template does not declare tool calling — it is a code-completion/FIM model, not an agentic tool-caller
+  - Fits M1 16GB (8.9 GB, MoE with 2.4B active) and is fast, but **cannot be used for Open Code's tool loop**
+  - Conclusion: size/speed are fine; the capability simply isn't there
+
+---
+
+### qwen3:8b baseline (tool-call test, tested 2026-05-31)
+- Status: [✓] PASS — emitted `write` tool_call, ~26s warm (think-mode overhead)
+
+---
+
 ### Additional Test Results Needed:
 - qwen3:4b
-- qwen3:8b
 - gemma4:e4b
 - phi4
 - qwen3.5:4b
@@ -165,8 +196,10 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 
 | Model | Test 1 | Test 2 | Test 3 | Test 4 | Execution Capability | Notes |
 |-------|--------|--------|--------|--------|---------------------|-------|
+| **ministral-3:8b** | ✅ **PASS** | ❓ | ❓ | ❓ | ✅ **Full tool usage** | Fastest tool-caller (~4s warm), no think mode — recommended |
+| deepseek-coder-v2:16b | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | Ollama: "does not support tools" — code-completion/FIM only |
 | qwen3:4b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
-| qwen3:8b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
+| qwen3:8b | ✅ PASS | ❓ | ❓ | ❓ | ✅ Full tool usage | Tool call works but ~26s (think-mode overhead) |
 | **qwen3:8b-16k** | ✅ **PASS** | ❓ | ❓ | ❓ | ✅ **Full tool usage** | Verbose think mode but executes successfully |
 | qwen3.5:9b | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | Outputs bash heredoc instead of write tool; read-only |
 | mistral-nemo:12b-instruct-2407-q4_K_M | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | Excellent analysis, no file creation |

@@ -44,20 +44,24 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
+| `ministral-3:8b` | 6.0 GB | up to 128k | Yes | **Recommended daily driver** — fast, reliable tool calls, no think-mode tax; ~4s warm for a write tool call (tested 2026-05-31) |
+| `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) — works but verbose think mode (~26s) |
+| `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model — ~26s for a write tool call (think-mode overhead) |
+| `qwen3:4b` | 2.5 GB | 8k | Yes | Qwen3 4B compact model |
+| `deepseek-coder-v2:16b` | 8.9 GB | 128k | No | Not recommended — Ollama reports `does not support tools`; code-completion/FIM model, no tool calling (tested 2026-05-31) |
 | `qwen3.5:9b` | 6.6 GB | 32k | No | Not recommended — no tool use, too slow on M1 16GB (13+ min for analysis, tested 2026-05-31) |
 | `gemma4:e4b` | ~5.5 GB | 32k | No | Not recommended — attempts tool call but sends malformed call; file not created (tested 2026-05-31) |
 | `phi4:latest` | ~5 GB | 16k | No | Not recommended — Open Code CLI explicitly reports "does not support tools" (tested 2026-05-31) |
 | `qwen3.5:4b` | ~2.5 GB | 32k | No | Not recommended — no tool use, outputs bash instead of using write tool (tested 2026-05-31) |
-| `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) |
-| `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model |
-| `qwen3:4b` | 2.5 GB | 8k | Yes | Qwen3 4B compact model |
 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | No | Read-only analysis only |
 | `granite3.1-moe:latest` | 2.0 GB | 8k | No | Read-only analysis only |
 
-**To pull untested models (tool use status unknown):**
+**Testing method:** Tool-call support is verified with [`scripts/tool-call-test.sh`](../scripts/tool-call-test.sh), which sends a `write`-tool request to Ollama's OpenAI-compatible endpoint (the same API Open Code uses) and checks for a valid `tool_calls` response.
+
 ```bash
-ollama pull gemma4:e4b
-ollama pull phi4
+# Pull and test the recommended model
+ollama pull ministral-3:8b
+./scripts/tool-call-test.sh ministral-3:8b 16384
 ```
 
 ## Custom Model Creation
@@ -180,30 +184,27 @@ ollama rm <model-name>
 On a MacBook M1 with 16GB RAM, ~11-12GB is available for model weights. The sweet spot is 7-9B models at Q4 quantization.
 
 **For Coding and File Operations (tool use required):**
-- **Qwen3 8B-16k** (recommended): Confirmed full tool usage, custom 16k context variant
-- **Qwen3 8B**: Confirmed tool usage, solid general-purpose model
-- **Qwen3 4B**: Confirmed tool usage, fastest option for quick edits
+- **Ministral 3 8B** (recommended): Confirmed tool usage, fastest tool-calling model tested (~4s warm), no think-mode overhead, newer than the Qwen3 family
+- **Qwen3 8B-16k**: Confirmed tool usage, custom 16k context variant — best for larger-context jobs, but verbose think mode (~26s)
+- **Qwen3 8B**: Confirmed tool usage, solid general-purpose model (~26s, think-mode overhead)
+- **Qwen3 4B**: Confirmed tool usage, fastest of the Qwen options for quick edits
 
-**For Read-Only Analysis (no file creation):**
-- **Qwen3.5 9B**: 32k context — outputs bash instead of using write tool, 13+ min for analysis (tested 2026-05-31)
-- **Qwen3.5 4B**: 32k context — outputs bash instead of using write tool (tested 2026-05-31); entire Qwen3.5 family is read-only
+**Confirmed NO tool use (avoid for file operations):**
+- **DeepSeek-Coder-V2-Lite 16B**: Ollama rejects tool requests with `does not support tools` — it's a code-completion/FIM model, not an agentic tool-caller (tested 2026-05-31)
+- **Qwen3.5 9B / 4B**: 32k context — output bash instead of using the write tool; 9B also too slow on M1 16GB (13+ min)
 - **Mistral Nemo 12B**: Excellent analysis quality, cannot create/modify files
 - **Granite 3.1 MoE**: Fast analysis, cannot create/modify files
 
-**All tested models confirmed** — no untested models remain in the config.
+**Performance benchmarks (M1 16GB, scripted `write` tool call via `scripts/tool-call-test.sh`):**
 
-**Performance benchmarks (M1 16GB, simple file write):**
+| Model | Context | Tool call | Time (warm) | Notes |
+|-------|---------|-----------|-------------|-------|
+| ministral-3:8b | 16k | ✅ Yes | ~4s | Fastest tool-caller; recommended |
+| qwen3:8b | 16k | ✅ Yes | ~26s | Works, slowed by think mode |
+| deepseek-coder-v2:16b | 16k | ❌ No | — | Ollama: `does not support tools` |
+| Claude Sonnet 4 (cloud) | 200k | ✅ Yes | 2-5s | Much faster |
 
-| Model | Context | Time | Notes |
-|-------|---------|------|-------|
-| qwen3.5:4b | 32k | 5-15s | Fastest |
-| gemma4:e4b | 32k | ~8-20s | High efficiency |
-| qwen3.5:9b | 32k | 10-25s | Best quality |
-| phi4 | 16k | 10-25s | Strong reasoning |
-| mistral-nemo:12b | 8k | 8-20s | Read-only |
-| Claude Sonnet 4 (cloud) | 200k | 2-5s | Much faster |
-
-**Avoid models above 12B** — they will struggle to load or cause heavy swap on 16GB RAM.
+**Avoid models above 12B** — they will struggle to load or cause heavy swap on 16GB RAM. Note that even when a large model *fits*, it may still lack tool calling (e.g. DeepSeek-Coder-V2-Lite) — size is not the same as agentic capability.
 
 ## Updating Configuration
 

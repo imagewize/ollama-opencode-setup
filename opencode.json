@@ -8,6 +8,12 @@
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
+        "ministral-3:8b": {
+          "name": "Ministral 3 8B (tool use, recommended)"
+        },
+        "deepseek-coder-v2:16b": {
+          "name": "DeepSeek Coder V2 Lite 16B (read-only, no tool support)"
+        },
         "qwen3.5:9b": {
           "name": "Qwen3.5 9B (read-only, 32k ctx)"
         },
