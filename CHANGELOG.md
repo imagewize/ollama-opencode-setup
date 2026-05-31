@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Test Results
 - `phi4:latest` — tested 2026-05-31 on M1 16GB: **no tool use support**, Open Code CLI explicitly reports "does not support tools"
+- `gemma4:e4b` — tested 2026-05-31 on M1 16GB: **no tool use support**, attempts tool call but sends invalid/malformed call; file not created (~60s)
 
 ---
 

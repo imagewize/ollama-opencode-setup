@@ -12,7 +12,7 @@
           "name": "Qwen3.5 9B (read-only, 32k ctx)"
         },
         "gemma4:e4b": {
-          "name": "Gemma 4 E4B (untested)"
+          "name": "Gemma 4 E4B (read-only)"
         },
         "phi4:latest": {
           "name": "Phi-4 (read-only)"
