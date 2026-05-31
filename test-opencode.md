@@ -135,9 +135,31 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 
 ---
 
+---
+
+### Model: qwen3.5:9b
+
+**Test 1: Create todo-v2.md file** (tested 2026-05-31)
+- Status: [X] Fail
+- Notes:
+  - Model generated a bash heredoc (`cat > file << 'EOF'`) instead of invoking the write tool
+  - File was NOT created on disk despite model saying it was
+  - No `<think>` verbose mode observed (cleaner output than qwen3:8b-16k)
+  - 32k context window is useful for large codebase analysis
+  - **Conclusion:** Read-only model — cannot create/modify files in Open Code CLI
+- **Test 2: Code review** (tested 2026-05-31)
+  - Status: [X] Fail (killed)
+  - Time: 13+ minutes, did not complete
+  - Notes: Heavy swap usage on M1 16GB with full desktop environment; not viable for daily use
+
+---
+
 ### Additional Test Results Needed:
 - qwen3:4b
 - qwen3:8b
+- gemma4:e4b
+- phi4
+- qwen3.5:4b
 
 ## Comparison Matrix
 
@@ -146,8 +168,12 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 | qwen3:4b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
 | qwen3:8b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
 | **qwen3:8b-16k** | ✅ **PASS** | ❓ | ❓ | ❓ | ✅ **Full tool usage** | Verbose think mode but executes successfully |
+| qwen3.5:9b | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | Outputs bash heredoc instead of write tool; read-only |
 | mistral-nemo:12b-instruct-2407-q4_K_M | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | Excellent analysis, no file creation |
 | granite3.1-moe | ❌ FAIL | ❓ | ❓ | ❓ | ❌ No tool usage | JSON output, no file creation |
+| gemma4:e4b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
+| phi4 | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
+| qwen3.5:4b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
 
 ## Critical Findings
 
