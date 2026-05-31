@@ -6,6 +6,25 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.5.0] — 2026-05-31
+
+### Added
+- `ministral-3:8b-16k` — custom 16k-context variant of `ministral-3:8b`, built from a committed Modelfile (`modelfiles/ministral-3-8b-16k.Modelfile`); added to `opencode.json` as the recommended model for Open Code
+- `modelfiles/ministral-3-8b-16k.Modelfile` — reproducible build definition (`FROM ministral-3:8b` + `PARAMETER num_ctx 16384`)
+
+### Changed
+- `opencode.json`: `ministral-3:8b-16k` is now the recommended entry; base `ministral-3:8b` relabeled "default context"
+- `docs/LOCALLLMS.md`: added the 16k variant to the Available Models table and a "Creating Ministral 3 8B with Extended Context (16k)" section
+- `README.md`: models table and Quick Start updated to build/use the 16k variant
+- `CLAUDE.md`: model lists and Extended Context Models section document the new variant
+
+### Notes
+- Open Code uses Ollama's OpenAI-compatible endpoint, which does not pass `num_ctx`. Without a baked-in variant, `ministral-3:8b` runs at Ollama's small default (~4k) inside Open Code — too small for agentic tool loops. The 16k variant fixes this, mirroring the existing `qwen3:8b-16k` pattern
+- 16k chosen as the safe sweet spot on M1 16GB (~8GB footprint); the base model natively supports up to 256k but that would swap on 16GB
+- `ministral-3:8b-16k` re-tested 2026-05-31: tool use confirmed (✅ PASS)
+
+---
+
 ## [0.4.0] — 2026-05-31
 
 ### Added

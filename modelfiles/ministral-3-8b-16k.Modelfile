@@ -1,0 +1,14 @@
+# Custom 16k-context variant of ministral-3:8b for Open Code on M1 16GB.
+#
+# Why: Open Code talks to Ollama via the OpenAI-compatible endpoint, which does
+# not pass Ollama's num_ctx option. Plain ministral-3:8b therefore runs at
+# Ollama's small default context inside Open Code. Baking num_ctx here gives a
+# usable 16k window regardless of how Open Code calls the model.
+#
+# 16k is the safe sweet spot on 16GB unified memory (~8GB total footprint).
+# The base model natively supports up to 256k, but that would swap on 16GB.
+#
+# Build:  ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+
+FROM ministral-3:8b
+PARAMETER num_ctx 16384

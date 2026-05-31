@@ -44,7 +44,8 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
-| `ministral-3:8b` | 6.0 GB | up to 128k | Yes | **Recommended daily driver** — fast, reliable tool calls, no think-mode tax; ~4s warm for a write tool call (tested 2026-05-31) |
+| `ministral-3:8b-16k` | 6.0 GB | 16k | Yes | **Recommended for Open Code** — custom 16k variant (num_ctx baked in); Open Code can't set num_ctx itself, so use this rather than the base model |
+| `ministral-3:8b` | 6.0 GB | Ollama default (~4k) | Yes | Base model — fast, reliable tool calls, no think-mode tax (~4s warm); runs at Ollama's small default context in Open Code, so prefer the 16k variant |
 | `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) — works but verbose think mode (~26s) |
 | `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model — ~26s for a write tool call (think-mode overhead) |
 | `qwen3:4b` | 2.5 GB | 8k | Yes | Qwen3 4B compact model |
@@ -100,6 +101,30 @@ ollama list
 # granite3.1-moe:latest                    b43d80d7fca7    2.0 GB    20 hours ago
 # qwen3:4b                                 e55aed6fe643    2.5 GB    2 months ago
 ```
+
+### Creating Ministral 3 8B with Extended Context (16k)
+
+`ministral-3:8b-16k` is a custom variant of `ministral-3:8b` with `num_ctx` baked in. This is needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does **not** pass Ollama's `num_ctx` option — so the base model would otherwise run at Ollama's small default context inside Open Code.
+
+This repo ships a Modelfile for reproducible builds:
+
+```bash
+# From the repo root
+ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+
+# Verify
+ollama show ministral-3:8b-16k --modelfile | grep num_ctx
+# PARAMETER num_ctx 16384
+```
+
+The Modelfile is just:
+
+```dockerfile
+FROM ministral-3:8b
+PARAMETER num_ctx 16384
+```
+
+The base model natively supports up to 256k context, but 16k is the safe sweet spot on M1 16GB (~8GB total footprint); larger windows risk heavy swap.
 
 ### Benefits of Extended Context
 
