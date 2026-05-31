@@ -47,19 +47,17 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 | `qwen3.5:9b` | 6.6 GB | 32k | No | Not recommended — no tool use, too slow on M1 16GB (13+ min for analysis, tested 2026-05-31) |
 | `gemma4:e4b` | ~5.5 GB | 32k | Untested | Untested — may or may not support tool use |
 | `phi4:latest` | ~5 GB | 16k | Untested | Untested — may or may not support tool use |
-| `qwen3.5:4b` | ~2.5 GB | 32k | Untested | Untested — may or may not support tool use |
+| `qwen3.5:4b` | ~2.5 GB | 32k | No | Not recommended — no tool use, outputs bash instead of using write tool (tested 2026-05-31) |
 | `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) |
 | `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model |
 | `qwen3:4b` | 2.5 GB | 8k | Yes | Qwen3 4B compact model |
 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | No | Read-only analysis only |
 | `granite3.1-moe:latest` | 2.0 GB | 8k | No | Read-only analysis only |
 
-**To pull new recommended models:**
+**To pull untested models (tool use status unknown):**
 ```bash
-ollama pull qwen3.5:9b
 ollama pull gemma4:e4b
 ollama pull phi4
-ollama pull qwen3.5:4b
 ```
 
 ## Custom Model Creation
@@ -187,12 +185,13 @@ On a MacBook M1 with 16GB RAM, ~11-12GB is available for model weights. The swee
 - **Qwen3 4B**: Confirmed tool usage, fastest option for quick edits
 
 **For Read-Only Analysis (no file creation):**
-- **Qwen3.5 9B**: 32k context, good for large codebase analysis — outputs bash instead of using write tool (tested)
+- **Qwen3.5 9B**: 32k context — outputs bash instead of using write tool, 13+ min for analysis (tested 2026-05-31)
+- **Qwen3.5 4B**: 32k context — outputs bash instead of using write tool (tested 2026-05-31); entire Qwen3.5 family is read-only
 - **Mistral Nemo 12B**: Excellent analysis quality, cannot create/modify files
 - **Granite 3.1 MoE**: Fast analysis, cannot create/modify files
 
 **Untested (tool use status unknown):**
-- **Gemma 4 E4B**, **Phi-4**, **Qwen3.5 4B**: Pulled but not yet tested with Open Code CLI
+- **Gemma 4 E4B**, **Phi-4**: Pulled but not yet tested with Open Code CLI
 
 **Performance benchmarks (M1 16GB, simple file write):**
 
