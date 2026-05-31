@@ -17,7 +17,7 @@ This repository does NOT contain application code - it's a reference repository 
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models (tool use, confirmed)**: ministral-3:8b (recommended), qwen3:8b-16k, qwen3:8b, qwen3:4b
+- **Models (tool use, confirmed)**: ministral-3:8b-16k (recommended for Open Code), ministral-3:8b, qwen3:8b-16k, qwen3:8b, qwen3:4b
 - **Models (read-only, confirmed)**: deepseek-coder-v2:16b, qwen3.5:9b, qwen3.5:4b, phi4, gemma4:e4b, mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
 
 When adding new models, update this file with the model name and display name.
@@ -34,6 +34,12 @@ ollama run qwen3:8b
 ```
 
 This pattern can be used to create custom context variants of any Ollama model without increasing model size.
+
+The same applies to `ministral-3:8b-16k`, built reproducibly from a committed Modelfile (`modelfiles/ministral-3-8b-16k.Modelfile`):
+```bash
+ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+```
+This is needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` — so the base model would run at Ollama's small default context inside Open Code. Baking `num_ctx 16384` into a variant gives a usable 16k window.
 
 ## Ollama Commands Reference
 

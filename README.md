@@ -44,9 +44,12 @@ Complete configuration and documentation for running Open Code CLI with local Ol
    ollama serve
    ```
 
-3. **Pull your first model:**
+3. **Pull your first model (and build the recommended 16k variant):**
    ```bash
-   ollama pull ministral-3:8b   # recommended: fast, reliable tool calling
+   ollama pull ministral-3:8b   # fast, reliable tool calling
+
+   # Open Code can't set Ollama's num_ctx, so bake a 16k context variant:
+   ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
    ```
 
 4. **Use the configuration in your project:**
@@ -91,7 +94,8 @@ Tool-call support is verified with [`scripts/tool-call-test.sh`](scripts/tool-ca
 
 | Model | Size | Context | Tool Usage | Best For |
 |-------|------|---------|------------|----------|
-| `ministral-3:8b` ⭐ | 6.0 GB | up to 128k | ✅ YES | **Recommended** — fast tool use (~4s), no think-mode tax |
+| `ministral-3:8b-16k` ⭐ | 6.0 GB | 16k | ✅ YES | **Recommended for Open Code** — 16k variant (num_ctx baked in) |
+| `ministral-3:8b` | 6.0 GB | ~4k default | ✅ YES | Base model — fast tool use (~4s); runs at Ollama's small default context in Open Code |
 | `qwen3:8b-16k` | 5.2 GB | 16k | ✅ YES | Multi-file analysis (larger context) |
 | `qwen3:8b` | 5.2 GB | 8k | ✅ YES | General file operations (~26s) |
 | `qwen3:4b` | 2.5 GB | 8k | ✅ YES | Quick file edits |
