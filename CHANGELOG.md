@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - `scripts/tool-call-test.sh` — reproducible tool-calling smoke test that sends a `write`-tool request to Ollama's OpenAI-compatible endpoint (the same API Open Code uses) and checks for a valid `tool_calls` response
 
 ### Changed
+- `README.md`: corrected the "only Qwen3 can use tools" claim — now leads with `ministral-3:8b` as the recommended tool-capable model; updated the Available Models table, Quick Start pull step, Performance Tips, and performance expectations
 - `docs/LOCALLLMS.md`: added `ministral-3:8b` and `deepseek-coder-v2:16b` to the Available Models table; reworked Model Selection Guidelines and performance benchmarks around the new results; documented the testing method
 - `test-opencode.md`: added tool-call results for `ministral-3:8b`, `deepseek-coder-v2:16b`, and a `qwen3:8b` baseline; updated the comparison matrix
 
