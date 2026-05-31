@@ -4,9 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+---
+
+## [0.3.0] — 2026-05-31
+
+### Changed
+- `opencode.json`: updated display names for `phi4:latest` and `gemma4:e4b` from "untested" to "read-only"
+- `CLAUDE.md`: moved `gemma4:e4b` from untested to read-only confirmed; no untested models remain
+- `docs/LOCALLLMS.md`: updated model table and guidelines to reflect all models now tested
+
 ### Test Results
 - `phi4:latest` — tested 2026-05-31 on M1 16GB: **no tool use support**, Open Code CLI explicitly reports "does not support tools"
-- `gemma4:e4b` — tested 2026-05-31 on M1 16GB: **no tool use support**, attempts tool call but sends invalid/malformed call; file not created (~60s)
+- `gemma4:e4b` — tested 2026-05-31 on M1 16GB: **no tool use support**, attempts tool call but sends malformed call; file not created (~60s)
+
+### Notes
+- All models in `opencode.json` are now tested — no untested entries remain
+- Only `qwen3:8b-16k`, `qwen3:8b`, and `qwen3:4b` have confirmed tool use support
+- `gemma4:e4b` differs from other failing models — it attempts tool calls but with a format incompatible with Open Code CLI
 
 ---
 
