@@ -1,5 +1,7 @@
 # Ollama vs LM Studio: Recommendations for Open Code CLI
 
+> **⚠️ UPDATE (2026-05-31):** The "Only Qwen3 models have tool usage" conclusion below is **outdated**. Later testing found **`ministral-3:8b` also has full tool calling** — and it is *faster* than Qwen3 (~4s vs ~26s, no think-mode overhead), making `ministral-3:8b-16k` the current recommended model for Open Code. Tool calling is not exclusive to Qwen3; it depends on whether a model is trained/templated for tools (e.g. DeepSeek-Coder-V2-Lite fits in RAM but has none). See [README.md](README.md), [docs/LOCALLLMS.md](docs/LOCALLLMS.md), [test-opencode.md](test-opencode.md), and the v0.4.0/v0.5.0 entries in [CHANGELOG.md](CHANGELOG.md) for current results. The sections below are kept as a historical record from 2025-11-18.
+
 ## ✅ RESOLVED: Critical Tool Usage Discovery (2025-11-18)
 
 **MAJOR FINDING: Only Qwen3 models have tool usage capabilities with Open Code CLI!**

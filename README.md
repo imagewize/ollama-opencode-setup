@@ -126,7 +126,20 @@ ollama rm qwen3:4b
 
 ### Creating Custom Models
 
-Create a model with extended context (16k):
+Open Code talks to Ollama via the OpenAI-compatible endpoint, which does **not** pass Ollama's `num_ctx`. To get a usable context window, bake it into a custom variant.
+
+**Recommended — from a committed Modelfile (reproducible):**
+```bash
+ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+
+# Verify the context is baked in
+ollama show ministral-3:8b-16k --modelfile | grep num_ctx
+# PARAMETER num_ctx 16384
+```
+
+The Modelfile is just `FROM ministral-3:8b` + `PARAMETER num_ctx 16384`.
+
+**Alternative — interactive `/save` (used for `qwen3:8b-16k`):**
 ```bash
 # Start interactive session
 ollama run qwen3:8b
@@ -161,7 +174,7 @@ opencode
 **Use the right model for the task:**
 
 **File Creation/Modification (use a tool-capable model):**
-- **Default / fastest tool use** → `ministral-3:8b` (~4s, no think-mode tax) ⭐
+- **Default / fastest tool use** → `ministral-3:8b-16k` (~4s, no think-mode tax, 16k context for Open Code) ⭐
 - **Multi-file changes (larger context)** → `qwen3:8b-16k` (extended context + tool usage)
 - **Standard file operations** → `qwen3:8b` (balanced, ~26s)
 - **Quick file edits** → `qwen3:4b` (fastest Qwen3 model)
@@ -173,8 +186,8 @@ opencode
 
 **Performance expectations (write tool call):**
 
-| Task | ministral-3:8b ⭐ | qwen3:8b | qwen3:8b-16k | Claude Sonnet 4 |
-|------|-------------------|----------|--------------|-----------------|
+| Task | ministral-3:8b-16k ⭐ | qwen3:8b | qwen3:8b-16k | Claude Sonnet 4 |
+|------|-----------------------|----------|--------------|-----------------|
 | Simple file write | **~4s** | 15-30s | 45-90s | 2-5s |
 | Multi-file analysis | fast | 40-90s | 90-180s | 10-30s |
 
