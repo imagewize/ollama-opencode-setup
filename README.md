@@ -76,12 +76,14 @@ Complete configuration and documentation for running Open Code CLI with local Ol
 
 **Only Qwen3 (original) models can create/modify files in Open Code CLI!**
 
-Testing revealed that tool/function calling requires specific model training:
-- ✅ **Qwen3 models** (qwen3:8b-16k, qwen3:8b, qwen3:4b) - Full tool usage (confirmed)
-- ❌ **Qwen3.5 9B** - Outputs bash heredocs instead of invoking write tool (tested 2026-05-31)
-- ❌ **Mistral Nemo & Granite** - Analysis only, cannot create files
+All models in this config have been tested. Results (M1 16GB, 2026-05-31):
+- ✅ **Qwen3 models** (qwen3:8b-16k, qwen3:8b, qwen3:4b) — full tool usage confirmed
+- ❌ **Qwen3.5 9B / 4B** — outputs bash commands instead of invoking write tool
+- ❌ **Phi-4** — Open Code CLI explicitly reports "does not support tools"
+- ❌ **Gemma 4 E4B** — attempts tool call but sends malformed/incompatible call format
+- ❌ **Mistral Nemo & Granite** — analysis only, cannot create files
 
-See [test-opencode.md](test-opencode.md) and [RECOMMENDATIONS.md](RECOMMENDATIONS.md) for details.
+See [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for full test details.
 
 ## Available Models
 
@@ -90,7 +92,10 @@ See [test-opencode.md](test-opencode.md) and [RECOMMENDATIONS.md](RECOMMENDATION
 | `qwen3:8b-16k` ⭐ | 5.2 GB | 16k | ✅ YES | File creation, multi-file analysis |
 | `qwen3:8b` | 5.2 GB | 8k | ✅ YES | General file operations |
 | `qwen3:4b` | 2.5 GB | 8k | ✅ YES | Quick file edits |
-| `qwen3.5:9b` | 6.6 GB | 32k | ❌ NO | Read-only analysis only (tested) |
+| `qwen3.5:9b` | 6.6 GB | 32k | ❌ NO | Read-only analysis (too slow, 13+ min) |
+| `qwen3.5:4b` | ~2.5 GB | 32k | ❌ NO | Read-only analysis only |
+| `phi4:latest` | ~5 GB | 16k | ❌ NO | Read-only analysis only |
+| `gemma4:e4b` | ~5.5 GB | 32k | ❌ NO | Read-only analysis only |
 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | ❌ NO | Code review (read-only) |
 | `granite3.1-moe` | 2.0 GB | 8k | ❌ NO | Fast analysis (read-only) |
 
@@ -155,7 +160,7 @@ opencode
 **Code Review/Analysis (read-only — any model works):**
 - **Best quality review** → `mistral-nemo:12b-instruct-2407-q4_K_M` (excellent analysis)
 - **Fast analysis** → `granite3.1-moe` (quickest)
-- **Large context analysis** → `qwen3.5:9b` (32k context, read-only)
+- **Large context analysis** → `qwen3.5:4b` (32k context, read-only) — avoid `qwen3.5:9b` (too slow)
 
 **Performance expectations:**
 
@@ -191,7 +196,7 @@ opencode
 
 ## Documentation
 
-### [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) ⭐ NEW
+### [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md)
 **Complete Open Code CLI commands reference:**
 - All built-in slash commands (15 commands documented)
 - Bash command integration (`!command`)
