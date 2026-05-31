@@ -9,8 +9,10 @@ This document describes the local LLM setup for use with Open Code and other AI 
   - [Available Models](#available-models)
 - [Custom Model Creation](#custom-model-creation)
   - [Creating Qwen3 8B with Extended Context (16k)](#creating-qwen3-8b-with-extended-context-16k)
+  - [Creating Ministral 3 8B with Extended Context (16k)](#creating-ministral-3-8b-with-extended-context-16k)
   - [Benefits of Extended Context](#benefits-of-extended-context)
   - [Context Window Reality Check](#context-window-reality-check)
+- [Setting Context with Open Code (why we bake num_ctx)](#setting-context-with-open-code-why-we-bake-num_ctx)
 - [Ollama Commands Reference](#ollama-commands-reference)
   - [List Models](#list-models)
   - [Run Model](#run-model)
@@ -175,6 +177,38 @@ Understanding what different context windows can actually hold:
 ```
 
 **Practical tip**: If your prompt or file content gets cut off, your context window is too small for the task.
+
+## Setting Context with Open Code (why we bake num_ctx)
+
+Open Code connects to Ollama through its **OpenAI-compatible endpoint** (`/v1/chat/completions`, via `@ai-sdk/openai-compatible`). That endpoint **ignores `num_ctx`** — only Ollama's native `/api/*` endpoint reads it. As a result:
+
+- **There is no `opencode.json` field that sets the context window.** Putting `num_ctx` in provider/model `options` does nothing, because it never reaches a code path Ollama honors.
+- Without intervention, every model runs at Ollama's small default (~4k on most M-series laptops) inside Open Code — too small for agentic tool loops (the system prompt + tool definitions alone eat much of it).
+
+Per-request control is an open feature request upstream ([opencode#3250](https://github.com/anomalyco/opencode/issues/3250), `help-wanted`), not yet available.
+
+### Your options
+
+| Method | Scope | Notes |
+|--------|-------|-------|
+| **Modelfile `num_ctx`** (this repo's approach) | Per-model | Self-contained, version-controlled, survives restarts. Lets each model carry its own ideal context. |
+| **`OLLAMA_CONTEXT_LENGTH` env var** | Global (all models) | Set once on the server; no variants to maintain. But forces one size on *every* model (RAM cost on 16GB), and a model's own baked `num_ctx` can override it. |
+| Per-request via `opencode.json` | — | Not supported (the `/v1` limitation above). |
+
+**Global env-var alternative:**
+```bash
+# macOS Ollama.app — set, then restart Ollama:
+launchctl setenv OLLAMA_CONTEXT_LENGTH 16384
+
+# or when running serve manually:
+OLLAMA_CONTEXT_LENGTH=16384 ollama serve
+```
+
+### Why this repo bakes it per-model
+
+We run several models with different ideal contexts (Ministral, Qwen3 variants) on a 16GB machine. A single global env var would force one context on all of them — e.g. loading `qwen3:4b` at 16k for no reason, wasting RAM. Per-model Modelfiles (`ministral-3:8b-16k`, `qwen3:8b-16k`) keep each model's context appropriate and reproducible. Use the global env var instead only if you settle on one model at one context and would rather not maintain variants.
+
+> Documented precedence is *API param > env var > Modelfile > built-in default*, but in practice a baked `num_ctx` reliably pins that specific model — which is the behavior we want.
 
 ## Ollama Commands Reference
 
