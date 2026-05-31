@@ -17,7 +17,9 @@ This repository does NOT contain application code - it's a reference repository 
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models**: qwen3:8b-16k, mistral-nemo:12b-instruct-2407-q4_K_M, qwen3:8b, granite3.1-moe, qwen3:4b
+- **Models (tool use, confirmed)**: qwen3:8b-16k, qwen3:8b, qwen3:4b
+- **Models (read-only, confirmed)**: qwen3.5:9b, qwen3.5:4b, mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
+- **Models (untested)**: gemma4:e4b, phi4
 
 When adding new models, update this file with the model name and display name.
 
@@ -65,12 +67,12 @@ ollama serve
 - 16k tokens: ~12,000 words, 3-5 medium files
 - 200k tokens (Claude): ~150,000 words, entire small-medium codebase
 
-**Model recommendations:**
-- **Quick tasks** → `qwen3:4b` (2.5 GB, 5-15s)
-- **Standard tasks** → `qwen3:8b` (5.2 GB, 15-30s)
-- **Multi-file analysis** → `qwen3:8b-16k` (5.2 GB, 45-90s)
-- **Best code quality** → `mistral-nemo:12b-instruct-2407-q4_K_M` (7.5 GB, 25-60s)
-- **Efficient MoE** → `granite3.1-moe:latest` (2.0 GB, 6-18s)
+**Model recommendations (M1 16GB, tested 2026-05-31):**
+- **Quick file ops** → `qwen3:4b` (2.5 GB, tool use confirmed)
+- **Standard file ops** → `qwen3:8b` (5.2 GB, tool use confirmed)
+- **Multi-file ops** → `qwen3:8b-16k` (5.2 GB, 16k ctx, tool use confirmed)
+- **Large context analysis** → `qwen3.5:9b` (6.6 GB, 32k ctx, read-only — no tool use)
+- **Read-only analysis** → `mistral-nemo:12b-instruct-2407-q4_K_M` (7.5 GB, read-only)
 
 ## Documentation Structure
 
@@ -164,3 +166,8 @@ When making changes:
 - Add new workflows to [examples/](examples/) directory
 - Update [test-opencode.md](test-opencode.md) with new test cases
 - Keep [README.md](README.md) in sync with major changes
+
+## Git Commit Rules
+
+- **Always use atomic commits**: each commit must represent one logical change. Do not bundle unrelated edits into a single commit.
+- **Never add "Co-authored-by: Claude" or any AI attribution** to commit messages.

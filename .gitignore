@@ -16,4 +16,32 @@ Thumbs.db
 *.tmp
 *.temp
 
+# Shell scripts with potential secrets/tokens
 create-pr.sh
+
+# Node / npm (if ever scaffolded locally)
+node_modules/
+.npm/
+
+# Python (if running any local scripts)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Ollama model files (should not be committed)
+*.gguf
+*.bin
+*.safetensors
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Output / generated files
+output/
+generated/

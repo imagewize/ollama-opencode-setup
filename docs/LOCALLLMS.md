@@ -40,13 +40,25 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 
 ### Available Models
 
-| Model | Size | Description |
-|-------|------|-------------|
-| `qwen3:8b-16k` | 5.2 GB | Qwen3 8B with extended 16k context window (custom) |
-| `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | Mistral Nemo 12B Instruct (quantized) |
-| `qwen3:8b` | 5.2 GB | Qwen3 8B standard model |
-| `granite3.1-moe:latest` | 2.0 GB | Granite 3.1 Mixture of Experts |
-| `qwen3:4b` | 2.5 GB | Qwen3 4B compact model |
+**Tool usage** = can create/modify files in Open Code CLI. Read-only models can analyze code but cannot write files.
+
+| Model | Size | Context | Tool Usage | Description |
+|-------|------|---------|------------|-------------|
+| `qwen3.5:9b` | 6.6 GB | 32k | No | Not recommended — no tool use, too slow on M1 16GB (13+ min for analysis, tested 2026-05-31) |
+| `gemma4:e4b` | ~5.5 GB | 32k | Untested | Untested — may or may not support tool use |
+| `phi4:latest` | ~5 GB | 16k | Untested | Untested — may or may not support tool use |
+| `qwen3.5:4b` | ~2.5 GB | 32k | No | Not recommended — no tool use, outputs bash instead of using write tool (tested 2026-05-31) |
+| `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) |
+| `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model |
+| `qwen3:4b` | 2.5 GB | 8k | Yes | Qwen3 4B compact model |
+| `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | No | Read-only analysis only |
+| `granite3.1-moe:latest` | 2.0 GB | 8k | No | Read-only analysis only |
+
+**To pull untested models (tool use status unknown):**
+```bash
+ollama pull gemma4:e4b
+ollama pull phi4
+```
 
 ## Custom Model Creation
 
@@ -165,16 +177,34 @@ ollama rm <model-name>
 
 ## Model Selection Guidelines
 
-**For Code Generation**:
-- **Mistral Nemo 12B**: Best overall code quality, instruction following
-- **Qwen3 8B**: Fast, good balance of quality and speed
+On a MacBook M1 with 16GB RAM, ~11-12GB is available for model weights. The sweet spot is 7-9B models at Q4 quantization.
 
-**For Quick Tasks**:
-- **Qwen3 4B**: Fastest responses, good for simple tasks
-- **Granite 3.1 MoE**: Efficient for varied tasks
+**For Coding and File Operations (tool use required):**
+- **Qwen3 8B-16k** (recommended): Confirmed full tool usage, custom 16k context variant
+- **Qwen3 8B**: Confirmed tool usage, solid general-purpose model
+- **Qwen3 4B**: Confirmed tool usage, fastest option for quick edits
 
-**For Large Context**:
-- **Qwen3 8B-16k**: When analyzing multiple files or large codebases
+**For Read-Only Analysis (no file creation):**
+- **Qwen3.5 9B**: 32k context — outputs bash instead of using write tool, 13+ min for analysis (tested 2026-05-31)
+- **Qwen3.5 4B**: 32k context — outputs bash instead of using write tool (tested 2026-05-31); entire Qwen3.5 family is read-only
+- **Mistral Nemo 12B**: Excellent analysis quality, cannot create/modify files
+- **Granite 3.1 MoE**: Fast analysis, cannot create/modify files
+
+**Untested (tool use status unknown):**
+- **Gemma 4 E4B**, **Phi-4**: Pulled but not yet tested with Open Code CLI
+
+**Performance benchmarks (M1 16GB, simple file write):**
+
+| Model | Context | Time | Notes |
+|-------|---------|------|-------|
+| qwen3.5:4b | 32k | 5-15s | Fastest |
+| gemma4:e4b | 32k | ~8-20s | High efficiency |
+| qwen3.5:9b | 32k | 10-25s | Best quality |
+| phi4 | 16k | 10-25s | Strong reasoning |
+| mistral-nemo:12b | 8k | 8-20s | Read-only |
+| Claude Sonnet 4 (cloud) | 200k | 2-5s | Much faster |
+
+**Avoid models above 12B** — they will struggle to load or cause heavy swap on 16GB RAM.
 
 ## Updating Configuration
 

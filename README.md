@@ -74,10 +74,11 @@ Complete configuration and documentation for running Open Code CLI with local Ol
 
 ## ⚠️ Important: Tool Usage Discovery
 
-**Only Qwen3 models can create/modify files in Open Code CLI!**
+**Only Qwen3 (original) models can create/modify files in Open Code CLI!**
 
 Testing revealed that tool/function calling requires specific model training:
-- ✅ **Qwen3 models** (qwen3:8b-16k, qwen3:8b, qwen3:4b) - Full tool usage
+- ✅ **Qwen3 models** (qwen3:8b-16k, qwen3:8b, qwen3:4b) - Full tool usage (confirmed)
+- ❌ **Qwen3.5 9B** - Outputs bash heredocs instead of invoking write tool (tested 2026-05-31)
 - ❌ **Mistral Nemo & Granite** - Analysis only, cannot create files
 
 See [test-opencode.md](test-opencode.md) and [RECOMMENDATIONS.md](RECOMMENDATIONS.md) for details.
@@ -87,8 +88,9 @@ See [test-opencode.md](test-opencode.md) and [RECOMMENDATIONS.md](RECOMMENDATION
 | Model | Size | Context | Tool Usage | Best For |
 |-------|------|---------|------------|----------|
 | `qwen3:8b-16k` ⭐ | 5.2 GB | 16k | ✅ YES | File creation, multi-file analysis |
-| `qwen3:8b` | 5.2 GB | 8k | ✅ Likely | General file operations |
-| `qwen3:4b` | 2.5 GB | 8k | ✅ Likely | Quick file edits |
+| `qwen3:8b` | 5.2 GB | 8k | ✅ YES | General file operations |
+| `qwen3:4b` | 2.5 GB | 8k | ✅ YES | Quick file edits |
+| `qwen3.5:9b` | 6.6 GB | 32k | ❌ NO | Read-only analysis only (tested) |
 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | ❌ NO | Code review (read-only) |
 | `granite3.1-moe` | 2.0 GB | 8k | ❌ NO | Fast analysis (read-only) |
 
@@ -145,15 +147,15 @@ opencode
 
 **Use the right model for the task:**
 
-**File Creation/Modification (MUST use Qwen3):**
+**File Creation/Modification (MUST use original Qwen3):**
 - **Multi-file changes** → `qwen3:8b-16k` (extended context + tool usage) ⭐
 - **Standard file operations** → `qwen3:8b` (balanced)
 - **Quick file edits** → `qwen3:4b` (fastest Qwen3 model)
 
-**Code Review/Analysis (Any model works):**
+**Code Review/Analysis (read-only — any model works):**
 - **Best quality review** → `mistral-nemo:12b-instruct-2407-q4_K_M` (excellent analysis)
 - **Fast analysis** → `granite3.1-moe` (quickest)
-- **Comprehensive review** → `qwen3:8b-16k` (if planning changes too)
+- **Large context analysis** → `qwen3.5:9b` (32k context, read-only)
 
 **Performance expectations:**
 
