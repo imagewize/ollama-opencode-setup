@@ -15,7 +15,7 @@
           "name": "Gemma 4 E4B (untested)"
         },
         "phi4:latest": {
-          "name": "Phi-4 (untested)"
+          "name": "Phi-4 (read-only)"
         },
         "qwen3.5:4b": {
           "name": "Qwen3.5 4B (untested)"

@@ -46,7 +46,7 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 |-------|------|---------|------------|-------------|
 | `qwen3.5:9b` | 6.6 GB | 32k | No | Not recommended — no tool use, too slow on M1 16GB (13+ min for analysis, tested 2026-05-31) |
 | `gemma4:e4b` | ~5.5 GB | 32k | Untested | Untested — may or may not support tool use |
-| `phi4:latest` | ~5 GB | 16k | Untested | Untested — may or may not support tool use |
+| `phi4:latest` | ~5 GB | 16k | No | Not recommended — Open Code CLI explicitly reports "does not support tools" (tested 2026-05-31) |
 | `qwen3.5:4b` | ~2.5 GB | 32k | No | Not recommended — no tool use, outputs bash instead of using write tool (tested 2026-05-31) |
 | `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) |
 | `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model |
@@ -191,7 +191,7 @@ On a MacBook M1 with 16GB RAM, ~11-12GB is available for model weights. The swee
 - **Granite 3.1 MoE**: Fast analysis, cannot create/modify files
 
 **Untested (tool use status unknown):**
-- **Gemma 4 E4B**, **Phi-4**: Pulled but not yet tested with Open Code CLI
+- **Gemma 4 E4B**: Pulled but not yet tested with Open Code CLI
 
 **Performance benchmarks (M1 16GB, simple file write):**
 
