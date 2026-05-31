@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.5.1] — 2026-05-31
+
+### Changed
+- `README.md`: Performance Tips and the performance table now recommend `ministral-3:8b-16k` (not the base model) for Open Code, matching the Available Models table; "Creating Custom Models" now leads with the reproducible Modelfile build and keeps the interactive `/save` flow as an alternative
+- `RECOMMENDATIONS.md`: added a 2026-05-31 update banner noting the "Only Qwen3 has tool usage" conclusion is outdated (Ministral 3 8B also has tool calling and is faster); the 2025-11-18 content is retained as a historical record
+
+---
+
 ## [0.5.0] — 2026-05-31
 
 ### Added
