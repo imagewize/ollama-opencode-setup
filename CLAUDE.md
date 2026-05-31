@@ -17,8 +17,9 @@ This repository does NOT contain application code - it's a reference repository 
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models (tool use)**: qwen3.5:9b, gemma4:e4b, phi4, qwen3.5:4b, qwen3:8b-16k, qwen3:8b, qwen3:4b
-- **Models (read-only)**: mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
+- **Models (tool use, confirmed)**: qwen3:8b-16k, qwen3:8b, qwen3:4b
+- **Models (read-only, confirmed)**: qwen3.5:9b, mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
+- **Models (untested)**: gemma4:e4b, phi4, qwen3.5:4b
 
 When adding new models, update this file with the model name and display name.
 
@@ -66,13 +67,12 @@ ollama serve
 - 16k tokens: ~12,000 words, 3-5 medium files
 - 200k tokens (Claude): ~150,000 words, entire small-medium codebase
 
-**Model recommendations (M1 16GB, 2026):**
-- **Quick tasks** → `qwen3.5:4b` (~2.5 GB, 5-15s, 32k ctx, tool use)
-- **Best overall** → `qwen3.5:9b` (~5.5 GB, 10-25s, 32k ctx, tool use)
-- **High efficiency** → `gemma4:e4b` (~5.5 GB, 8-20s, 32k ctx, tool use)
-- **Best reasoning** → `phi4` (~5 GB, 10-25s, 16k ctx, tool use)
+**Model recommendations (M1 16GB, tested 2026-05-31):**
+- **Quick file ops** → `qwen3:4b` (2.5 GB, tool use confirmed)
+- **Standard file ops** → `qwen3:8b` (5.2 GB, tool use confirmed)
+- **Multi-file ops** → `qwen3:8b-16k` (5.2 GB, 16k ctx, tool use confirmed)
+- **Large context analysis** → `qwen3.5:9b` (6.6 GB, 32k ctx, read-only — no tool use)
 - **Read-only analysis** → `mistral-nemo:12b-instruct-2407-q4_K_M` (7.5 GB, read-only)
-- **Legacy extended ctx** → `qwen3:8b-16k` (5.2 GB, custom 16k variant)
 
 ## Documentation Structure
 

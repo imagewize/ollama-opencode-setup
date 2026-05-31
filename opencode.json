@@ -9,16 +9,16 @@
       },
       "models": {
         "qwen3.5:9b": {
-          "name": "Qwen3.5 9B (recommended)"
+          "name": "Qwen3.5 9B (read-only, 32k ctx)"
         },
         "gemma4:e4b": {
-          "name": "Gemma 4 E4B"
+          "name": "Gemma 4 E4B (untested)"
         },
         "phi4:latest": {
-          "name": "Phi-4"
+          "name": "Phi-4 (untested)"
         },
         "qwen3.5:4b": {
-          "name": "Qwen3.5 4B (fast)"
+          "name": "Qwen3.5 4B (untested)"
         },
         "qwen3:8b-16k": {
           "name": "Qwen3 8B (16k context)"

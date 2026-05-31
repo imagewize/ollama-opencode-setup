@@ -44,10 +44,10 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
-| `qwen3.5:9b` | ~5.5 GB | 32k | Yes | **Recommended** - best quality/speed for M1 16GB |
-| `gemma4:e4b` | ~5.5 GB | 32k | Yes | High efficiency, strong coding performance |
-| `phi4:latest` | ~5 GB | 16k | Yes | Strong reasoning and coding |
-| `qwen3.5:4b` | ~2.5 GB | 32k | Yes | Fast, general-purpose |
+| `qwen3.5:9b` | 6.6 GB | 32k | No | Not recommended — no tool use, too slow on M1 16GB (13+ min for analysis, tested 2026-05-31) |
+| `gemma4:e4b` | ~5.5 GB | 32k | Untested | Untested — may or may not support tool use |
+| `phi4:latest` | ~5 GB | 16k | Untested | Untested — may or may not support tool use |
+| `qwen3.5:4b` | ~2.5 GB | 32k | Untested | Untested — may or may not support tool use |
 | `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) |
 | `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model |
 | `qwen3:4b` | 2.5 GB | 8k | Yes | Qwen3 4B compact model |
@@ -182,18 +182,17 @@ ollama rm <model-name>
 On a MacBook M1 with 16GB RAM, ~11-12GB is available for model weights. The sweet spot is 7-9B models at Q4 quantization.
 
 **For Coding and File Operations (tool use required):**
-- **Qwen3.5 9B** (recommended): Best balance of quality, speed, and 32k context on M1 16GB
-- **Gemma 4 E4B**: Strong alternative, high efficiency and coding performance
-- **Phi-4**: Best for reasoning-heavy tasks
-- **Qwen3.5 4B**: Fastest option when speed matters most
+- **Qwen3 8B-16k** (recommended): Confirmed full tool usage, custom 16k context variant
+- **Qwen3 8B**: Confirmed tool usage, solid general-purpose model
+- **Qwen3 4B**: Confirmed tool usage, fastest option for quick edits
 
-**For Read-Only Analysis:**
-- **Mistral Nemo 12B**: Good code analysis, but cannot create/modify files
-- **Granite 3.1 MoE**: Efficient analysis, but cannot create/modify files
+**For Read-Only Analysis (no file creation):**
+- **Qwen3.5 9B**: 32k context, good for large codebase analysis — outputs bash instead of using write tool (tested)
+- **Mistral Nemo 12B**: Excellent analysis quality, cannot create/modify files
+- **Granite 3.1 MoE**: Fast analysis, cannot create/modify files
 
-**Legacy Models (still functional):**
-- **Qwen3 8B-16k**: Custom extended context variant, works for file operations
-- **Qwen3 8B / 4B**: Functional but superseded by Qwen3.5 versions
+**Untested (tool use status unknown):**
+- **Gemma 4 E4B**, **Phi-4**, **Qwen3.5 4B**: Pulled but not yet tested with Open Code CLI
 
 **Performance benchmarks (M1 16GB, simple file write):**
 
