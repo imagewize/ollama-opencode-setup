@@ -46,7 +46,7 @@ Complete configuration and documentation for running Open Code CLI with local Ol
 
 3. **Pull your first model:**
    ```bash
-   ollama pull qwen3:8b
+   ollama pull ministral-3:8b   # recommended: fast, reliable tool calling
    ```
 
 4. **Use the configuration in your project:**
@@ -74,24 +74,28 @@ Complete configuration and documentation for running Open Code CLI with local Ol
 
 ## ⚠️ Important: Tool Usage Discovery
 
-**Only Qwen3 (original) models can create/modify files in Open Code CLI!**
+**Tool calling requires a model trained for it — and that capability is not tied to size or recency.**
 
 All models in this config have been tested. Results (M1 16GB, 2026-05-31):
-- ✅ **Qwen3 models** (qwen3:8b-16k, qwen3:8b, qwen3:4b) — full tool usage confirmed
+- ✅ **Ministral 3 8B** — full tool usage, **fastest tool-caller (~4s warm)**, no think-mode tax — **recommended daily driver**
+- ✅ **Qwen3 models** (qwen3:8b-16k, qwen3:8b, qwen3:4b) — full tool usage confirmed, but verbose think mode (~26s)
+- ❌ **DeepSeek-Coder-V2-Lite 16B** — Ollama reports `does not support tools`; fits RAM and is fast, but it's a code-completion/FIM model with no tool calling
 - ❌ **Qwen3.5 9B / 4B** — outputs bash commands instead of invoking write tool
 - ❌ **Phi-4** — Open Code CLI explicitly reports "does not support tools"
 - ❌ **Gemma 4 E4B** — attempts tool call but sends malformed/incompatible call format
 - ❌ **Mistral Nemo & Granite** — analysis only, cannot create files
 
-See [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for full test details.
+Tool-call support is verified with [`scripts/tool-call-test.sh`](scripts/tool-call-test.sh). See [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for full test details.
 
 ## Available Models
 
 | Model | Size | Context | Tool Usage | Best For |
 |-------|------|---------|------------|----------|
-| `qwen3:8b-16k` ⭐ | 5.2 GB | 16k | ✅ YES | File creation, multi-file analysis |
-| `qwen3:8b` | 5.2 GB | 8k | ✅ YES | General file operations |
+| `ministral-3:8b` ⭐ | 6.0 GB | up to 128k | ✅ YES | **Recommended** — fast tool use (~4s), no think-mode tax |
+| `qwen3:8b-16k` | 5.2 GB | 16k | ✅ YES | Multi-file analysis (larger context) |
+| `qwen3:8b` | 5.2 GB | 8k | ✅ YES | General file operations (~26s) |
 | `qwen3:4b` | 2.5 GB | 8k | ✅ YES | Quick file edits |
+| `deepseek-coder-v2:16b` | 8.9 GB | 128k | ❌ NO | No tool support (`does not support tools`) — FIM/completion only |
 | `qwen3.5:9b` | 6.6 GB | 32k | ❌ NO | Read-only analysis (too slow, 13+ min) |
 | `qwen3.5:4b` | ~2.5 GB | 32k | ❌ NO | Read-only analysis only |
 | `phi4:latest` | ~5 GB | 16k | ❌ NO | Read-only analysis only |
@@ -152,9 +156,10 @@ opencode
 
 **Use the right model for the task:**
 
-**File Creation/Modification (MUST use original Qwen3):**
-- **Multi-file changes** → `qwen3:8b-16k` (extended context + tool usage) ⭐
-- **Standard file operations** → `qwen3:8b` (balanced)
+**File Creation/Modification (use a tool-capable model):**
+- **Default / fastest tool use** → `ministral-3:8b` (~4s, no think-mode tax) ⭐
+- **Multi-file changes (larger context)** → `qwen3:8b-16k` (extended context + tool usage)
+- **Standard file operations** → `qwen3:8b` (balanced, ~26s)
 - **Quick file edits** → `qwen3:4b` (fastest Qwen3 model)
 
 **Code Review/Analysis (read-only — any model works):**
@@ -162,18 +167,17 @@ opencode
 - **Fast analysis** → `granite3.1-moe` (quickest)
 - **Large context analysis** → `qwen3.5:4b` (32k context, read-only) — avoid `qwen3.5:9b` (too slow)
 
-**Performance expectations:**
+**Performance expectations (write tool call):**
 
-| Task | qwen3:8b | qwen3:8b-16k | mistral-nemo:12b-instruct-2407-q4_K_M | Claude Sonnet 4 |
-|------|----------|--------------|------------------|-----------------|
-| Simple file write | 15-30s | 45-90s | ❌ Can't create | 2-5s |
-| Code review (read-only) | 20-45s | 60-120s | 40-90s ⭐ | 5-15s |
-| Multi-file analysis | 40-90s | 90-180s | ❌ Read-only | 10-30s |
+| Task | ministral-3:8b ⭐ | qwen3:8b | qwen3:8b-16k | Claude Sonnet 4 |
+|------|-------------------|----------|--------------|-----------------|
+| Simple file write | **~4s** | 15-30s | 45-90s | 2-5s |
+| Multi-file analysis | fast | 40-90s | 90-180s | 10-30s |
 
 **Notes:**
-- qwen3:8b-16k enters verbose "thinking mode" before execution (slower but successful)
-- mistral-nemo:12b-instruct-2407-q4_K_M provides best quality analysis but cannot modify files
-- For file operations, Qwen3 models are required despite slower performance
+- `ministral-3:8b` is the fastest tool-caller tested — no `<think>` overhead
+- Qwen3 models enter verbose "thinking mode" before execution (slower but successful)
+- A model must be trained/templated for tools — fitting in RAM is not enough (e.g. DeepSeek-Coder-V2-Lite fits but has no tool calling)
 
 ## When to Use Local vs Cloud Models
 
@@ -184,7 +188,7 @@ opencode
 - ✅ Learning/experimenting without API costs
 - ✅ Privacy requirements mandate local processing
 - ✅ Code review that doesn't require changes (any model)
-- ⚠️ **File operations (MUST use Qwen3 models only)**
+- ⚠️ **File operations (use a tool-capable model — Ministral 3 8B or Qwen3)**
 
 ### Use Cloud Models (Claude API) When:
 - ⏱️ Real-time interactive development

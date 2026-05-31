@@ -6,6 +6,30 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.4.0] — 2026-05-31
+
+### Added
+- `ministral-3:8b` entry in `opencode.json` — **confirmed tool use, recommended daily driver**
+- `deepseek-coder-v2:16b` entry in `opencode.json` — read-only (no tool support), kept as a tested record
+- `scripts/tool-call-test.sh` — reproducible tool-calling smoke test that sends a `write`-tool request to Ollama's OpenAI-compatible endpoint (the same API Open Code uses) and checks for a valid `tool_calls` response
+
+### Changed
+- `README.md`: corrected the "only Qwen3 can use tools" claim — now leads with `ministral-3:8b` as the recommended tool-capable model; updated the Available Models table, Quick Start pull step, Performance Tips, and performance expectations
+- `docs/LOCALLLMS.md`: added `ministral-3:8b` and `deepseek-coder-v2:16b` to the Available Models table; reworked Model Selection Guidelines and performance benchmarks around the new results; documented the testing method
+- `test-opencode.md`: added tool-call results for `ministral-3:8b`, `deepseek-coder-v2:16b`, and a `qwen3:8b` baseline; updated the comparison matrix
+
+### Test Results
+- `ministral-3:8b` — tested 2026-05-31 on M1 16GB: **tool use confirmed**, emits valid `write` tool_call in ~7s cold / **~4s warm**; no think-mode overhead (~6× faster than `qwen3:8b` on the same task)
+- `deepseek-coder-v2:16b` — tested 2026-05-31 on M1 16GB: **no tool use support**; Ollama returns `does not support tools`. Fits RAM (8.9 GB, MoE) and is fast, but it is a code-completion/FIM model with no tool calling
+- `qwen3:8b` — tested 2026-05-31 on M1 16GB: **tool use confirmed** (~26s, think-mode overhead)
+
+### Notes
+- Ministral 3 8B directly addresses the "only Qwen3 8B 16K works" limitation — it is newer than Qwen3, passes tool calling, and is substantially faster
+- Capability ≠ size: DeepSeek-Coder-V2-Lite fits and is fast yet lacks tool calling entirely, confirming that a model must be trained/templated for tools to work in Open Code
+- `gemma4:e4b`, `granite3.1-moe`, and `mistral-nemo` were removed from local Ollama storage during this session (non-performing); their `opencode.json` entries remain as historical records
+
+---
+
 ## [0.3.0] — 2026-05-31
 
 ### Changed
