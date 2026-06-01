@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.3] — 2026-06-01
+
+### Removed
+- `RECOMMENDATIONS.md`: deleted — the file was already banner-flagged as outdated, and all current content lives in `README.md`, `docs/TROUBLESHOOTING.md`, `docs/OPENCODE-COMMANDS.md`, and `CHANGELOG.md`. Its only unique content (the 2025-11-18 Ollama-vs-LM-Studio comparison) was dropped as the decision is settled
+
+### Changed
+- `README.md`: removed duplication between the two model tables and the two doc tables. The "Important: Tool Usage" and "Available Models" tables are merged into one — the tool-use warning is now a callout above a single table whose `Tool Use` column carries the ✅/❌ verdict. "What's Included" now lists only non-doc assets (with one `docs/` row pointing to the Documentation index) so docs are no longer listed twice
+
+---
+
 ## [1.1.2] — 2026-06-01
 
 ### Changed
