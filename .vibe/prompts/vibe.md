@@ -212,7 +212,8 @@ Local models are 3-10x slower than cloud models:
 
 ## Git Commit Rules
 
-- **Always use atomic commits**: each commit must represent one logical change. Do not bundle unrelated edits into a single commit.
+- **Always create a new branch** for commits - never commit directly to main
+- **Always use atomic commits**: each commit must represent one logical change or logical group of changes. Atomic commits can be per logical group or single file depending on change size. Do not bundle unrelated edits into a single commit.
 - **Commit message format**: Use imperative mood, present tense. Be concise but descriptive.
   - Good: `Add qwen3:8b-16k to opencode.json`
   - Bad: `Added model` or `Updating models`
@@ -229,3 +230,4 @@ Local models are 3-10x slower than cloud models:
 - Keep all commits professional and attribution-free
 - This applies to ALL files and directories in the entire repository
 - Follow standard git commit message format as described above
+- **All commits must be atomic** - one logical change or logical group per commit
