@@ -17,14 +17,17 @@ Keeping `opencode.json` in the project root means each project can have its own 
 mkdir ~/code/my-project && cd ~/code/my-project
 git init
 
-# 2. Symlink the config from this repo
+# 2a. Symlink the config (auto-updates when this repo updates — recommended for your own machine)
 ln -s ~/code/ollama-opencode-setup/opencode.json opencode.json
+
+# 2b. Or copy it (self-contained — better for CI or sharing with teammates who don't have this repo)
+cp ~/code/ollama-opencode-setup/opencode.json opencode.json
 
 # 3. Start OpenCode
 opencode
 ```
 
-That's it. OpenCode reads the symlinked config, shows the model picker, and you're ready.
+That's it. OpenCode reads the config, shows the model picker, and you're ready. See [Symlink vs copy](#symlink-vs-copy----which-to-use) below for when each makes sense.
 
 ---
 
@@ -33,8 +36,11 @@ That's it. OpenCode reads the symlinked config, shows the model picker, and you'
 ```bash
 cd ~/code/imagewize.com
 
-# Symlink the config
+# Symlink (auto-updates across all projects when this repo updates)
 ln -s ~/code/ollama-opencode-setup/opencode.json opencode.json
+
+# Or copy (no dependency on this repo being present)
+cp ~/code/ollama-opencode-setup/opencode.json opencode.json
 
 # Start OpenCode
 opencode
@@ -129,8 +135,11 @@ Then it's available in every project that uses the symlinked config.
 ## Quick reference
 
 ```bash
-# First-time setup for a project
+# First-time setup for a project — symlink (recommended on your own machine)
 ln -s ~/code/ollama-opencode-setup/opencode.json ~/code/your-project/opencode.json
+
+# Or copy (self-contained, no dependency on this repo being present)
+cp ~/code/ollama-opencode-setup/opencode.json ~/code/your-project/opencode.json
 
 # Build the recommended model (once, not per project)
 ollama create ministral-3:8b-32k -f ~/code/ollama-opencode-setup/modelfiles/ministral-3-8b-32k.Modelfile
