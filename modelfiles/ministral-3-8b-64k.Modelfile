@@ -1,0 +1,20 @@
+# Experimental 64k-context variant of ministral-3:8b for Open Code on M1 16GB.
+#
+# Why: Ollama docs recommend at least 64k tokens for agentic tools like Open Code.
+# 16k can run out during multi-file sessions where context accumulates across
+# tool calls, file reads, and conversation history.
+#
+# Memory warning: at 64k the KV cache grows significantly alongside the ~6GB
+# model weights. On M1 16GB this may cause partial CPU offload. Test before
+# committing to this variant:
+#
+#   ollama create ministral-3:8b-64k -f modelfiles/ministral-3-8b-64k.Modelfile
+#   ollama run ministral-3:8b-64k
+#   # In a second terminal:
+#   ollama ps
+#   # Look for "100% GPU" — anything less means CPU spillover and slower inference.
+#
+# Build:  ollama create ministral-3:8b-64k -f modelfiles/ministral-3-8b-64k.Modelfile
+
+FROM ministral-3:8b
+PARAMETER num_ctx 65536
