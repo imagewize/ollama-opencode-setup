@@ -46,8 +46,9 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
-| `ministral-3:8b-16k` | 6.0 GB | 16k | Yes | **Recommended for Open Code** — custom 16k variant (num_ctx baked in); Open Code can't set num_ctx itself, so use this rather than the base model |
-| `ministral-3:8b` | 6.0 GB | Ollama default (~4k) | Yes | Base model — fast, reliable tool calls, no think-mode tax (~4s warm); runs at Ollama's small default context in Open Code, so prefer the 16k variant |
+| `ministral-3:8b-32k` | 11 GB | 32k | Yes | **Recommended for Open Code** — custom 32k variant, 100% GPU on M1 16GB (tested 2026-06-01) |
+| `ministral-3:8b-16k` | 6.5 GB | 16k | Yes | Memory-constrained fallback — 100% GPU, smaller footprint |
+| `ministral-3:8b` | 6.0 GB | Ollama default (~4k) | Yes | Base model — fast, reliable tool calls, no think-mode tax (~4s warm); runs at Ollama's small default context in Open Code, so prefer the 32k variant |
 | `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) — works but verbose think mode (~26s) |
 | `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model — ~26s for a write tool call (think-mode overhead) |
 | `qwen3:4b` | 2.5 GB | 8k | Yes | Qwen3 4B compact model |
@@ -93,29 +94,28 @@ ollama list
 # qwen3:4b                                 e55aed6fe643    2.5 GB    2 months ago
 ```
 
-### Creating Ministral 3 8B with Extended Context (16k)
+### Creating Ministral 3 8B with Extended Context (32k) — Recommended
 
-`ministral-3:8b-16k` is a custom variant of `ministral-3:8b` with `num_ctx` baked in. This is needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does **not** pass Ollama's `num_ctx` option — so the base model would otherwise run at Ollama's small default context inside Open Code.
-
-This repo ships a Modelfile for reproducible builds:
+`ministral-3:8b-32k` is the recommended Open Code variant — tested 2026-06-01 on M1 16GB: **100% GPU, 11 GB footprint**. Ollama docs recommend at least 32k context for agentic tools; 64k was tested but causes 27% CPU spillover on M1 16GB.
 
 ```bash
 # From the repo root
-ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile
 
 # Verify
-ollama show ministral-3:8b-16k --modelfile | grep num_ctx
-# PARAMETER num_ctx 16384
+ollama show ministral-3:8b-32k --modelfile | grep num_ctx
+# PARAMETER num_ctx 32768
 ```
 
-The Modelfile is just:
+### Creating Ministral 3 8B with Extended Context (16k) — Fallback
 
-```dockerfile
-FROM ministral-3:8b
-PARAMETER num_ctx 16384
+`ministral-3:8b-16k` is the memory-constrained fallback — 100% GPU at ~6.5 GB. Use this if 32k causes issues on your machine.
+
+```bash
+ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 ```
 
-The base model natively supports up to 256k context, but 16k is the safe sweet spot on M1 16GB (~8GB total footprint); larger windows risk heavy swap.
+The base model natively supports up to 256k context. 32k is the recommended sweet spot on M1 16GB; 64k saturates all 16 GB and spills to CPU.
 
 ### Benefits of Extended Context
 

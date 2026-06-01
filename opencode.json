@@ -8,8 +8,11 @@
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
+        "ministral-3:8b-32k": {
+          "name": "Ministral 3 8B (32k context, tool use, recommended)"
+        },
         "ministral-3:8b-16k": {
-          "name": "Ministral 3 8B (16k context, tool use, recommended)"
+          "name": "Ministral 3 8B (16k context, tool use)"
         },
         "ministral-3:8b": {
           "name": "Ministral 3 8B (default context, tool use)"

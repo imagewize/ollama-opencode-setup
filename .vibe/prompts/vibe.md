@@ -22,15 +22,17 @@ Always follow the rules and conventions in this file and [CLAUDE.md](CLAUDE.md).
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models (tool use, confirmed)**: `ministral-3:8b-16k` (recommended), `ministral-3:8b`, `qwen3:8b-16k`, `qwen3:8b`, `qwen3:4b`
+- **Models (tool use, confirmed)**: `ministral-3:8b-32k` (recommended), `ministral-3:8b-16k`, `ministral-3:8b`, `qwen3:8b-16k`, `qwen3:8b`, `qwen3:4b`
 - **Models (read-only, confirmed)**: `deepseek-coder-v2:16b`, `qwen3.5:9b`, `qwen3.5:4b`, `phi4`, `gemma4:e4b`, `mistral-nemo:12b-instruct-2407-q4_K_M`, `granite3.1-moe`
 
 When adding new models, update this file with the model name and display name, then run `ollama pull <model-name>`.
 
 ### [modelfiles/](modelfiles/)
 Custom Modelfiles for creating extended context variants:
-- `ministral-3-8b-16k.Modelfile` - 16k context variant of ministral-3:8b
+- `ministral-3-8b-32k.Modelfile` - 32k context variant of ministral-3:8b (recommended, 100% GPU on M1 16GB)
+- `ministral-3-8b-16k.Modelfile` - 16k context variant of ministral-3:8b (memory-constrained fallback)
 - `qwen3-8b-16k.Modelfile` - 16k context variant of qwen3:8b
+- `ministral-3-8b-64k.Modelfile` - 64k variant (do not use on M1 16GB — causes CPU spillover)
 - Create new variants using: `ollama create <model-name> -f modelfiles/<filename>.Modelfile`
 
 ## Custom Model Context
@@ -40,8 +42,9 @@ The `ministral-3:8b-16k` and `qwen3:8b-16k` models are **custom variants** with 
 
 Build from a committed Modelfile (reproducible):
 ```bash
-ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
+ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile  # recommended
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 ```
 
 ## Ollama Commands Reference

@@ -6,6 +6,32 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.0] — 2026-06-01
+
+### Added
+- `modelfiles/ministral-3-8b-32k.Modelfile` — reproducible build definition (`FROM ministral-3:8b` + `PARAMETER num_ctx 32768`); tested 2026-06-01 on M1 16GB: **100% GPU, 11 GB footprint**
+- `modelfiles/ministral-3-8b-64k.Modelfile` — experimental 64k variant; included as a reference/warning. Tested 2026-06-01 on M1 16GB: **fails** — 27% CPU spillover, 16 GB footprint (saturates all unified memory). Not recommended on M1 16GB.
+
+### Changed
+- `opencode.json`: `ministral-3:8b-32k` is now the recommended model entry; `ministral-3:8b-16k` relabeled as standard (no longer recommended)
+- `modelfiles/README.md`: added GPU test results column; added 32k (recommended) and 64k (do not use) rows
+- `CLAUDE.md`: updated Extended Context Models section and Model Selection Guidelines to lead with `ministral-3:8b-32k`
+- `README.md`: Quick Start, Available Models table, and Creating Custom Models updated to build and use the 32k variant
+- `docs/LOCALLLMS.md`: Available Models table updated; "Creating Ministral 3 8B" section split into 32k (recommended) and 16k (fallback) subsections with GPU test results
+- `.vibe/prompts/vibe.md`: updated model list and Modelfiles list to reflect 32k as recommended; 64k noted as not suitable for M1 16GB
+
+### Context Window Test Results (M1 16GB, 2026-06-01)
+- `ministral-3:8b-16k` (16k) — `100% GPU`, ~6.5 GB — safe, current default
+- `ministral-3:8b-32k` (32k) — `100% GPU`, 11 GB — **new recommended**
+- `ministral-3:8b-64k` (64k) — `27% CPU / 73% GPU`, 16 GB — CPU spillover, do not use
+
+### Notes
+- Ollama docs recommend at least 32k context for agentic tools like Open Code; 16k is sufficient for small tasks but can run out during multi-file sessions
+- 32k is Ollama's default context for machines with 24–48 GB of memory, confirming it as the natural ceiling for M1 16GB
+- 64k saturates all 16 GB unified memory; the KV cache growth pushes compute onto CPU, degrading inference speed
+
+---
+
 ## [1.0.3] — 2026-06-01
 
 ### Added
