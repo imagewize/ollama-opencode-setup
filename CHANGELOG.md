@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.0.1] — 2026-06-01
+
+### Added
+- `docs/README.md` — comprehensive documentation index with overview table, getting started guide, quick reference for models and commands, detailed documentation structure, common workflows, search tips, and pro tips
+
+### Changed
+- `.vibe/prompts/vibe.md` — added requirement to always create a new branch for commits (never commit directly to main); clarified that atomic commits can be per logical group or single file depending on change size; reinforced atomic commit rule in NO Mistral Vibe Attribution section
+
+---
+
 ## [0.5.2] — 2026-05-31
 
 ### Added
