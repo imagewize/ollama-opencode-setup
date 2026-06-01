@@ -77,6 +77,11 @@ ollama serve
 
 ## Documentation Structure
 
+### [docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md)
+- How to wire this repo's config into a new or existing project
+- Symlink vs copy, committing `opencode.json`, per-project vs global config
+- Launching OpenCode, selecting a model, running one-off tasks
+
 ### [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md)
 **Complete Open Code CLI commands reference:**
 - All 15 built-in slash commands with keybinds

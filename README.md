@@ -7,6 +7,7 @@ Complete configuration and documentation for running Open Code CLI with local Ol
 - [Quick Start](#quick-start)
   - [Prerequisites](#prerequisites)
   - [Setup](#setup)
+- [Using in Your Projects](#using-in-your-projects)
 - [What's Included](#whats-included)
 - [⚠️ Important: Tool Usage Discovery](#️-important-tool-usage-discovery)
 - [Available Models](#available-models)
@@ -66,6 +67,22 @@ Complete configuration and documentation for running Open Code CLI with local Ol
    cd ~/code/your-project
    opencode
    ```
+
+## Using in Your Projects
+
+Clone this repo once, then symlink `opencode.json` into any project:
+
+```bash
+# New or existing project
+ln -s ~/code/ollama-opencode-setup/opencode.json ~/code/your-project/opencode.json
+
+cd ~/code/your-project
+opencode   # model picker appears — choose Ministral 3 8B (32k context, recommended)
+```
+
+The symlink means all your projects automatically get updated model config when you `git pull` this repo. For full details — new project workflow, existing project setup, symlink vs copy, committing the config, and one-off task commands — see **[docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md)**.
+
+---
 
 ## What's Included
 
@@ -160,8 +177,9 @@ opencode
 **Use the right model for the task:**
 
 **File Creation/Modification (use a tool-capable model):**
-- **Default / fastest tool use** → `ministral-3:8b-16k` (~4s, no think-mode tax, 16k context for Open Code) ⭐
-- **Multi-file changes (larger context)** → `qwen3:8b-16k` (extended context + tool usage)
+- **Recommended** → `ministral-3:8b-32k` (~4s, 32k context, 100% GPU on M1 16GB) ⭐
+- **Memory-constrained** → `ministral-3:8b-16k` (same speed, smaller footprint at 6.5 GB)
+- **Multi-file changes** → `qwen3:8b-16k` (extended context + tool usage)
 - **Standard file operations** → `qwen3:8b` (balanced, ~26s)
 - **Quick file edits** → `qwen3:4b` (fastest Qwen3 model)
 
@@ -172,13 +190,13 @@ opencode
 
 **Performance expectations (write tool call):**
 
-| Task | ministral-3:8b-16k ⭐ | qwen3:8b | qwen3:8b-16k | Claude Sonnet 4 |
+| Task | ministral-3:8b-32k ⭐ | qwen3:8b | qwen3:8b-16k | Claude Sonnet 4 |
 |------|-----------------------|----------|--------------|-----------------|
 | Simple file write | **~4s** | 15-30s | 45-90s | 2-5s |
 | Multi-file analysis | fast | 40-90s | 90-180s | 10-30s |
 
 **Notes:**
-- `ministral-3:8b` is the fastest tool-caller tested — no `<think>` overhead
+- `ministral-3:8b` family is the fastest tool-caller tested — no `<think>` overhead
 - Qwen3 models enter verbose "thinking mode" before execution (slower but successful)
 - A model must be trained/templated for tools — fitting in RAM is not enough (e.g. DeepSeek-Coder-V2-Lite fits but has no tool calling)
 
@@ -202,6 +220,15 @@ opencode
 - 🎯 Best code quality is critical
 
 ## Documentation
+
+### [docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md)
+**How to use this repo in your own projects:**
+- Where `opencode.json` goes and how OpenCode discovers it
+- Symlink vs copy — pros, cons, and recommendation
+- New project and existing project setup workflows
+- Whether to commit the config to your project repo
+- Launching OpenCode and selecting a model
+- Keeping config up to date across all projects
 
 ### [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md)
 **Complete Open Code CLI commands reference:**

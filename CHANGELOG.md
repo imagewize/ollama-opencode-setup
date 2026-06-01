@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.1] — 2026-06-01
+
+### Added
+- `docs/PROJECT-SETUP.md` — new guide covering how to use this repo in new and existing projects; includes symlink vs copy trade-offs, whether to commit `opencode.json`, new/existing project workflows, launching OpenCode, selecting a model in the TUI, one-off task commands, and keeping config up to date across multiple projects
+
+### Changed
+- `README.md`: added "Using in Your Projects" section with quick symlink setup and link to `docs/PROJECT-SETUP.md`; added `docs/PROJECT-SETUP.md` entry to Documentation section; updated Performance Tips table and model recommendations to reference `ministral-3:8b-32k` instead of `ministral-3:8b-16k`; added `docs/PROJECT-SETUP.md` to Table of Contents
+- `CLAUDE.md`: added `docs/PROJECT-SETUP.md` entry to Documentation Structure section
+- `.vibe/prompts/vibe.md`: added `docs/PROJECT-SETUP.md` to the documentation list in Repository Purpose
+
+---
+
 ## [1.1.0] — 2026-06-01
 
 ### Added
