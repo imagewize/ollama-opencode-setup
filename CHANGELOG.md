@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.0.3] — 2026-06-01
+
+### Added
+- `modelfiles/qwen3-8b-16k.Modelfile` — reproducible build definition (`FROM qwen3:8b` + `PARAMETER num_ctx 16384`) for the `qwen3:8b-16k` custom model; mirrors the committed Modelfile pattern established for `ministral-3:8b-16k`. Previously this model was created interactively via `ollama run qwen3:8b` + `/save`, which is not reproducible from the repo alone.
+- `modelfiles/README.md` — documents the purpose of the directory, explains why baked-in `num_ctx` is required, lists both current Modelfiles with their build commands, and provides a short guide for adding new variants.
+
+### Changed
+- `CLAUDE.md`: unified the Extended Context Models section to show both `qwen3:8b-16k` and `ministral-3:8b-16k` as Modelfile-based builds; removed the interactive `/save` instructions.
+- `README.md`: updated "Creating Custom Models" to list both Modelfile build commands; removed the "Alternative — interactive /save" block that previously described `qwen3:8b-16k`.
+- `docs/LOCALLLMS.md`: replaced the interactive `/save` flow in the "Creating Qwen3 8B with Extended Context (16k)" section with the `ollama create` Modelfile command; updated verification output.
+
+---
+
 ## [1.0.2] — 2026-06-01
 
 ### Changed

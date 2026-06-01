@@ -1,0 +1,15 @@
+# Custom 16k-context variant of qwen3:8b for Open Code on M1 16GB.
+#
+# Why: Open Code talks to Ollama via the OpenAI-compatible endpoint, which does
+# not pass Ollama's num_ctx option. Plain qwen3:8b therefore runs at
+# Ollama's small default context inside Open Code. Baking num_ctx here gives a
+# usable 16k window regardless of how Open Code calls the model.
+#
+# 16k is the safe sweet spot on 16GB unified memory (~5.2GB total footprint).
+# The base model natively supports up to 32k, but 16k balances context depth
+# against memory headroom for other processes.
+#
+# Build:  ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
+
+FROM qwen3:8b
+PARAMETER num_ctx 16384

@@ -71,24 +71,15 @@ ollama pull ministral-3:8b
 
 ### Creating Qwen3 8B with Extended Context (16k)
 
-The `qwen3:8b-16k` model is a custom variant created from the base `qwen3:8b` model with an extended context window.
-
-**Process**:
+The `qwen3:8b-16k` model is a custom variant created from the base `qwen3:8b` model with `num_ctx` baked in. This repo ships a Modelfile for reproducible builds:
 
 ```bash
-# Start interactive session with base model
-ollama run qwen3:8b
+# From the repo root
+ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 
-# Set extended context parameter (default is typically 8192)
->>> /set parameter num_ctx 16384
-Set parameter 'num_ctx' to '16384'
-
-# Save as new model variant
->>> /save qwen3:8b-16k
-Created new model 'qwen3:8b-16k'
-
-# Exit session
->>> /bye
+# Verify
+ollama show qwen3:8b-16k --modelfile | grep num_ctx
+# PARAMETER num_ctx 16384
 ```
 
 **Verification**:
@@ -98,9 +89,7 @@ ollama list
 # Output:
 # NAME                                     ID              SIZE      MODIFIED
 # qwen3:8b-16k                             7ef4ca800d20    5.2 GB    9 seconds ago
-# mistral-nemo:12b-instruct-2407-q4_K_M    daf673741712    7.5 GB    14 hours ago
 # qwen3:8b                                 500a1f067a9f    5.2 GB    18 hours ago
-# granite3.1-moe:latest                    b43d80d7fca7    2.0 GB    20 hours ago
 # qwen3:4b                                 e55aed6fe643    2.5 GB    2 months ago
 ```
 

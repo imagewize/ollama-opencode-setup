@@ -128,33 +128,17 @@ ollama rm qwen3:4b
 
 Open Code talks to Ollama via the OpenAI-compatible endpoint, which does **not** pass Ollama's `num_ctx`. To get a usable context window, bake it into a custom variant.
 
-**Recommended — from a committed Modelfile (reproducible):**
+**From a committed Modelfile (reproducible):**
 ```bash
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 
 # Verify the context is baked in
 ollama show ministral-3:8b-16k --modelfile | grep num_ctx
 # PARAMETER num_ctx 16384
 ```
 
-The Modelfile is just `FROM ministral-3:8b` + `PARAMETER num_ctx 16384`.
-
-**Alternative — interactive `/save` (used for `qwen3:8b-16k`):**
-```bash
-# Start interactive session
-ollama run qwen3:8b
-
-# Set extended context
->>> /set parameter num_ctx 16384
-Set parameter 'num_ctx' to '16384'
-
-# Save as new model
->>> /save qwen3:8b-16k
-Created new model 'qwen3:8b-16k'
-
-# Exit
->>> /bye
-```
+Each Modelfile is just `FROM <base-model>` + `PARAMETER num_ctx 16384`. See [`modelfiles/README.md`](modelfiles/README.md) for the full list.
 
 ### Open Code Usage
 

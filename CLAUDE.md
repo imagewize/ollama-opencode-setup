@@ -25,21 +25,14 @@ When adding new models, update this file with the model name and display name.
 ## Custom Model Context
 
 ### Extended Context Models
-The `qwen3:8b-16k` model is a **custom variant** created from `qwen3:8b` with 16k context (vs standard 8k). It's created using:
-```bash
-ollama run qwen3:8b
->>> /set parameter num_ctx 16384
->>> /save qwen3:8b-16k
->>> /bye
-```
+Both `qwen3:8b-16k` and `ministral-3:8b-16k` are custom variants with `num_ctx 16384` baked in. This is needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` — so base models run at Ollama's small default context inside Open Code. Each variant has a committed Modelfile for reproducible builds:
 
-This pattern can be used to create custom context variants of any Ollama model without increasing model size.
-
-The same applies to `ministral-3:8b-16k`, built reproducibly from a committed Modelfile (`modelfiles/ministral-3-8b-16k.Modelfile`):
 ```bash
+ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 ```
-This is needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` — so the base model would run at Ollama's small default context inside Open Code. Baking `num_ctx 16384` into a variant gives a usable 16k window.
+
+Each Modelfile is just `FROM <base-model>` + `PARAMETER num_ctx 16384`. See [`modelfiles/README.md`](modelfiles/README.md) for details.
 
 ## Ollama Commands Reference
 
