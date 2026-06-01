@@ -7,7 +7,7 @@ This file provides guidance to Mistral Vibe when working with code in this repos
 This is a **documentation and configuration repository** for running Open Code CLI with local Ollama models. It contains:
 - Open Code configuration ([opencode.json](opencode.json))
 - Custom Modelfiles for extended context variants ([modelfiles/](modelfiles/))
-- Comprehensive documentation ([docs/LOCALLLMS.md](docs/LOCALLLMS.md), [docs/AGENTS.md](docs/AGENTS.md), [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md))
+- Comprehensive documentation ([docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md), [docs/LOCALLLMS.md](docs/LOCALLLMS.md), [docs/AGENTS.md](docs/AGENTS.md), [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md))
 - Example workflows ([examples/](examples/))
 - Test suite ([test-opencode.md](test-opencode.md))
 
