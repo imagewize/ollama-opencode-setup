@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.2] — 2026-06-01
+
+### Changed
+- `README.md`: complete rewrite as a lean overview — removed sections that duplicated doc content (Common Commands, Creating Custom Models, Performance Tips, When to Use Local vs Cloud, Troubleshooting, Resources); fixed "What's Included" to list all actual files and directories (`docs/OPENCODE-COMMANDS.md`, `docs/TROUBLESHOOTING.md`, `modelfiles/`, `scripts/`, `RECOMMENDATIONS.md`, `CHANGELOG.md` were missing); added a Documentation index table pointing to each doc's purpose; README is now an accurate entry point that delegates depth to docs/
+- `docs/PROJECT-SETUP.md`: all setup sections (new project, existing project, quick reference) now show both the symlink and copy approach side by side; previously only the symlink path was shown, leaving the copy alternative buried in the comparison table
+
+---
+
 ## [1.1.1] — 2026-06-01
 
 ### Added
