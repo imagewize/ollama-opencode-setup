@@ -5,7 +5,7 @@ Example prompts and workflows for analyzing multiple related files using extende
 ## Best Model for Multi-File Analysis
 
 **Primary:** `qwen3:8b-16k` (16k context window)
-**Alternative:** `mistral-nemo:12b-instruct-2407-q4_K_M-instruct-2407-q4_K_M` (8k context, use for smaller file sets)
+**Alternative:** `ministral-3:8b-16k` (16k context, faster — confirmed tool use)
 
 ## Understanding Context Limits
 

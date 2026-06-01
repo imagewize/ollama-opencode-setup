@@ -4,7 +4,7 @@ Example prompts and workflows for using Open Code CLI with local models for refa
 
 ## Simple Refactoring
 
-**Best model:** `qwen3:8b` or `mistral-nemo:12b-instruct-2407-q4_K_M`
+**Best model:** `ministral-3:8b` or `qwen3:8b`
 
 ### Extract Function
 
@@ -26,10 +26,10 @@ opencode run "Simplify the nested if statements in src/services/auth.ts lines 45
 
 ## TypeScript Migration
 
-**Best model:** `mistral-nemo:12b-instruct-2407-q4_K_M` (best for type inference)
+**Best model:** `ministral-3:8b-16k` or `qwen3:8b`
 
 ```bash
-opencode run "Convert src/utils/helpers.js to TypeScript with proper type definitions and interfaces" --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
+opencode run "Convert src/utils/helpers.js to TypeScript with proper type definitions and interfaces" --model ollama/ministral-3:8b-16k
 ```
 
 ## React Refactoring
@@ -43,7 +43,7 @@ opencode run "Extract the user profile section from src/pages/Dashboard.tsx into
 ### Hooks Refactoring
 
 ```bash
-opencode run "Refactor src/components/ProductList.tsx to use custom hooks for data fetching and filtering logic" --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
+opencode run "Refactor src/components/ProductList.tsx to use custom hooks for data fetching and filtering logic" --model ollama/ministral-3:8b-16k
 ```
 
 ### Props Interface
@@ -99,7 +99,7 @@ opencode run "Refactor src/api/users.js to use async/await instead of promise ch
 ### Memoization
 
 ```bash
-opencode run "Add React.memo and useMemo to src/components/ExpensiveList.tsx to prevent unnecessary re-renders" --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
+opencode run "Add React.memo and useMemo to src/components/ExpensiveList.tsx to prevent unnecessary re-renders" --model ollama/ministral-3:8b-16k
 ```
 
 ### Lazy Loading
@@ -113,7 +113,7 @@ opencode run "Refactor src/App.tsx to use React.lazy and Suspense for code split
 ### Factory Pattern
 
 ```bash
-opencode run "Refactor src/services/notification.ts to use the Factory pattern for creating different notification types (email, SMS, push)" --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
+opencode run "Refactor src/services/notification.ts to use the Factory pattern for creating different notification types (email, SMS, push)" --model ollama/ministral-3:8b-16k
 ```
 
 ### Strategy Pattern
@@ -162,7 +162,7 @@ for component in "${COMPONENTS[@]}"; do
   - Use functional components with hooks
   - Add proper TypeScript types
   - Use React.memo if needed
-  - Extract complex logic into custom hooks" --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
+  - Extract complex logic into custom hooks" --model ollama/ministral-3:8b-16k
   echo "---"
 done
 ```
@@ -201,7 +201,7 @@ After refactoring, verify:
 - [ ] Tests still pass
 - [ ] Code is more readable
 - [ ] Follows project conventions
-- [ ] Documentation is updated" --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
+- [ ] Documentation is updated" --model ollama/ministral-3:8b-16k
 ```
 
 ## Step-by-Step Refactoring
@@ -219,7 +219,7 @@ opencode run "Extract form validation logic from src/components/ComplexForm.tsx 
 opencode run "Extract form field components from src/components/ComplexForm.tsx into separate files in src/components/form/" --model ollama/qwen3:8b
 
 # Step 4: Add types
-opencode run "Add comprehensive TypeScript types to the refactored form components" --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
+opencode run "Add comprehensive TypeScript types to the refactored form components" --model ollama/ministral-3:8b-16k
 
 # Step 5: Update tests
 opencode run "Update tests in src/components/ComplexForm.test.tsx to reflect the refactored structure" --model ollama/qwen3:8b
@@ -239,7 +239,7 @@ Refactoring goals:
 4. Move inline styles to CSS modules or Tailwind classes
 5. Add prop-types validation for all components
 
-Ensure compatibility with WordPress block editor." --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
+Ensure compatibility with WordPress block editor." --model ollama/ministral-3:8b-16k
 ```
 
 ## Testing After Refactoring
@@ -287,7 +287,7 @@ opencode run "Update the JSDoc comments and README.md to reflect the refactoring
 |------|-------|---------------|
 | Simple rename/extract | `qwen3:4b` | 8-15s |
 | Single file refactor | `qwen3:8b` | 20-40s |
-| Complex refactor | `mistral-nemo:12b-instruct-2407-q4_K_M` | 30-60s |
+| Complex refactor | `ministral-3:8b-16k` | 20-45s |
 | Multi-file refactor | `qwen3:8b-16k` | 60-120s |
 
 ## Common Pitfalls

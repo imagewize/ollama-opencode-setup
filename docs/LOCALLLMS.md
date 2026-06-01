@@ -345,37 +345,27 @@ ollama pull <model-name>
 
 | Model | Context | Time | Notes |
 |-------|---------|------|-------|
-| qwen3:8b-16k | 16k | 10-30s | Extended context, slower |
-| qwen3:8b | 8k | 8-20s | Standard context |
+| ministral-3:8b | 4k | 4-8s | Fastest, no think-mode overhead |
+| ministral-3:8b-16k | 16k | 4-10s | Fastest with extended context |
 | qwen3:4b | 8k | 5-15s | Smaller, faster |
-| granite3.1-moe | 8k | 6-18s | Efficient MoE architecture |
+| qwen3:8b | 8k | 8-20s | Standard context |
+| qwen3:8b-16k | 16k | 10-30s | Extended context, slower |
 | Claude Sonnet 4 (cloud) | 200k | 2-5s | API-based, much faster |
 
 **Solutions:**
 
-1. **Use smaller models for simple tasks:**
-   ```bash
-   # For quick file operations
-   opencode run "create file" --model ollama/qwen3:4b
-
-   # For analyzing large files or multiple related files
-   opencode run "analyze components in resources/js/blocks/" --model ollama/qwen3:8b-16k
-   ```
+1. **Use faster models for simple tasks:**
+   - Switch models in the Open Code TUI (`/models` command)
+   - `ministral-3:8b` — fastest tool-calling model, no think-mode overhead (~4s warm)
+   - `qwen3:4b` — compact and quick for single-file edits
 
 2. **Use standard context when extended context isn't needed:**
-   ```bash
-   # 8k context is sufficient for most single-file operations
-   opencode run "update file" --model ollama/qwen3:8b
-   ```
+   - `ministral-3:8b` or `qwen3:8b` for most single-file operations
+   - Reserve 16k variants for tasks spanning multiple files
 
 3. **Use cloud models for whole-codebase analysis:**
-   ```bash
-   # Claude Sonnet 4 has 200k context - much better for codebase-wide tasks
-   # Use Claude Code for tasks like:
-   # - "Analyze the entire authentication flow"
-   # - "Review all API endpoints"
-   # - "Find all instances of X pattern across the codebase"
-   ```
+   - Claude Sonnet 4 has 200k context — much better for codebase-wide tasks
+   - Use Claude Code for: "Analyze the entire authentication flow", "Review all API endpoints", "Find all instances of X pattern"
 
 4. **Use Claude Code for interactive development:**
    - Claude Code with API access is significantly faster
@@ -541,10 +531,7 @@ Accept the thinking mode as part of using Qwen3 models:
 - Consider it "free documentation" of the decision-making process
 - Privacy benefits of local models outweigh the verbosity
 
-**Alternative:** Use models with less thinking:
-- Mistral Nemo 12B: Minimal thinking but **cannot create files** (analysis only)
-- Granite 3.1 MoE: Fast but **cannot create files** (analysis only)
-- Qwen3:8b or Qwen3:4b: May have less thinking (needs testing, should support file creation)
+**Alternative:** Use `ministral-3:8b` or `ministral-3:8b-16k` — confirmed tool use with no think-mode overhead at all (~4s warm). This is the recommended solution. Mistral Nemo and Granite have no think-mode but also cannot create files (analysis only).
 
 **Problem 2: "You must read the file before overwriting it" error**
 
