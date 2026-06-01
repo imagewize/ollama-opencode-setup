@@ -28,6 +28,20 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.0.0] — 2026-06-01
+
+### Added
+- `docs/AGENTS.md`: new "How OpenCode Works: The Agentic Loop" section — explains that OpenCode (and Claude Code) are agentic frameworks that wrap a model with tool definitions and an execution layer; the model emits structured tool calls, the framework executes them; contrasts with raw `ollama run` which has no execution layer
+- `.vibe/config.toml` and `.vibe/prompts/vibe.md` — Vibe CLI configuration committed to the repo (mirrors the pattern of tracking `.claude/`); `vibe.md` provides Vibe-specific repo guidance equivalent to `CLAUDE.md`
+
+### Changed
+- `TROUBLESHOOTING-OPENCODE.md` → `docs/TROUBLESHOOTING.md`: moved into `docs/` for consistency with other documentation; all cross-references updated in `README.md` and `CLAUDE.md`
+- `create-pr.sh` → `scripts/create-pr.sh`: moved into `scripts/` alongside `tool-call-test.sh`; removed from `.gitignore` (the file contains no secrets) so it is now tracked
+- `CLAUDE.md`: documentation structure section updated to reference `docs/TROUBLESHOOTING.md` and note the agentic loop content in `docs/AGENTS.md`
+- `README.md`: troubleshooting section now links to `docs/TROUBLESHOOTING.md`
+
+---
+
 ## [0.5.2] — 2026-05-31
 
 ### Added
