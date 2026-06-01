@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.0.2] — 2026-06-01
+
+### Changed
+- `docs/AGENTS.md` — corrected model capability ratings: removed `mistral-nemo` and `granite3.1-moe` from agent suitability table (they have no tool use and cannot create files); added `ministral-3:8b` and `ministral-3:8b-16k` as the recommended agent models; removed fake `opencode --batch` and `opencode --model` CLI flags from workflow patterns; removed speculative "Other Modes" section; updated performance benchmarks and best-practice recommendations to lead with Ministral-3
+- `docs/LOCALLLMS.md` — removed fake `opencode run --model` CLI invocations from the Slow Performance troubleshooting section; replaced with TUI-based guidance; updated performance table for file writes (removed `granite3.1-moe` which cannot write files, added Ministral-3 variants); updated think-mode alternatives to lead with `ministral-3:8b` as the correct solution
+- `docs/OPENCODE-COMMANDS.md` — removed non-existent `--batch` flag from Command-Line Arguments; added `--continue` and `--agent` flags (confirmed via `opencode --help`); updated Build Agent model list to include `ministral-3:8b-16k` and `ministral-3:8b` as confirmed and recommended; removed "only Qwen3 models have tool usage" claim (outdated); updated Common Workflows, Tips, and Troubleshooting sections to reflect current model landscape
+- `examples/refactoring.md` — replaced all `mistral-nemo` model recommendations with `ministral-3:8b-16k` or `qwen3:8b`; mistral-nemo cannot write files so all refactoring tasks would have silently failed
+- `examples/batch-processing.md` — replaced `mistral-nemo` in all file-writing script templates (JSDoc generation, test generation, class component conversion, WordPress block customization) with `qwen3:8b`; updated Tips and performance table to lead with `ministral-3:8b` as the recommended fast option
+- `examples/multi-file-analysis.md` — fixed typo in model name (`mistral-nemo:12b-instruct-2407-q4_K_M-instruct-2407-q4_K_M`); replaced alternative model recommendation with `ministral-3:8b-16k` (confirmed tool use)
+
+---
+
 ## [1.0.1] — 2026-06-01
 
 ### Added

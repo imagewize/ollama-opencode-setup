@@ -178,18 +178,23 @@ Analyze the API design in @src/api/routes.ts and suggest improvements.
 When launching Open Code CLI:
 
 ```bash
-# Use specific model
-opencode --model ollama/qwen3:8b-16k
+# Start TUI with a specific model
+opencode --model ollama/ministral-3:8b-16k
 
-# Run single prompt
+# Run a single prompt non-interactively
 opencode run "Create a hello.py file"
 
-# Use specific model with run
-opencode run "Create todo.md with 3 tasks" --model ollama/qwen3:8b-16k
+# Run a single prompt with a specific model
+opencode run "Create todo.md with 3 tasks" --model ollama/ministral-3:8b-16k
 
-# Batch mode (if supported)
-opencode --batch tasks.txt
+# Continue the last session
+opencode --continue
+
+# Start with a specific agent (build or plan)
+opencode --agent build
 ```
+
+**Note:** There is no `--batch` flag. For batch operations, run `opencode run` in a shell loop or use sequential prompts in the TUI.
 
 ## Agent Configuration
 
@@ -207,10 +212,12 @@ opencode --batch tasks.txt
 - Generating boilerplate
 - Rapid prototyping
 
-**Models that work:**
-- ✅ qwen3:8b-16k (tool usage support)
-- ✅ qwen3:8b (likely has tool usage, needs testing)
-- ✅ qwen3:4b (likely has tool usage, needs testing)
+**Models that work (confirmed tool use):**
+- ✅ ministral-3:8b-16k (recommended — fastest, no think-mode overhead)
+- ✅ ministral-3:8b
+- ✅ qwen3:8b-16k
+- ✅ qwen3:8b
+- ✅ qwen3:4b
 - ❌ mistral-nemo:12b-instruct-2407-q4_K_M (analysis only, no file creation)
 - ❌ granite3.1-moe (analysis only, no file creation)
 
@@ -238,7 +245,7 @@ opencode --batch tasks.txt
 ### 1. Create Files (Build Agent)
 
 ```bash
-opencode --model ollama/qwen3:8b-16k
+opencode --model ollama/ministral-3:8b-16k
 # Build agent is default
 > Create a Python FastAPI server with authentication
 ```
@@ -246,7 +253,7 @@ opencode --model ollama/qwen3:8b-16k
 ### 2. Analyze Then Build (Agent Switching)
 
 ```bash
-opencode --model ollama/qwen3:8b-16k
+opencode --model ollama/ministral-3:8b-16k
 # Press Tab to switch to plan agent
 > Analyze the current authentication system and suggest improvements
 
@@ -299,7 +306,8 @@ opencode --model ollama/mistral-nemo:12b-instruct-2407-q4_K_M
 
 ### 2. Use the Right Model
 
-- **File creation/modification** → qwen3:8b-16k (only Qwen3 models have tool usage)
+- **File creation/modification** → ministral-3:8b-16k (recommended: fastest, no think-mode overhead)
+- **Multi-file agentic work** → ministral-3:8b-16k or qwen3:8b-16k
 - **Code review/analysis** → mistral-nemo:12b-instruct-2407-q4_K_M (best quality, but read-only)
 - **Fast analysis** → granite3.1-moe (efficient, but read-only)
 
@@ -317,13 +325,11 @@ Create project-specific commands for repetitive tasks:
 - `/deploy` - Deployment checks
 - `/review` - Security review
 
-### 5. Accept Think Mode
+### 5. Think Mode
 
-- Qwen3 models enter verbose "thinking mode"
-- This is **model behavior**, not a CLI issue
-- Build agent is already the default
-- Tasks complete successfully despite verbosity
-- Consider it "free documentation" of reasoning
+- Qwen3 models enter verbose "thinking mode" — this is model behavior, not a CLI issue
+- Use `ministral-3:8b` or `ministral-3:8b-16k` to avoid think-mode entirely (confirmed tool use, ~4s warm)
+- If using Qwen3, tasks complete successfully despite the verbosity
 
 ## Troubleshooting
 
@@ -339,9 +345,10 @@ Create project-specific commands for repetitive tasks:
 
 **Issue:** Mistral Nemo or Granite models don't create files
 
-**Solution:** Only Qwen3 models have tool usage (file creation). Use:
-- qwen3:8b-16k for file operations
-- Mistral/Granite for analysis only
+**Solution:** Use a model with confirmed tool use:
+- ministral-3:8b-16k or ministral-3:8b (fastest)
+- qwen3:8b-16k, qwen3:8b, qwen3:4b
+- Mistral Nemo and Granite are analysis-only
 
 ### Slow Performance
 

@@ -79,7 +79,7 @@ done
 #!/bin/bash
 # add-jsdoc.sh
 
-MODEL="ollama/mistral-nemo:12b-instruct-2407-q4_K_M"
+MODEL="ollama/qwen3:8b"
 
 find src/utils -name "*.ts" -type f | while read -r file; do
   echo "Adding JSDoc to $file..."
@@ -99,7 +99,7 @@ done
 #!/bin/bash
 # generate-tests.sh
 
-MODEL="ollama/mistral-nemo:12b-instruct-2407-q4_K_M"
+MODEL="ollama/qwen3:8b"
 SOURCE_FILES=(
   "src/utils/validation.ts"
   "src/utils/formatting.ts"
@@ -179,7 +179,7 @@ done
 #!/bin/bash
 # convert-to-functional.sh
 
-MODEL="ollama/mistral-nemo:12b-instruct-2407-q4_K_M"
+MODEL="ollama/qwen3:8b"
 
 # Find all class components
 grep -l "class.*extends.*Component" src/components/**/*.tsx | while read -r file; do
@@ -334,7 +334,7 @@ done
 #!/bin/bash
 # generate-blocks.sh
 
-MODEL="ollama/mistral-nemo:12b-instruct-2407-q4_K_M"
+MODEL="ollama/qwen3:8b"
 BLOCKS=(
   "testimonial:Display customer testimonials with image and quote"
   "pricing:Pricing table with features and CTA button"
@@ -459,9 +459,10 @@ log "Batch complete: $SUCCESS succeeded, $FAILED failed"
 ## Tips for Effective Batch Processing
 
 1. **Choose the right model:**
+   - `ministral-3:8b` - Fastest tool-calling model, no think-mode overhead (~4s warm)
    - `qwen3:4b` - Fast, simple tasks (renaming, formatting)
    - `qwen3:8b` - Balanced, most tasks
-   - `mistral-nemo:12b-instruct-2407-q4_K_M` - Complex tasks (refactoring, generation)
+   - `ministral-3:8b-16k` - Multi-file or complex generation tasks
 
 2. **Add delays for resource management:**
    ```bash
@@ -512,8 +513,8 @@ log "Batch complete: $SUCCESS succeeded, $FAILED failed"
 |-----------|-------|-------|---------------|------------------|
 | Simple formatting | 10 | `qwen3:4b` | 8-12s | 1.5-2 min |
 | Type additions | 10 | `qwen3:8b` | 15-20s | 2.5-3.5 min |
-| Refactoring | 10 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 30-45s | 5-7.5 min |
-| Test generation | 10 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 40-60s | 6.5-10 min |
+| Refactoring | 10 | `ministral-3:8b-16k` | 10-20s | 1.5-3 min |
+| Test generation | 10 | `qwen3:8b` | 30-45s | 5-7.5 min |
 
 **Parallel processing (3 jobs):**
 - Can reduce total time by ~60-70%
