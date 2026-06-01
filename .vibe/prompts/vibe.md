@@ -30,6 +30,7 @@ When adding new models, update this file with the model name and display name, t
 ### [modelfiles/](modelfiles/)
 Custom Modelfiles for creating extended context variants:
 - `ministral-3-8b-16k.Modelfile` - 16k context variant of ministral-3:8b
+- `qwen3-8b-16k.Modelfile` - 16k context variant of qwen3:8b
 - Create new variants using: `ollama create <model-name> -f modelfiles/<filename>.Modelfile`
 
 ## Custom Model Context
@@ -37,16 +38,9 @@ Custom Modelfiles for creating extended context variants:
 ### Extended Context Models
 The `ministral-3:8b-16k` and `qwen3:8b-16k` models are **custom variants** with 16k context windows (vs standard 8k). This is needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` parameter — so the base model would run at Ollama's default context inside Open Code.
 
-Create a 16k context variant interactively:
+Build from a committed Modelfile (reproducible):
 ```bash
-ollama run qwen3:8b
->>> /set parameter num_ctx 16384
->>> /save qwen3:8b-16k
->>> /bye
-```
-
-Or reproducibly from a Modelfile:
-```bash
+ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 ```
 
