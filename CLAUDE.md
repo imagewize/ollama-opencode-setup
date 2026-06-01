@@ -101,12 +101,20 @@ ollama serve
 - Known Open Code CLI issues (thinking mode behavior, binary file detection)
 
 ### [docs/AGENTS.md](docs/AGENTS.md)
+- How OpenCode works: the agentic loop (tool-use wrapper pattern)
 - Build and plan agents (Tab key switching)
 - Model capabilities for agent workflows
 - Agent workflow patterns (autonomous, iterative, analysis-then-action, batch)
 - Think mode behavior understanding
 - Performance benchmarks by model
 - Best practices for autonomous task execution
+
+### [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+- Tool usage discovery and model capability limitations
+- Diagnosing models that plan but do not create files
+- Tool call format and think mode handling
+- Hybrid workflow strategies (analysis + build phases)
+- Model selection flowchart and command templates
 
 ### [examples/](examples/)
 - [code-review.md](examples/code-review.md) - Code review workflows
