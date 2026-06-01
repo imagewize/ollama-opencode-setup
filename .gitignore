@@ -16,9 +16,6 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Shell scripts with potential secrets/tokens
-create-pr.sh
-
 # Node / npm (if ever scaffolded locally)
 node_modules/
 .npm/

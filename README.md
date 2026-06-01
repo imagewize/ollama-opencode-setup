@@ -283,7 +283,7 @@ ollama pull qwen3:8b
 - Use standard context when extended context isn't needed (`qwen3:8b` instead of `qwen3:8b-16k`)
 - Consider cloud models for time-sensitive work
 
-See [docs/LOCALLLMS.md#troubleshooting](docs/LOCALLLMS.md#troubleshooting) for more details.
+See [docs/LOCALLLMS.md#troubleshooting](docs/LOCALLLMS.md#troubleshooting) and [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for more details.
 
 ## Resources
 
