@@ -1,5 +1,28 @@
 # Open Code CLI Agents Guide
 
+## How OpenCode Works: The Agentic Loop
+
+OpenCode (and tools like Claude Code) are **agentic frameworks** — they wrap a language model with tools and an execution layer. Understanding this explains why OpenCode can write files when `ollama run` cannot.
+
+```
+You → OpenCode → Model (with tool definitions in context)
+                    ↓
+              Model outputs a tool call (e.g., write_file)
+                    ↓
+              OpenCode executes it on your filesystem
+                    ↓
+              Result fed back to model
+                    ↓
+              Model continues / calls next tool
+```
+
+The model never directly touches your filesystem — it emits structured tool calls and OpenCode executes them. This is why:
+
+- **`ollama run`** is a raw chat interface: no tools are defined, no execution layer exists
+- **`opencode`** is an agentic loop: tools are defined in the system prompt, and OpenCode executes whatever the model requests
+
+The same pattern applies to Claude Code (Anthropic's models), Cursor, and other AI coding tools. What differs is the model, the available tools, and how reliably the model produces valid tool calls. Local models like `ministral-3:8b` support tool calling but are less consistent than cloud models trained specifically for it — which is why tool-use confirmation testing matters (see [`scripts/tool-call-test.sh`](../scripts/tool-call-test.sh)).
+
 ## What are Agents in Open Code CLI?
 
 Open Code CLI supports **agent mode**, which allows the LLM to autonomously plan and execute multi-step tasks. Agents can:
