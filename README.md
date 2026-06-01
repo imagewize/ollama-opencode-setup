@@ -44,12 +44,12 @@ Complete configuration and documentation for running Open Code CLI with local Ol
    ollama serve
    ```
 
-3. **Pull your first model (and build the recommended 16k variant):**
+3. **Pull your first model (and build the recommended 32k variant):**
    ```bash
    ollama pull ministral-3:8b   # fast, reliable tool calling
 
-   # Open Code can't set Ollama's num_ctx, so bake a 16k context variant:
-   ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+   # Open Code can't set Ollama's num_ctx, so bake a 32k context variant:
+   ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile
    ```
 
 4. **Use the configuration in your project:**
@@ -94,7 +94,8 @@ Tool-call support is verified with [`scripts/tool-call-test.sh`](scripts/tool-ca
 
 | Model | Size | Context | Tool Usage | Best For |
 |-------|------|---------|------------|----------|
-| `ministral-3:8b-16k` ⭐ | 6.0 GB | 16k | ✅ YES | **Recommended for Open Code** — 16k variant (num_ctx baked in) |
+| `ministral-3:8b-32k` ⭐ | 11 GB | 32k | ✅ YES | **Recommended for Open Code** — 32k variant, 100% GPU on M1 16GB |
+| `ministral-3:8b-16k` | 6.5 GB | 16k | ✅ YES | Memory-constrained fallback (100% GPU, smaller footprint) |
 | `ministral-3:8b` | 6.0 GB | ~4k default | ✅ YES | Base model — fast tool use (~4s); runs at Ollama's small default context in Open Code |
 | `qwen3:8b-16k` | 5.2 GB | 16k | ✅ YES | Multi-file analysis (larger context) |
 | `qwen3:8b` | 5.2 GB | 8k | ✅ YES | General file operations (~26s) |
@@ -130,15 +131,16 @@ Open Code talks to Ollama via the OpenAI-compatible endpoint, which does **not**
 
 **From a committed Modelfile (reproducible):**
 ```bash
+ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile  # recommended
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 
 # Verify the context is baked in
-ollama show ministral-3:8b-16k --modelfile | grep num_ctx
-# PARAMETER num_ctx 16384
+ollama show ministral-3:8b-32k --modelfile | grep num_ctx
+# PARAMETER num_ctx 32768
 ```
 
-Each Modelfile is just `FROM <base-model>` + `PARAMETER num_ctx 16384`. See [`modelfiles/README.md`](modelfiles/README.md) for the full list.
+Each Modelfile is just `FROM <base-model>` + `PARAMETER num_ctx <value>`. See [`modelfiles/README.md`](modelfiles/README.md) for GPU test results and the full list.
 
 ### Open Code Usage
 

@@ -12,10 +12,12 @@ context window is always active regardless of how Open Code calls the model.
 
 ## Models
 
-| Modelfile | Base model | Context | Build command |
-|---|---|---|---|
-| `ministral-3-8b-16k.Modelfile` | `ministral-3:8b` | 16k | `ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile` |
-| `qwen3-8b-16k.Modelfile` | `qwen3:8b` | 16k | `ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile` |
+| Modelfile | Base model | Context | GPU on M1 16GB | Build command |
+|---|---|---|---|---|
+| `ministral-3-8b-32k.Modelfile` | `ministral-3:8b` | 32k | ✅ 100% GPU (11 GB) | `ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile` |
+| `ministral-3-8b-16k.Modelfile` | `ministral-3:8b` | 16k | ✅ 100% GPU (~6.5 GB) | `ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile` |
+| `qwen3-8b-16k.Modelfile` | `qwen3:8b` | 16k | ✅ 100% GPU (~6.5 GB) | `ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile` |
+| `ministral-3-8b-64k.Modelfile` | `ministral-3:8b` | 64k | ❌ 27% CPU spillover (16 GB) | `ollama create ministral-3:8b-64k -f modelfiles/ministral-3-8b-64k.Modelfile` |
 
 ## Adding a new variant
 

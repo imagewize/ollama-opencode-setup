@@ -1,0 +1,11 @@
+# Experimental 32k-context variant of ministral-3:8b for Open Code on M1 16GB.
+#
+# Why: 64k context causes 27% CPU spillover on M1 16GB (tested 2026-06-01),
+# saturating all 16GB of unified memory. 32k is Ollama's default for 24-48GB
+# systems and is the natural middle ground between the 16k sweet spot and the
+# 64k target recommended by Ollama docs for agentic tools.
+#
+# Build:  ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile
+
+FROM ministral-3:8b
+PARAMETER num_ctx 32768

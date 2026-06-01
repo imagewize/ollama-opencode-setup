@@ -17,7 +17,7 @@ This repository does NOT contain application code - it's a reference repository 
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models (tool use, confirmed)**: ministral-3:8b-16k (recommended for Open Code), ministral-3:8b, qwen3:8b-16k, qwen3:8b, qwen3:4b
+- **Models (tool use, confirmed)**: ministral-3:8b-32k (recommended for Open Code), ministral-3:8b-16k, ministral-3:8b, qwen3:8b-16k, qwen3:8b, qwen3:4b
 - **Models (read-only, confirmed)**: deepseek-coder-v2:16b, qwen3.5:9b, qwen3.5:4b, phi4, gemma4:e4b, mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
 
 When adding new models, update this file with the model name and display name.
@@ -25,14 +25,15 @@ When adding new models, update this file with the model name and display name.
 ## Custom Model Context
 
 ### Extended Context Models
-Both `qwen3:8b-16k` and `ministral-3:8b-16k` are custom variants with `num_ctx 16384` baked in. This is needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` — so base models run at Ollama's small default context inside Open Code. Each variant has a committed Modelfile for reproducible builds:
+Custom variants with `num_ctx` baked in are needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` — so base models run at Ollama's small default context inside Open Code. Each variant has a committed Modelfile for reproducible builds:
 
 ```bash
-ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
+ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile  # recommended
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
+ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 ```
 
-Each Modelfile is just `FROM <base-model>` + `PARAMETER num_ctx 16384`. See [`modelfiles/README.md`](modelfiles/README.md) for details.
+`ministral-3:8b-32k` is the new recommended variant — tested 100% GPU on M1 16GB (11 GB footprint). 64k was tested but causes 27% CPU spillover on M1 16GB. See [`modelfiles/README.md`](modelfiles/README.md) for the full GPU test results.
 
 ## Ollama Commands Reference
 
@@ -65,8 +66,9 @@ ollama serve
 - 16k tokens: ~12,000 words, 3-5 medium files
 - 200k tokens (Claude): ~150,000 words, entire small-medium codebase
 
-**Model recommendations (M1 16GB, tested 2026-05-31):**
-- **Default / fast tool use** → `ministral-3:8b` (6.0 GB, tool use confirmed, ~4s warm, no think-mode tax — recommended)
+**Model recommendations (M1 16GB, tested 2026-06-01):**
+- **Recommended for Open Code** → `ministral-3:8b-32k` (11 GB, 32k ctx, 100% GPU, tool use confirmed)
+- **Memory-constrained fallback** → `ministral-3:8b-16k` (6.5 GB, 16k ctx, 100% GPU, tool use confirmed)
 - **Quick file ops** → `qwen3:4b` (2.5 GB, tool use confirmed)
 - **Standard file ops** → `qwen3:8b` (5.2 GB, tool use confirmed, ~26s)
 - **Multi-file ops** → `qwen3:8b-16k` (5.2 GB, 16k ctx, tool use confirmed)
