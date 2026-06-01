@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- `modelfiles/qwen3-8b-16k.Modelfile` — reproducible build definition (`FROM qwen3:8b` + `PARAMETER num_ctx 16384`) for the `qwen3:8b-16k` custom model; mirrors the committed Modelfile pattern established for `ministral-3:8b-16k`. Previously this model was created interactively via `ollama run qwen3:8b` + `/save`, which is not reproducible from the repo alone.
+
 ---
 
 ## [1.0.2] — 2026-06-01
