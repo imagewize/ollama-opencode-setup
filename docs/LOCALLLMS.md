@@ -258,7 +258,7 @@ bash scripts/tool-call-test.sh \
 
 | Model | HF Repo | Size | Context | Tool Use | Notes |
 |-------|---------|------|---------|----------|-------|
-| Qwen3.5 27B Reasoning Distilled v2 | `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` | ~12 GB | 262k | TBD pending test | Claude Opus 4.6 reasoning distillate, 100% GPU on M4 24GB (~13.6 tok/s est.) |
+| Qwen3.5 27B Reasoning Distilled v2 | `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` | ~12 GB | 262k | ✅ Yes | Claude Opus 4.6 reasoning distillate, 100% GPU on M4 24GB (~13.6 tok/s est., tested 2026-06-28) |
 
 Other MLX quantizations of this model if memory is a concern:
 - `cs2764/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-4bit-mlx` — alternative 4-bit build
