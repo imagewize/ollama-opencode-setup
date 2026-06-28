@@ -68,7 +68,7 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 
 | Model | Size | Context | Tool Use | Notes |
 |-------|------|---------|----------|-------|
-| `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` ⭐ | ~12 GB | 262k | TBD | Claude Opus 4.6 reasoning distillate, 100% GPU on M4 24GB |
+| `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` ⭐ | ~12 GB | 262k | ✅ | Claude Opus 4.6 reasoning distillate, 100% GPU on M4 24GB, ~9.9 tok/s (tested 2026-06-28) |
 
 ---
 
