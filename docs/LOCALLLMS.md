@@ -45,21 +45,35 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 
 **Tool usage** = can create/modify files in Open Code CLI. Read-only models can analyze code but cannot write files.
 
+**MacBook M1 16GB — tool use confirmed:**
+
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
-| `ministral-3:8b-32k` | 11 GB | 32k | Yes | **Recommended for Open Code** — custom 32k variant, 100% GPU on M1 16GB (tested 2026-06-01) |
+| `ministral-3:8b-32k` | 11 GB | 32k | Yes | **Recommended for M1 16GB** — custom 32k variant, 100% GPU, fastest tool-caller (~4s warm) |
 | `ministral-3:8b-16k` | 6.5 GB | 16k | Yes | Memory-constrained fallback — 100% GPU, smaller footprint |
-| `ministral-3:8b` | 6.0 GB | Ollama default (~4k) | Yes | Base model — fast, reliable tool calls, no think-mode tax (~4s warm); runs at Ollama's small default context in Open Code, so prefer the 32k variant |
-| `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Qwen3 8B with extended context (custom variant) — works but verbose think mode (~26s) |
-| `qwen3:8b` | 5.2 GB | 8k | Yes | Qwen3 8B standard model — ~26s for a write tool call (think-mode overhead) |
-| `qwen3:4b` | 2.5 GB | 8k | Yes | Qwen3 4B compact model |
-| `deepseek-coder-v2:16b` | 8.9 GB | 128k | No | Not recommended — Ollama reports `does not support tools`; code-completion/FIM model, no tool calling (tested 2026-05-31) |
-| `qwen3.5:9b` | 6.6 GB | 32k | No | Not recommended — no tool use, too slow on M1 16GB (13+ min for analysis, tested 2026-05-31) |
-| `gemma4:e4b` | ~5.5 GB | 32k | No | Not recommended — attempts tool call but sends malformed call; file not created (tested 2026-05-31) |
-| `phi4:latest` | ~5 GB | 16k | No | Not recommended — Open Code CLI explicitly reports "does not support tools" (tested 2026-05-31) |
-| `qwen3.5:4b` | ~2.5 GB | 32k | No | Not recommended — no tool use, outputs bash instead of using write tool (tested 2026-05-31) |
-| `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | No | Read-only analysis only |
-| `granite3.1-moe:latest` | 2.0 GB | 8k | No | Read-only analysis only |
+| `ministral-3:8b` | 6.0 GB | ~4k default | Yes | Base model — fast, no think-mode tax; prefer the 32k variant for agentic use |
+| `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Custom 16k variant — verbose think mode (~26s) |
+| `qwen3:8b` | 5.2 GB | 8k | Yes | Standard Qwen3 8B — ~26s for a write tool call (think-mode overhead) |
+| `qwen3:4b` | 2.5 GB | 8k | Yes | Compact, quick for single-file edits |
+
+**Mac Mini M4 Pro 24GB — tool use confirmed:**
+
+| Model | Size | Context | Tool Usage | Description |
+|-------|------|---------|------------|-------------|
+| `qwen3-coder:30b` | 19 GB | 256k | Yes | **Recommended for M4 24GB** — coding-optimized MoE (3.3B active), 256k ctx, tool use confirmed (pending post-Tahoe test) |
+| `qwen3.5:27b-mlx` | 20 GB | 256k | Yes | Ollama built-in MLX engine — no separate server needed (pending test) |
+| `qwen3.5:latest` | 6.6 GB | 32k | Yes | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
+
+**Read-only (no tool use — analysis only):**
+
+| Model | Size | Context | Notes |
+|-------|------|---------|-------|
+| `deepseek-coder-v2:16b` | 8.9 GB | 128k | Ollama reports `does not support tools`; FIM/completion model |
+| `qwen3.5:9b` / `qwen3.5:4b` | 6.6 / ~2.5 GB | 32k | Outputs bash instead of write tool |
+| `phi4:latest` | ~5 GB | 16k | Open Code explicitly reports "does not support tools" |
+| `gemma4:e4b` | ~5.5 GB | 32k | Malformed tool call — file not created |
+| `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | Best quality for read-only review |
+| `granite3.1-moe:latest` | 2.0 GB | 8k | Fastest read-only analysis |
 
 **Testing method:** Tool-call support is verified with [`scripts/tool-call-test.sh`](../scripts/tool-call-test.sh), which sends a `write`-tool request to Ollama's OpenAI-compatible endpoint (the same API Open Code uses) and checks for a valid `tool_calls` response.
 
@@ -200,73 +214,46 @@ We run several models with different ideal contexts (Ministral, Qwen3 variants) 
 
 > Documented precedence is *API param > env var > Modelfile > built-in default*, but in practice a baked `num_ctx` reliably pins that specific model — which is the behavior we want.
 
-## MLX Runtime (Mac Mini M4 24GB+)
+## Large Models on Mac Mini M4 Pro 24GB
 
-Machines with 24GB+ unified memory can run large reasoning models (22B+) via [mlx-lm](https://github.com/ml-explore/mlx-examples/tree/main/llms), Apple's MLX framework. It exposes an OpenAI-compatible server on a local port — Open Code connects to it the same way it connects to Ollama, just on a different port.
+Machines with 24GB+ unified memory can run 19–20GB models (30B MoE or 27B dense) entirely on GPU via Ollama. **No separate MLX server is needed** — Ollama now includes a built-in MLX engine that handles Apple Silicon natively, including NVFP4 quantization.
 
-### Discovering compatible models (llmfit)
+### Why Ollama's built-in MLX is enough
 
-Before pulling a large model, use [llmfit](https://github.com/AlexsJones/llmfit) to check whether it fits your hardware and what runtime/quantization is best:
+Ollama updated its MLX engine to lean on Apple's unified memory and the Metal-backed MLX framework — delivering higher quality, faster output, and lower memory use than earlier llama.cpp/GGUF paths for the same models. Models tagged `-mlx` on Ollama use this engine automatically. A separate `mlx_lm.server` setup is no longer needed for models available in Ollama's registry.
+
+### Recommended models for M4 Pro 24GB
 
 ```bash
-brew install AlexsJones/homebrew-llmfit/llmfit
-llmfit
+# Best for coding tasks in Open Code (256k ctx, MoE — fast inference)
+ollama pull qwen3-coder:30b
+
+# Alternative: Ollama's built-in MLX engine, general reasoning (256k ctx)
+ollama pull qwen3.5:27b-mlx
 ```
 
-llmfit shows memory fit, recommended quantization (e.g. `mlx-4bit`), estimated speed, and whether the model is already installed. On the Mac Mini M4 24GB, `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` scores 92.9/100 — Perfect GPU fit, 61.2% memory usage (14.7 / 24 GB), ~13.6 tok/s estimated.
+| Model | Size | Context | Tool Use | Notes |
+|-------|------|---------|----------|-------|
+| `qwen3-coder:30b` | 19 GB | 256k | ✅ | **Recommended** — coding-optimized, MoE (3.3B active params, fast), 256k ctx |
+| `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, no separate server |
+| `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Confirmed tool use on M4 24GB (~18s, tested 2026-06-28) |
 
-**Why MLX instead of Ollama for large models?**
-- Ollama uses llama.cpp/GGUF; pre-converted MLX models are a better fit for Apple Silicon at 22B+ scale
-- Pre-converted 4-bit MLX versions exist on HuggingFace — no conversion step needed
-- Native Metal GPU, no CPU spillover on 24GB
+### Context and num_ctx on large models
 
-### Setup
+The same `num_ctx` baking rule applies — Ollama's OpenAI-compatible endpoint ignores context length. For `qwen3-coder:30b` (native 256k), a practical baked context on M4 24GB is 32k–64k. Full 256k would require ~48GB+ of KV cache memory.
 
-**1. Install mlx-lm** (venv avoids touching system Python):
 ```bash
-python3 -m venv ~/mlx-env
-~/mlx-env/bin/pip install mlx-lm
+# Create a context-baked variant (once model is pulled)
+ollama create qwen3-coder:30b-32k -f modelfiles/qwen3-coder-30b-32k.Modelfile
 ```
 
-**2. Pull the model** (downloads ~12 GB to `~/.cache/huggingface/hub/`):
-```bash
-~/mlx-env/bin/python3 -c "
-from huggingface_hub import snapshot_download
-snapshot_download('Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit')
-"
-```
-
-**3. Start the MLX server** (run this before launching Open Code):
-```bash
-~/mlx-env/bin/mlx_lm.server \
-  --model Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit \
-  --port 8080
-```
-
-**4. Open Code is already configured** — `opencode.json` in this repo includes the `mlx` provider pointing to `http://localhost:8080/v1`. Select the model from the Open Code model picker once the server is running.
+See the Modelfile in [`modelfiles/`](../modelfiles/) once added.
 
 ### Test tool-call capability
 
 ```bash
-bash scripts/tool-call-test.sh \
-  Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit \
-  16384 \
-  http://localhost:8080/v1/chat/completions
+bash scripts/tool-call-test.sh qwen3-coder:30b 32768
 ```
-
-### MLX Models (Mac Mini M4 24GB, tested 2026-06-28)
-
-| Model | HF Repo | Size | Context | Tool Use | Notes |
-|-------|---------|------|---------|----------|-------|
-| Qwen3.5 27B Reasoning Distilled v2 | `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` | ~12 GB | 262k | ✅ Yes | Claude Opus 4.6 reasoning distillate, 100% GPU on M4 24GB (~13.6 tok/s est., tested 2026-06-28) |
-
-Other MLX quantizations of this model if memory is a concern:
-- `cs2764/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-4bit-mlx` — alternative 4-bit build
-- `cs2764/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-6bit-mlx` — 6-bit (~16 GB, higher quality)
-
-### Keeping the MLX server running
-
-For persistent use, run the server in a dedicated terminal or background it with a process manager. Open Code will error on the `mlx` provider silently if the server is not up — the Ollama models still work independently.
 
 ## Ollama Commands Reference
 

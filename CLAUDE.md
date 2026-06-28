@@ -17,8 +17,9 @@ This repository does NOT contain application code - it's a reference repository 
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models (tool use, confirmed)**: ministral-3:8b-32k (recommended for Open Code), ministral-3:8b-16k, ministral-3:8b, qwen3:8b-16k, qwen3:8b, qwen3:4b
-- **Models (read-only, confirmed)**: deepseek-coder-v2:16b, qwen3.5:9b, qwen3.5:4b, phi4, gemma4:e4b, mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
+- **Models (tool use, M1 16GB)**: ministral-3:8b-32k (recommended), ministral-3:8b-16k, ministral-3:8b, qwen3:8b-16k, qwen3:8b, qwen3:4b
+- **Models (tool use, M4 24GB)**: qwen3-coder:30b (recommended), qwen3.5:27b-mlx, qwen3.5:latest
+- **Models (read-only)**: deepseek-coder-v2:16b, qwen3.5:9b, qwen3.5:4b, phi4, gemma4:e4b, mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
 
 When adding new models, update this file with the model name and display name.
 
@@ -76,12 +77,11 @@ ollama serve
 - **Read-only analysis** → `mistral-nemo:12b-instruct-2407-q4_K_M` (7.5 GB, read-only)
 
 **Model recommendations (Mac Mini M4 Pro 24GB, tested 2026-06-28):**
-- **Reasoning + large context (Ollama)** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
-- **Reasoning + large context (MLX)** → `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` (~12 GB, 262k ctx, tool use confirmed, Claude Opus 4.6 distillate, served via `mlx_lm.server` on port 8080)
+- **Recommended for Open Code** → `qwen3-coder:30b` (19 GB, 256k ctx, coding-optimized MoE, tool use confirmed)
+- **Alternative large model** → `qwen3.5:27b-mlx` (20 GB, 256k ctx, Ollama built-in MLX engine)
+- **Lightweight option** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
 
-The Mac Mini M4 24GB can run large MLX models (22B+) entirely on GPU. The MLX route requires `mlx-lm` installed in `~/mlx-env` and the server running before launching Open Code. See [docs/LOCALLLMS.md](docs/LOCALLLMS.md#mlx-runtime-mac-mini-m4-24gb) for full setup.
-
-Use [llmfit](https://github.com/AlexsJones/llmfit) (`brew install AlexsJones/homebrew-llmfit/llmfit`) to evaluate model fit before pulling — shows memory usage, recommended quantization, runtime, and estimated speed for your specific hardware.
+The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no separate MLX server needed. Ollama's built-in MLX engine handles Apple Silicon natively; models tagged `-mlx` use it automatically. See [docs/LOCALLLMS.md](docs/LOCALLLMS.md#large-models-on-mac-mini-m4-pro-24gb) for details.
 
 ## Documentation Structure
 

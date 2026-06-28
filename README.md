@@ -64,11 +64,13 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | ❌ | Best quality for read-only review |
 | `granite3.1-moe` | 2.0 GB | 8k | ❌ | Fastest read-only analysis |
 
-**MLX models** (via `mlx_lm.server`) — requires Mac Mini M4 24GB+, see [docs/LOCALLLMS.md](docs/LOCALLLMS.md#mlx-runtime-mac-mini-m4-24gb):
+**Mac Mini M4 Pro 24GB** — large models via Ollama (no separate MLX server needed):
 
 | Model | Size | Context | Tool Use | Notes |
 |-------|------|---------|----------|-------|
-| `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` ⭐ | ~12 GB | 262k | ✅ | Claude Opus 4.6 reasoning distillate, 100% GPU on M4 24GB, ~9.9 tok/s (tested 2026-06-28) |
+| `qwen3-coder:30b` ⭐ | 19 GB | 256k | ✅ | **Recommended for M4 24GB** — coding-optimized MoE, 256k ctx, fast inference |
+| `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, general reasoning |
+| `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
 
 ---
 
