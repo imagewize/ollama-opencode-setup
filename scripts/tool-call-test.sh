@@ -45,11 +45,49 @@ JSON
 
 echo "=== Model: ${MODEL} (num_ctx=${NUM_CTX}) ==="
 START=$(date +%s)
-RESP=$(curl -s "${ENDPOINT}" -H 'Content-Type: application/json' -d "${PAYLOAD}")
+# Capture body + HTTP status; -w appends the status code on its own line.
+# `|| CURL_EXIT=$?` keeps `set -e` from aborting on a transport failure.
+CURL_EXIT=0
+RAW=$(curl -s -w '\n%{http_code}' "${ENDPOINT}" -H 'Content-Type: application/json' -d "${PAYLOAD}") || CURL_EXIT=$?
 END=$(date +%s)
 
 ELAPSED=$((END - START))
 echo "Elapsed: ${ELAPSED}s"
+
+HTTP_CODE=$(printf '%s' "${RAW}" | tail -n1)
+RESP=$(printf '%s' "${RAW}" | sed '$d')
+
+# Bail early with a clear message on transport or HTTP/API errors.
+if [ "${CURL_EXIT}" -ne 0 ]; then
+  echo "RESULT: ❌ FAIL — curl could not reach ${ENDPOINT} (exit ${CURL_EXIT}). Is the server running?"
+  exit 1
+fi
+
+API_ERR=$(printf '%s' "${RESP}" | python3 -c '
+import sys, json
+try:
+    d = json.load(sys.stdin)
+    err = d.get("error")
+    if isinstance(err, dict):
+        print(err.get("message", json.dumps(err)))
+    elif err:
+        print(err)
+except Exception:
+    pass
+')
+if [ -n "${API_ERR}" ]; then
+  echo "RESULT: ❌ FAIL — API error (HTTP ${HTTP_CODE}): ${API_ERR}"
+  case "${API_ERR}" in
+    *"not found"*)      echo "  hint: model not installed — run: ollama pull ${MODEL}" ;;
+    *"requires"*GiB*)   echo "  hint: out of GPU memory — try a smaller model/quant, or raise iogpu.wired_limit_mb" ;;
+  esac
+  exit 1
+fi
+if [ "${HTTP_CODE}" != "200" ]; then
+  echo "RESULT: ❌ FAIL — HTTP ${HTTP_CODE} with no JSON error field"
+  printf '  body preview: %s\n' "$(printf '%s' "${RESP}" | head -c 200)"
+  exit 1
+fi
 
 # Tokens per second (completion_tokens from usage, if the endpoint reports it)
 printf '%s' "${RESP}" | python3 -c "
