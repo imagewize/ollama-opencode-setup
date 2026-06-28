@@ -75,6 +75,12 @@ ollama serve
 - **Large context analysis** → `qwen3.5:9b` (6.6 GB, 32k ctx, read-only — no tool use)
 - **Read-only analysis** → `mistral-nemo:12b-instruct-2407-q4_K_M` (7.5 GB, read-only)
 
+**Model recommendations (Mac Mini M4 Pro 24GB, tested 2026-06-28):**
+- **Reasoning + large context (Ollama)** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
+- **Reasoning + large context (MLX)** → `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` (~12 GB, 262k ctx, Claude Opus 4.6 distillate, served via `mlx_lm.server` on port 8080)
+
+The Mac Mini M4 24GB can run large MLX models (22B+) entirely on GPU. The MLX route requires `mlx-lm` installed in `~/mlx-env` and the server running before launching Open Code. See [docs/LOCALLLMS.md](docs/LOCALLLMS.md#mlx-runtime-mac-mini-m4-24gb) for full setup.
+
 ## Documentation Structure
 
 ### [docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md)
