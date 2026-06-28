@@ -13,6 +13,7 @@ This document describes the local LLM setup for use with Open Code and other AI 
   - [Benefits of Extended Context](#benefits-of-extended-context)
   - [Context Window Reality Check](#context-window-reality-check)
 - [Setting Context with Open Code (why we bake num_ctx)](#setting-context-with-open-code-why-we-bake-num_ctx)
+- [MLX Runtime (Mac Mini M4 24GB+)](#mlx-runtime-mac-mini-m4-24gb)
 - [Ollama Commands Reference](#ollama-commands-reference)
   - [List Models](#list-models)
   - [Run Model](#run-model)
@@ -198,6 +199,74 @@ OLLAMA_CONTEXT_LENGTH=16384 ollama serve
 We run several models with different ideal contexts (Ministral, Qwen3 variants) on a 16GB machine. A single global env var would force one context on all of them — e.g. loading `qwen3:4b` at 16k for no reason, wasting RAM. Per-model Modelfiles (`ministral-3:8b-16k`, `qwen3:8b-16k`) keep each model's context appropriate and reproducible. Use the global env var instead only if you settle on one model at one context and would rather not maintain variants.
 
 > Documented precedence is *API param > env var > Modelfile > built-in default*, but in practice a baked `num_ctx` reliably pins that specific model — which is the behavior we want.
+
+## MLX Runtime (Mac Mini M4 24GB+)
+
+Machines with 24GB+ unified memory can run large reasoning models (22B+) via [mlx-lm](https://github.com/ml-explore/mlx-examples/tree/main/llms), Apple's MLX framework. It exposes an OpenAI-compatible server on a local port — Open Code connects to it the same way it connects to Ollama, just on a different port.
+
+### Discovering compatible models (llmfit)
+
+Before pulling a large model, use [llmfit](https://github.com/AlexsJones/llmfit) to check whether it fits your hardware and what runtime/quantization is best:
+
+```bash
+brew install AlexsJones/homebrew-llmfit/llmfit
+llmfit
+```
+
+llmfit shows memory fit, recommended quantization (e.g. `mlx-4bit`), estimated speed, and whether the model is already installed. On the Mac Mini M4 24GB, `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` scores 92.9/100 — Perfect GPU fit, 61.2% memory usage (14.7 / 24 GB), ~13.6 tok/s estimated.
+
+**Why MLX instead of Ollama for large models?**
+- Ollama uses llama.cpp/GGUF; pre-converted MLX models are a better fit for Apple Silicon at 22B+ scale
+- Pre-converted 4-bit MLX versions exist on HuggingFace — no conversion step needed
+- Native Metal GPU, no CPU spillover on 24GB
+
+### Setup
+
+**1. Install mlx-lm** (venv avoids touching system Python):
+```bash
+python3 -m venv ~/mlx-env
+~/mlx-env/bin/pip install mlx-lm
+```
+
+**2. Pull the model** (downloads ~12 GB to `~/.cache/huggingface/hub/`):
+```bash
+~/mlx-env/bin/python3 -c "
+from huggingface_hub import snapshot_download
+snapshot_download('Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit')
+"
+```
+
+**3. Start the MLX server** (run this before launching Open Code):
+```bash
+~/mlx-env/bin/mlx_lm.server \
+  --model Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit \
+  --port 8080
+```
+
+**4. Open Code is already configured** — `opencode.json` in this repo includes the `mlx` provider pointing to `http://localhost:8080/v1`. Select the model from the Open Code model picker once the server is running.
+
+### Test tool-call capability
+
+```bash
+bash scripts/tool-call-test.sh \
+  Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit \
+  16384 \
+  http://localhost:8080/v1/chat/completions
+```
+
+### MLX Models (Mac Mini M4 24GB, tested 2026-06-28)
+
+| Model | HF Repo | Size | Context | Tool Use | Notes |
+|-------|---------|------|---------|----------|-------|
+| Qwen3.5 27B Reasoning Distilled v2 | `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` | ~12 GB | 262k | TBD pending test | Claude Opus 4.6 reasoning distillate, 100% GPU on M4 24GB (~13.6 tok/s est.) |
+
+Other MLX quantizations of this model if memory is a concern:
+- `cs2764/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-4bit-mlx` — alternative 4-bit build
+- `cs2764/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-6bit-mlx` — 6-bit (~16 GB, higher quality)
+
+### Keeping the MLX server running
+
+For persistent use, run the server in a dedicated terminal or background it with a process manager. Open Code will error on the `mlx` provider silently if the server is not up — the Ollama models still work independently.
 
 ## Ollama Commands Reference
 

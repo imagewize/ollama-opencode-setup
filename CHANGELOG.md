@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.2.0] — 2026-06-28
+
+### Added
+- `docs/LOCALLLMS.md`: new "MLX Runtime (Mac Mini M4 24GB+)" section — covers `mlx-lm` installation in a venv, pulling pre-converted MLX models from HuggingFace, starting `mlx_lm.server` on port 8080, testing tool-call capability against the MLX endpoint, and a table of available MLX model variants (4-bit, 6-bit). Added to Table of Contents.
+- `opencode.json`: new `mlx` provider block pointing to `http://localhost:8080/v1`; includes `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` (262k context, Claude Opus 4.6 reasoning distillate, ~12 GB at MLX 4-bit). Open Code selects this model when the MLX server is running; falls back to Ollama models when it is not.
+
+### Changed
+- `scripts/tool-call-test.sh`: added optional third argument `[endpoint]` (default: `http://localhost:11434/v1/chat/completions`) so the smoke test can target the MLX server or any other OpenAI-compatible endpoint. Usage comment and example updated.
+- `README.md`: split the Available Models table into two sections — "Ollama models" (M1 16GB, existing) and "MLX models" (Mac Mini M4 24GB+, new); added `qwen3.5:latest` row with tool use confirmed (Mac Mini M4, 2026-06-28, ~18s); added 27B MLX reasoning distillate row with link to the new LOCALLLMS.md section.
+- `CLAUDE.md`: added "Mac Mini M4 Pro 24GB, tested 2026-06-28" recommendations block alongside the existing M1 16GB block; documents `qwen3.5:latest` (Ollama) and the 27B MLX distillate as the recommended models for that machine; notes the `~/mlx-env` venv and port 8080 server requirement.
+
+### Context
+- Machine: Apple M4 Pro 12-core, 24 GB unified memory (Mac Mini)
+- `qwen3.5:latest` — tested 2026-06-28 on Mac Mini M4 24GB via Ollama: **tool use confirmed** (✅ PASS, ~18s); previously marked read-only based on M1 16GB tests of `qwen3.5:9b`
+- `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` — tool-call test pending (model download in progress at time of writing); llmfit scores 92.9/100 on M4 24GB, Perfect GPU fit, est. 13.6 tok/s
+
+---
+
 ## [1.1.3] — 2026-06-01
 
 ### Removed

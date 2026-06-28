@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
-# Tool-calling smoke test for Ollama models via the OpenAI-compatible endpoint
-# that OpenCode uses. Confirms a model emits a valid tool_call (not prose / not
-# a bash heredoc) when asked to write a file.
+# Tool-calling smoke test for Ollama (or any OpenAI-compatible) endpoint.
+# Confirms a model emits a valid tool_call (not prose / not a bash heredoc)
+# when asked to write a file.
 #
-# Usage: ./scripts/tool-call-test.sh <model> [num_ctx]
-# Example: ./scripts/tool-call-test.sh ministral-3:8b 16384
+# Usage: ./scripts/tool-call-test.sh <model> [num_ctx] [endpoint]
+# Example (Ollama):  ./scripts/tool-call-test.sh ministral-3:8b 16384
+# Example (MLX):     ./scripts/tool-call-test.sh qwen3.5-27b-distilled-v2 16384 http://localhost:8080/v1/chat/completions
 
 set -euo pipefail
 
-MODEL="${1:?usage: tool-call-test.sh <model> [num_ctx]}"
+MODEL="${1:?usage: tool-call-test.sh <model> [num_ctx] [endpoint]}"
 NUM_CTX="${2:-16384}"
-ENDPOINT="http://localhost:11434/v1/chat/completions"
+ENDPOINT="${3:-http://localhost:11434/v1/chat/completions}"
 
 read -r -d '' PAYLOAD <<JSON || true
 {
