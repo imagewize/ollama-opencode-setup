@@ -48,7 +48,25 @@ START=$(date +%s)
 RESP=$(curl -s "${ENDPOINT}" -H 'Content-Type: application/json' -d "${PAYLOAD}")
 END=$(date +%s)
 
-echo "Elapsed: $((END - START))s"
+ELAPSED=$((END - START))
+echo "Elapsed: ${ELAPSED}s"
+
+# Tokens per second (completion_tokens from usage, if the endpoint reports it)
+printf '%s' "${RESP}" | python3 -c "
+import sys, json
+try:
+    d = json.load(sys.stdin)
+    ct = d.get('usage', {}).get('completion_tokens', 0)
+    elapsed = ${ELAPSED}
+    if ct and elapsed:
+        print(f'Tokens/s:  {ct / elapsed:.1f}  ({ct} completion tokens)')
+    elif ct:
+        print(f'Tokens:    {ct} completion tokens (elapsed=0, cannot compute rate)')
+    else:
+        print('Tokens/s:  n/a (endpoint did not report usage)')
+except Exception as e:
+    print('Tokens/s:  n/a (' + str(e) + ')')
+" || true
 
 # Did it emit a tool call?
 TOOL_NAME=$(printf '%s' "${RESP}" | python3 -c '

@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.2.2] — 2026-06-28
+
+### Changed
+- `scripts/tool-call-test.sh`: added tokens-per-second reporting — extracts `usage.completion_tokens` from the response and divides by elapsed seconds; prints `n/a` gracefully when the endpoint omits `usage`
+
+### Test Results
+- `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` — tested 2026-06-28 on Mac Mini M4 Pro 24GB: **9.9 tok/s** (89 completion tokens, 9s, tool use ✅ PASS)
+
+---
+
 ## [1.2.1] — 2026-06-28
 
 ### Changed
