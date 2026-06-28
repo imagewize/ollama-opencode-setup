@@ -61,7 +61,8 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
 | `qwen3-coder:30b` | 19 GB | 256k | Yes | **Recommended for M4 24GB** — coding-optimized MoE (3.3B active), 256k ctx, tool use confirmed (pending post-Tahoe test) |
-| `qwen3.5:27b-mlx` | 20 GB | 256k | Yes | Ollama built-in MLX engine — no separate server needed (pending test) |
+| `qwen3.6:27b-mlx` | ~17 GB | 256k | Pending | Dense 27B, 77.2% SWE-bench Verified (Apr 2026) — best MLX coding model, pending tool-call test |
+| `qwen3.5:27b-mlx` | 20 GB | 256k | Yes | Ollama built-in MLX engine — confirmed tool use (9.9 tok/s, tested 2026-06-28) |
 | `qwen3.5:latest` | 6.6 GB | 32k | Yes | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
 
 **Read-only (no tool use — analysis only):**

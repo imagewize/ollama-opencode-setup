@@ -69,7 +69,8 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 | Model | Size | Context | Tool Use | Notes |
 |-------|------|---------|----------|-------|
 | `qwen3-coder:30b` ⭐ | 19 GB | 256k | ✅ | **Recommended for M4 24GB** — coding-optimized MoE, 256k ctx, fast inference |
-| `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, general reasoning |
+| `qwen3.6:27b-mlx` | ~17 GB | 256k | ⏳ | Dense 27B, 77.2% SWE-bench Verified (Apr 2026) — best MLX coding model, pending tool-call test |
+| `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, tool use confirmed (9.9 tok/s, tested 2026-06-28) |
 | `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
 
 ---

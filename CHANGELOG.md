@@ -6,6 +6,22 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.3.1] — 2026-06-28
+
+### Added
+- `opencode.json`: added `qwen3.6:27b-mlx` to the Ollama provider (M4 24GB section)
+- `docs/LOCALLLMS.md`: added `qwen3.6:27b-mlx` row to the Mac Mini M4 Pro 24GB table — dense 27B, ~17 GB, 256k context, tool-call test pending
+- `README.md`: added `qwen3.6:27b-mlx` row to the M4 24GB model table with ⏳ pending status
+- `CLAUDE.md`: added `qwen3.6:27b-mlx` as "Best MLX coding model" in M4 24GB recommendations
+
+### Context
+- Qwen 3.6 27B (released April 2026) is a dense coding-focused model scoring 77.2% on SWE-bench Verified — higher than `qwen3.5:27b-mlx` on coding tasks
+- No `qwen3-coder` MLX variant exists on Ollama; `qwen3.6:27b-mlx` is the best available MLX coding alternative
+- Ollama now runs all models on Apple Silicon via its built-in MLX engine; models tagged `-mlx` use it automatically
+- ~17 GB at Q4 quantization; fits M4 24GB but is tight — close other apps and keep context modest. Tool-call verification pending
+
+---
+
 ## [1.3.0] — 2026-06-28
 
 ### Changed
