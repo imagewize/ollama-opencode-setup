@@ -204,6 +204,17 @@ We run several models with different ideal contexts (Ministral, Qwen3 variants) 
 
 Machines with 24GB+ unified memory can run large reasoning models (22B+) via [mlx-lm](https://github.com/ml-explore/mlx-examples/tree/main/llms), Apple's MLX framework. It exposes an OpenAI-compatible server on a local port — Open Code connects to it the same way it connects to Ollama, just on a different port.
 
+### Discovering compatible models (llmfit)
+
+Before pulling a large model, use [llmfit](https://github.com/AlexsJones/llmfit) to check whether it fits your hardware and what runtime/quantization is best:
+
+```bash
+brew install AlexsJones/homebrew-llmfit/llmfit
+llmfit
+```
+
+llmfit shows memory fit, recommended quantization (e.g. `mlx-4bit`), estimated speed, and whether the model is already installed. On the Mac Mini M4 24GB, `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` scores 92.9/100 — Perfect GPU fit, 61.2% memory usage (14.7 / 24 GB), ~13.6 tok/s estimated.
+
 **Why MLX instead of Ollama for large models?**
 - Ollama uses llama.cpp/GGUF; pre-converted MLX models are a better fit for Apple Silicon at 22B+ scale
 - Pre-converted 4-bit MLX versions exist on HuggingFace — no conversion step needed

@@ -81,6 +81,8 @@ ollama serve
 
 The Mac Mini M4 24GB can run large MLX models (22B+) entirely on GPU. The MLX route requires `mlx-lm` installed in `~/mlx-env` and the server running before launching Open Code. See [docs/LOCALLLMS.md](docs/LOCALLLMS.md#mlx-runtime-mac-mini-m4-24gb) for full setup.
 
+Use [llmfit](https://github.com/AlexsJones/llmfit) (`brew install AlexsJones/homebrew-llmfit/llmfit`) to evaluate model fit before pulling — shows memory usage, recommended quantization, runtime, and estimated speed for your specific hardware.
+
 ## Documentation Structure
 
 ### [docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md)
