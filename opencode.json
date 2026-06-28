@@ -46,18 +46,15 @@
         },
         "granite3.1-moe:latest": {
           "name": "Granite 3.1 MoE (read-only)"
-        }
-      }
-    },
-    "mlx": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "MLX (local, large models)",
-      "options": {
-        "baseURL": "http://localhost:8080/v1"
-      },
-      "models": {
-        "Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit": {
-          "name": "Qwen3.5 27B Reasoning Distilled v2 (MLX 4-bit, 262k ctx, M4 24GB)"
+        },
+        "qwen3.5:latest": {
+          "name": "Qwen3.5 9B (tool use, 32k ctx, M4 24GB confirmed)"
+        },
+        "qwen3-coder:30b": {
+          "name": "Qwen3-Coder 30B (tool use, 256k ctx, M4 24GB recommended)"
+        },
+        "qwen3.5:27b-mlx": {
+          "name": "Qwen3.5 27B MLX (tool use, 256k ctx, M4 24GB via Ollama MLX)"
         }
       }
     }
