@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.2.1] — 2026-06-28
+
+### Changed
+- `docs/LOCALLLMS.md`: updated MLX model table — tool use status changed from TBD to ✅ Yes for `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit`
+- `README.md`: updated MLX model table — tool use status changed from TBD to ✅
+- `CLAUDE.md`: added "tool use confirmed" to the 27B MLX model recommendation for Mac Mini M4 24GB
+
+### Test Results
+- `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` — tested 2026-06-28 on Mac Mini M4 Pro 24GB via `mlx_lm.server` (port 8080): **tool use confirmed** (✅ PASS, 182s cold/first load); model emitted valid `write` tool_call via `scripts/tool-call-test.sh`
+
+---
+
 ## [1.2.0] — 2026-06-28
 
 ### Added
@@ -20,7 +32,7 @@ All notable changes to this project will be documented in this file.
 ### Context
 - Machine: Apple M4 Pro 12-core, 24 GB unified memory (Mac Mini)
 - `qwen3.5:latest` — tested 2026-06-28 on Mac Mini M4 24GB via Ollama: **tool use confirmed** (✅ PASS, ~18s); previously marked read-only based on M1 16GB tests of `qwen3.5:9b`
-- `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` — tool-call test pending (model download in progress at time of writing); llmfit scores 92.9/100 on M4 24GB, Perfect GPU fit, est. 13.6 tok/s
+- `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` — **tool use confirmed** (✅ PASS, 182s cold/first load); llmfit scores 92.9/100 on M4 24GB, Perfect GPU fit, est. 13.6 tok/s warm
 
 ---
 
