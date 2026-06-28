@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.3.0] — 2026-06-28
+
+### Changed
+- `opencode.json`: removed `mlx` provider block (separate `mlx_lm.server` on port 8080); added `qwen3-coder:30b`, `qwen3.5:27b-mlx`, and `qwen3.5:latest` to the Ollama provider
+- `docs/LOCALLLMS.md`: replaced "MLX Runtime (Mac Mini M4 24GB+)" section with "Large Models on Mac Mini M4 Pro 24GB" — documents Ollama-native approach using built-in MLX engine; no separate server needed. Reorganized available models table by hardware (M1 16GB / M4 24GB / read-only)
+- `README.md`: replaced MLX models section (via `mlx_lm.server`) with Ollama-native large model table for M4 24GB
+- `CLAUDE.md`: updated Mac Mini M4 24GB recommendations to `qwen3-coder:30b` (recommended) and `qwen3.5:27b-mlx`; removed `mlx_lm.server` reference
+
+### Removed
+- Separate MLX server setup (`mlx_lm.server` on port 8080, `~/mlx-env` venv, HuggingFace model cache for `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit`)
+
+### Context
+- Ollama's built-in MLX engine now handles Apple Silicon natively with Metal-backed acceleration — the separate `mlx_lm.server` approach is superseded. Models tagged `-mlx` on Ollama use this engine automatically.
+- `qwen3-coder:30b`: coding-optimized MoE (30B total / 3.3B active), 19 GB, 256k context, tool use pending test (awaiting macOS Tahoe update on Mac Mini M4 24GB)
+- `qwen3.5:27b-mlx`: 20 GB, 256k context, served via Ollama's built-in MLX engine, pending test
+
+---
+
 ## [1.2.2] — 2026-06-28
 
 ### Changed
