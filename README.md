@@ -46,7 +46,7 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 
 > **⚠️ Tool calling requires a model trained for it — fitting in RAM is not enough.** Models marked ✅ below can create and edit files; models marked ❌ are read-only (they plan and analyze but output bash instead of invoking the write tool). Verify any model yourself with [`scripts/tool-call-test.sh`](scripts/tool-call-test.sh); full details in [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
-Tested on M1 16GB (2026-05-31):
+**Ollama models** — tested on M1 16GB (2026-05-31):
 
 | Model | Size | Context | Tool Use | Notes |
 |-------|------|---------|----------|-------|
@@ -56,12 +56,19 @@ Tested on M1 16GB (2026-05-31):
 | `qwen3:8b-16k` | 5.2 GB | 16k | ✅ | Multi-file analysis, verbose think mode (~26s) |
 | `qwen3:8b` | 5.2 GB | 8k | ✅ | General file ops, verbose think mode |
 | `qwen3:4b` | 2.5 GB | 8k | ✅ | Quick edits, smallest footprint |
+| `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Tool use confirmed on Mac Mini M4 (2026-06-28, ~18s) |
 | `deepseek-coder-v2:16b` | 8.9 GB | 128k | ❌ | FIM/completion model, no tool calling |
 | `qwen3.5:9b` / `qwen3.5:4b` | 6.6 / ~2.5 GB | 32k | ❌ | Read-only — outputs bash instead of the write tool |
 | `phi4:latest` | ~5 GB | 16k | ❌ | Read-only — no tool support |
 | `gemma4:e4b` | ~5.5 GB | 32k | ❌ | Read-only — no tool support |
 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | ❌ | Best quality for read-only review |
 | `granite3.1-moe` | 2.0 GB | 8k | ❌ | Fastest read-only analysis |
+
+**MLX models** (via `mlx_lm.server`) — requires Mac Mini M4 24GB+, see [docs/LOCALLLMS.md](docs/LOCALLLMS.md#mlx-runtime-mac-mini-m4-24gb):
+
+| Model | Size | Context | Tool Use | Notes |
+|-------|------|---------|----------|-------|
+| `Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit` ⭐ | ~12 GB | 262k | TBD | Claude Opus 4.6 reasoning distillate, 100% GPU on M4 24GB |
 
 ---
 
