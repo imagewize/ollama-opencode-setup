@@ -8,17 +8,18 @@ All notable changes to this project will be documented in this file.
 
 ## [1.3.1] — 2026-06-28
 
-### Added
-- `opencode.json`: added `qwen3.6:27b-mlx` to the Ollama provider (M4 24GB section)
-- `docs/LOCALLLMS.md`: added `qwen3.6:27b-mlx` row to the Mac Mini M4 Pro 24GB table — dense 27B, ~17 GB, 256k context, tool-call test pending
-- `README.md`: added `qwen3.6:27b-mlx` row to the M4 24GB model table with ⏳ pending status
-- `CLAUDE.md`: added `qwen3.6:27b-mlx` as "Best MLX coding model" in M4 24GB recommendations
+### Changed
+- `docs/LOCALLLMS.md`: updated "Large Models on Mac Mini M4 Pro 24GB" section — added memory ceiling explanation (17.3 GiB available vs 18.4 GiB required for dense 27B); updated recommended models table and pull commands; added `qwen3.6:27b-mlx` as tested/rejected row
+- `README.md`: added `qwen3.6:27b-mlx` to M4 24GB table, marked ❌ OOM with test date
+- `CLAUDE.md`: noted `qwen3.6:27b-mlx` as "does not fit" in M4 24GB recommendations
+
+### Test Results
+- `qwen3.6:27b-mlx` — tested 2026-06-28 on Mac Mini M4 Pro 24GB via Ollama: **OOM** (model requires 18.4 GiB; Ollama ceiling is 17.3 GiB after OS overhead). Dense 27B weights alone exceed what Ollama can allocate. Use `qwen3-coder:30b` instead.
 
 ### Context
-- Qwen 3.6 27B (released April 2026) is a dense coding-focused model scoring 77.2% on SWE-bench Verified — higher than `qwen3.5:27b-mlx` on coding tasks
-- No `qwen3-coder` MLX variant exists on Ollama; `qwen3.6:27b-mlx` is the best available MLX coding alternative
-- Ollama now runs all models on Apple Silicon via its built-in MLX engine; models tagged `-mlx` use it automatically
-- ~17 GB at Q4 quantization; fits M4 24GB but is tight — close other apps and keep context modest. Tool-call verification pending
+- Qwen 3.6 27B (released April 2026) scores 77.2% on SWE-bench Verified and was the best available MLX coding candidate on Ollama. No `qwen3-coder` MLX variant exists.
+- Ollama reserves OS headroom leaving ~17.3 GiB available on a 24GB M4. Dense 27B MLX models at Q5/Q6 precision sit at 18–20 GiB and cannot load. MoE models like `qwen3-coder:30b` bypass this because only active parameters (3.3B) are loaded at inference time.
+- `qwen3.6:27b-mlx` runs on MLX — but so does `qwen3-coder:30b` (Ollama uses MLX for all Apple Silicon inference). The constraint is quantization size, not the inference framework.
 
 ---
 

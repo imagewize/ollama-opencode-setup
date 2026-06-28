@@ -61,7 +61,7 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
 | `qwen3-coder:30b` | 19 GB | 256k | Yes | **Recommended for M4 24GB** — coding-optimized MoE (3.3B active), 256k ctx, tool use confirmed (pending post-Tahoe test) |
-| `qwen3.6:27b-mlx` | ~17 GB | 256k | Pending | Dense 27B, 77.2% SWE-bench Verified (Apr 2026) — best MLX coding model, pending tool-call test |
+| `qwen3.6:27b-mlx` | 19 GB | 256k | No | OOM on 24GB via Ollama — weights alone (18.4 GiB) exceed Ollama's 17.3 GiB ceiling; use `qwen3-coder:30b` instead |
 | `qwen3.5:27b-mlx` | 20 GB | 256k | Yes | Ollama built-in MLX engine — confirmed tool use (9.9 tok/s, tested 2026-06-28) |
 | `qwen3.5:latest` | 6.6 GB | 32k | Yes | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
 
@@ -217,26 +217,29 @@ We run several models with different ideal contexts (Ministral, Qwen3 variants) 
 
 ## Large Models on Mac Mini M4 Pro 24GB
 
-Machines with 24GB+ unified memory can run 19–20GB models (30B MoE or 27B dense) entirely on GPU via Ollama. **No separate MLX server is needed** — Ollama now includes a built-in MLX engine that handles Apple Silicon natively, including NVFP4 quantization.
+Ollama includes a built-in MLX engine that handles Apple Silicon natively — no separate MLX server needed. Models tagged `-mlx` use this engine automatically, and GGUF models on Apple Silicon also benefit from Metal-backed acceleration.
+
+**Memory ceiling:** Ollama reserves headroom for the OS, leaving ~17.3 GiB available for model weights on a 24GB M4. This means dense 27B MLX models (weights ≥ 18 GiB) do not fit — MoE models like `qwen3-coder:30b` work because only the active parameters (3.3B) are loaded at inference time.
 
 ### Why Ollama's built-in MLX is enough
 
-Ollama updated its MLX engine to lean on Apple's unified memory and the Metal-backed MLX framework — delivering higher quality, faster output, and lower memory use than earlier llama.cpp/GGUF paths for the same models. Models tagged `-mlx` on Ollama use this engine automatically. A separate `mlx_lm.server` setup is no longer needed for models available in Ollama's registry.
+Ollama's MLX engine leans on Apple's unified memory and Metal-backed acceleration — delivering higher quality and faster output than earlier llama.cpp/GGUF paths for the same models. A separate `mlx_lm.server` setup is no longer needed for models available in Ollama's registry.
 
 ### Recommended models for M4 Pro 24GB
 
 ```bash
-# Best for coding tasks in Open Code (256k ctx, MoE — fast inference)
+# Best for coding tasks in Open Code (256k ctx, MoE — fast inference, fits in 24GB)
 ollama pull qwen3-coder:30b
 
-# Alternative: Ollama's built-in MLX engine, general reasoning (256k ctx)
+# Alternative: MLX engine, general reasoning (256k ctx, confirmed tool use)
 ollama pull qwen3.5:27b-mlx
 ```
 
 | Model | Size | Context | Tool Use | Notes |
 |-------|------|---------|----------|-------|
-| `qwen3-coder:30b` | 19 GB | 256k | ✅ | **Recommended** — coding-optimized, MoE (3.3B active params, fast), 256k ctx |
-| `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, no separate server |
+| `qwen3-coder:30b` | 19 GB | 256k | ✅ | **Recommended** — coding-optimized MoE (3.3B active params), fits within 17.3 GiB ceiling |
+| `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, confirmed (9.9 tok/s, tested 2026-06-28) |
+| `qwen3.6:27b-mlx` | 19 GB | 256k | ❌ | OOM — 18.4 GiB weights exceed Ollama's 17.3 GiB ceiling (tested 2026-06-28) |
 | `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Confirmed tool use on M4 24GB (~18s, tested 2026-06-28) |
 
 ### Context and num_ctx on large models
