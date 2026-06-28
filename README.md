@@ -68,8 +68,8 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 
 | Model | Size | Context | Tool Use | Notes |
 |-------|------|---------|----------|-------|
-| `qwen3-coder:30b` ⭐ | 19 GB | 256k | ✅ | **Recommended for M4 24GB** — coding-optimized MoE, 256k ctx, fast inference |
-| `qwen3.6:27b-mlx` | 19 GB | 256k | ❌ | OOM on 24GB via Ollama — 18.4 GiB weights exceed Ollama's 17.3 GiB memory ceiling (tested 2026-06-28) |
+| `qwen3-coder:30b` ⭐ | 19 GB | 256k | ✅ | **Recommended for M4 24GB** — coding-optimized MoE, 256k ctx, ~34.5 tok/s warm (tested 2026-06-28) |
+| `qwen3.6:27b-mlx` | 19 GB | 256k | ✅* | Dense 27B — OOM at the default GPU limit; loads after raising `iogpu.wired_limit_mb` to 21504 (~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE — see [docs/LOCALLLMS.md](docs/LOCALLLMS.md#raising-the-memory-ceiling-for-dense-mlx-models) |
 | `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, tool use confirmed (9.9 tok/s, tested 2026-06-28) |
 | `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
 

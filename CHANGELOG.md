@@ -9,12 +9,22 @@ All notable changes to this project will be documented in this file.
 ## [1.3.1] — 2026-06-28
 
 ### Changed
-- `docs/LOCALLLMS.md`: updated "Large Models on Mac Mini M4 Pro 24GB" section — added memory ceiling explanation (17.3 GiB available vs 18.4 GiB required for dense 27B); updated recommended models table and pull commands; added `qwen3.6:27b-mlx` as tested/rejected row
-- `README.md`: added `qwen3.6:27b-mlx` to M4 24GB table, marked ❌ OOM with test date
-- `CLAUDE.md`: noted `qwen3.6:27b-mlx` as "does not fit" in M4 24GB recommendations
+- `docs/LOCALLLMS.md`: updated "Large Models on Mac Mini M4 Pro 24GB" section — added memory ceiling explanation (17.3 GiB available vs 18.4 GiB required for dense 27B); updated recommended models tables with warm/cold throughput; documented that `qwen3.6:27b-mlx` loads once the GPU wired limit is raised
+- `README.md`: added `qwen3.6:27b-mlx` to M4 24GB table — loads with raised `iogpu.wired_limit_mb`, ~9.3 tok/s warm
+- `CLAUDE.md`: marked `qwen3.6:27b-mlx` as "fits only with raised GPU limit" and added warm throughput to the M4 24GB recommendations
+
+### Added
+- `docs/LOCALLLMS.md`: "Raising the memory ceiling for dense MLX models" — documents the `iogpu.wired_limit_mb` sysctl to lift the default ~17.3 GiB GPU ceiling on a 24GB M4 (e.g. `sudo sysctl -w iogpu.wired_limit_mb=21504`), including the gotcha that Ollama caches the available-memory figure at startup and must be restarted to pick up the new limit, plus caveats (non-persistent, OS headroom, KV-cache budget)
+
+### Fixed
+- `scripts/tool-call-test.sh`: error reporting — previously any non-success response (model not installed, GPU OOM, unreachable server) surfaced as the cryptic `RESULT: ⚠️  __ERR__:'choices'`. The script now inspects the HTTP status and the API `error` field, prints the real message, and adds actionable hints (`ollama pull <model>` for missing models; raise `iogpu.wired_limit_mb` for OOM). Transport failures now report the unreachable endpoint instead of a Python `KeyError`. Made the `curl` call `set -e`-safe so it reaches the handler instead of aborting silently.
 
 ### Test Results
-- `qwen3.6:27b-mlx` — tested 2026-06-28 on Mac Mini M4 Pro 24GB via Ollama: **OOM** (model requires 18.4 GiB; Ollama ceiling is 17.3 GiB after OS overhead). Dense 27B weights alone exceed what Ollama can allocate. Use `qwen3-coder:30b` instead.
+- `qwen3-coder:30b` — tested 2026-06-28 on Mac Mini M4 Pro 24GB: **✅ PASS** tool call. **~34.5 tok/s warm** (~4.8 tok/s on the first cold load, which includes reading 18 GB into GPU memory). MoE (3.3B active) fits within the default 17.3 GiB ceiling; recommended default.
+- `qwen3.6:27b-mlx` — at the **default** GPU limit: **OOM** (requires 18.4 GiB > 17.3 GiB available). After `sudo sysctl -w iogpu.wired_limit_mb=21504` **and an Ollama restart**: **✅ PASS**, **~9.3 tok/s warm** (~3.3 tok/s cold). The dense 27B loads but runs ~3.7× slower than the MoE.
+- `qwen3.6:27b-mlx-16k` — same as above: OOM at default, **✅ PASS** after raising the wired limit + restart (~2.6 tok/s cold).
+- Note on measurement: `scripts/tool-call-test.sh` divides completion tokens by total wall-clock time, so a cold run's rate is dominated by model-load time, not generation. Warm (model-resident) rates above reflect actual throughput.
+- Key finding: the 17.3 GiB ceiling is macOS's default GPU wired-memory limit (`iogpu.wired_limit_mb`), not a hard Ollama cap. Raising it lets dense 27B MLX models load on a 24GB M4 — but the MoE `qwen3-coder:30b` remains far faster (~34 vs ~9 tok/s) and needs no tuning.
 
 ### Context
 - Qwen 3.6 27B (released April 2026) scores 77.2% on SWE-bench Verified and was the best available MLX coding candidate on Ollama. No `qwen3-coder` MLX variant exists.

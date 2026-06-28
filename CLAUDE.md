@@ -77,9 +77,9 @@ ollama serve
 - **Read-only analysis** → `mistral-nemo:12b-instruct-2407-q4_K_M` (7.5 GB, read-only)
 
 **Model recommendations (Mac Mini M4 Pro 24GB, tested 2026-06-28):**
-- **Recommended for Open Code** → `qwen3-coder:30b` (19 GB, 256k ctx, coding-optimized MoE, tool use confirmed)
+- **Recommended for Open Code** → `qwen3-coder:30b` (19 GB, 256k ctx, coding-optimized MoE, tool use confirmed, ~34.5 tok/s warm)
 - **Alternative MLX model** → `qwen3.5:27b-mlx` (20 GB, 256k ctx, tool use confirmed 9.9 tok/s)
-- **Does not fit** → `qwen3.6:27b-mlx` (19 GB / 18.4 GiB weights — exceeds Ollama's 17.3 GiB ceiling on 24GB M4, tested 2026-06-28)
+- **Fits only with raised GPU limit** → `qwen3.6:27b-mlx` (dense 27B / 18.4 GiB weights — OOM at the default ~17.3 GiB ceiling; loads after `sudo sysctl -w iogpu.wired_limit_mb=21504` + Ollama restart, ~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE
 - **Lightweight option** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
 
 The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no separate MLX server needed. Ollama's built-in MLX engine handles Apple Silicon natively; models tagged `-mlx` use it automatically. See [docs/LOCALLLMS.md](docs/LOCALLLMS.md#large-models-on-mac-mini-m4-pro-24gb) for details.

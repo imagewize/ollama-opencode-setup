@@ -60,8 +60,8 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
-| `qwen3-coder:30b` | 19 GB | 256k | Yes | **Recommended for M4 24GB** — coding-optimized MoE (3.3B active), 256k ctx, tool use confirmed (pending post-Tahoe test) |
-| `qwen3.6:27b-mlx` | 19 GB | 256k | No | OOM on 24GB via Ollama — weights alone (18.4 GiB) exceed Ollama's 17.3 GiB ceiling; use `qwen3-coder:30b` instead |
+| `qwen3-coder:30b` | 19 GB | 256k | Yes | **Recommended for M4 24GB** — coding-optimized MoE (3.3B active), tool use confirmed (~34.5 tok/s warm; ~4.8 tok/s on the first cold load, tested 2026-06-28) |
+| `qwen3.6:27b-mlx` | 19 GB | 256k | Yes* | Dense 27B — OOM at default GPU limit; loads after raising `iogpu.wired_limit_mb` to 21504 (~9.3 tok/s warm; ~3.3 tok/s cold, tested 2026-06-28). Slower than the MoE; use `qwen3-coder:30b` for speed |
 | `qwen3.5:27b-mlx` | 20 GB | 256k | Yes | Ollama built-in MLX engine — confirmed tool use (9.9 tok/s, tested 2026-06-28) |
 | `qwen3.5:latest` | 6.6 GB | 32k | Yes | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
 
@@ -221,6 +221,28 @@ Ollama includes a built-in MLX engine that handles Apple Silicon natively — no
 
 **Memory ceiling:** Ollama reserves headroom for the OS, leaving ~17.3 GiB available for model weights on a 24GB M4. This means dense 27B MLX models (weights ≥ 18 GiB) do not fit — MoE models like `qwen3-coder:30b` work because only the active parameters (3.3B) are loaded at inference time.
 
+### Raising the memory ceiling for dense MLX models
+
+The 17.3 GiB ceiling comes from macOS's default GPU wired-memory limit, not from a hard Ollama cap. You can raise it with the `iogpu.wired_limit_mb` sysctl so dense 27B MLX models (e.g. `qwen3.6:27b-mlx`, which needs 18.4 GiB) can load. **Confirmed working** — `qwen3.6:27b-mlx` and `qwen3.6:27b-mlx-16k`, which OOM at the default limit, both load and pass the tool-call test after this change (tested 2026-06-28):
+
+```bash
+# Raise the GPU wired-memory limit to 21 GB (leaves ~3 GB for the OS on a 24GB Mac)
+sudo sysctl -w iogpu.wired_limit_mb=21504
+
+# IMPORTANT: restart Ollama afterward — it caches the available-memory figure at
+# startup, so a running server keeps reporting the old 17.3 GiB until restarted.
+#   - if running via `ollama serve` in a terminal: stop it (Ctrl-C) and relaunch
+#   - if running as the menubar app: quit and reopen Ollama
+
+# Verify the new limit
+sysctl iogpu.wired_limit_mb   # -> iogpu.wired_limit_mb: 21504
+```
+
+Caveats:
+- **Not persistent** — the sysctl resets on reboot. To make it permanent, set it from a LaunchDaemon at boot.
+- **Leave OS headroom** — don't push the limit so high the system starves; 21 GB on a 24GB Mac is a safe balance. Account for KV-cache too: weights + context cache must both fit under the limit.
+- A model that fits weights-only may still OOM once `num_ctx` KV cache is added; lower the baked context if so.
+
 ### Why Ollama's built-in MLX is enough
 
 Ollama's MLX engine leans on Apple's unified memory and Metal-backed acceleration — delivering higher quality and faster output than earlier llama.cpp/GGUF paths for the same models. A separate `mlx_lm.server` setup is no longer needed for models available in Ollama's registry.
@@ -237,9 +259,9 @@ ollama pull qwen3.5:27b-mlx
 
 | Model | Size | Context | Tool Use | Notes |
 |-------|------|---------|----------|-------|
-| `qwen3-coder:30b` | 19 GB | 256k | ✅ | **Recommended** — coding-optimized MoE (3.3B active params), fits within 17.3 GiB ceiling |
+| `qwen3-coder:30b` | 19 GB | 256k | ✅ | **Recommended** — coding-optimized MoE (3.3B active), fits within 17.3 GiB ceiling; fastest (~34.5 tok/s warm, tested 2026-06-28) |
 | `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, confirmed (9.9 tok/s, tested 2026-06-28) |
-| `qwen3.6:27b-mlx` | 19 GB | 256k | ❌ | OOM — 18.4 GiB weights exceed Ollama's 17.3 GiB ceiling (tested 2026-06-28) |
+| `qwen3.6:27b-mlx` | 19 GB | 256k | ✅* | Dense 27B — needs raised `iogpu.wired_limit_mb` (21504); loads & passes after that (~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE — see [Raising the memory ceiling](#raising-the-memory-ceiling-for-dense-mlx-models) |
 | `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Confirmed tool use on M4 24GB (~18s, tested 2026-06-28) |
 
 ### Context and num_ctx on large models
