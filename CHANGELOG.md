@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.5.0] — 2026-06-30
+
+### Added
+- `AGENTS.md` (new, repo root): agent instruction file mirroring `CLAUDE.md`, carrying the repo conventions, key-config/Modelfile references, Ollama commands, model-selection guidance, and commit rules previously kept in `.vibe/prompts/vibe.md`. Lives at the repo root so Mistral Vibe auto-loads it (Vibe walks up from the working directory collecting `AGENTS.md` files; `docs/AGENTS.md` only applies inside `docs/`)
+
+### Changed
+- `.vibe/config.toml`: `system_prompt_id` changed from `vibe` to `cli` — Vibe now uses its default built-in CLI system prompt and reads repo guidance from `AGENTS.md`, instead of the bundled custom prompt
+- `.vibe/config.toml`: corrected `session_logging.save_dir` from the stale `/Users/jasperfrumau/.vibe/logs/session` to `/Users/j/.vibe/logs/session` (the committed path pointed at a non-existent home directory and crashed `vibe` on launch with `PermissionError`)
+
+### Removed
+- `.vibe/prompts/vibe.md` (and the now-empty `.vibe/prompts/` directory): superseded by the root `AGENTS.md`; Mistral Vibe reads `AGENTS.md` natively, so a separate custom system prompt is no longer needed
+
+---
+
 ## [1.4.1] — 2026-06-30
 
 ### Added
