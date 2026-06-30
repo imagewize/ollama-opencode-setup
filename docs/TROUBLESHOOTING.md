@@ -264,6 +264,21 @@ opencode --model ollama/qwen3:8b-16k
 > Create a file
 ```
 
+### Issue: "A tool-capable model returns prose instead of calling the tool"
+
+**Cause:** Some assistant-tuned models (e.g. `mistral-small3.2`, Mistral's "Le Chat" persona) refuse a write/edit task with prose — *"I'm sorry, I don't have the capability to create files"* — when the **tool schema's path description demands an "absolute path."** The model reasons it can't know the absolute path on your filesystem and abandons the tool call entirely. It is **not** a real tool-use deficiency.
+
+**Diagnosis (tested 2026-06-30, `mistral-small3.2:24b-32k`):** identical request, only the `filePath` description changed:
+
+| `filePath` description | Result |
+|---|---|
+| `"Absolute path of the file to write"` | 3/3 ❌ prose refusal |
+| `"Path of the file to write"` | 3/3 ✅ `write` tool call |
+
+It is **not** a cold-vs-warm or context issue — the model was warm (100% GPU) during every failure.
+
+**Solution:** keep tool-parameter descriptions neutral — `"Path of the file to write"`, not `"Absolute path …"`. `scripts/tool-call-test.sh` already uses neutral wording. If you hit this in Open Code with a custom tool, audit the tool's parameter descriptions.
+
 ### Issue: "Verbose thinking mode slows down tasks"
 
 **Cause:** Qwen3 models have built-in thinking behavior

@@ -30,7 +30,7 @@ read -r -d '' PAYLOAD <<JSON || true
         "parameters": {
           "type": "object",
           "properties": {
-            "filePath": { "type": "string", "description": "Absolute path of the file to write" },
+            "filePath": { "type": "string", "description": "Path of the file to write" },
             "content":  { "type": "string", "description": "Full file content" }
           },
           "required": ["filePath", "content"]
