@@ -18,7 +18,7 @@ This repository does NOT contain application code - it's a reference repository 
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
 - **Models (tool use, M1 16GB)**: ministral-3:8b-32k (recommended), ministral-3:8b-16k, ministral-3:8b, qwen3:8b-16k, qwen3:8b, qwen3:4b
-- **Models (tool use, M4 24GB)**: qwen3-coder:30b (recommended), qwen3.5:27b-mlx, qwen3.5:latest
+- **Models (tool use, M4 24GB)**: qwen3-coder:30b (recommended), qwen3.5:27b-mlx, mistral-small3.2:24b-32k, qwen3.5:latest
 - **Models (read-only)**: deepseek-coder-v2:16b, qwen3.5:9b, qwen3.5:4b, phi4, gemma4:e4b, mistral-nemo:12b-instruct-2407-q4_K_M, granite3.1-moe
 
 When adding new models, update this file with the model name and display name.
@@ -29,12 +29,13 @@ When adding new models, update this file with the model name and display name.
 Custom variants with `num_ctx` baked in are needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` — so base models run at Ollama's small default context inside Open Code. Each variant has a committed Modelfile for reproducible builds:
 
 ```bash
-ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile  # recommended
+ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile  # recommended (M1 16GB)
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
+ollama create mistral-small3.2:24b-32k -f modelfiles/mistral-small3.2-24b-32k.Modelfile  # M4 24GB
 ```
 
-`ministral-3:8b-32k` is the new recommended variant — tested 100% GPU on M1 16GB (11 GB footprint). 64k was tested but causes 27% CPU spillover on M1 16GB. See [`modelfiles/README.md`](modelfiles/README.md) for the full GPU test results.
+`ministral-3:8b-32k` is the recommended variant on M1 16GB — tested 100% GPU (11 GB footprint). 64k causes 27% CPU spillover on M1 16GB. On the Mac Mini M4 24GB, `mistral-small3.2:24b-32k` runs 100% GPU (19 GB); its 64k variant spills 22% to CPU (25 GB) even with the raised GPU limit, so stick to 32k. See [`modelfiles/README.md`](modelfiles/README.md) for the full GPU test results.
 
 ## Ollama Commands Reference
 
@@ -80,6 +81,7 @@ ollama serve
 - **Recommended for Open Code** → `qwen3-coder:30b` (19 GB, 256k ctx, coding-optimized MoE, tool use confirmed, ~34.5 tok/s warm)
 - **Alternative MLX model** → `qwen3.5:27b-mlx` (20 GB, 256k ctx, tool use confirmed 9.9 tok/s)
 - **Fits only with raised GPU limit** → `qwen3.6:27b-mlx` (dense 27B / 18.4 GiB weights — OOM at the default ~17.3 GiB ceiling; loads after `sudo sysctl -w iogpu.wired_limit_mb=21504` + Ollama restart, ~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE
+- **Dense general-purpose model** → `mistral-small3.2:24b-32k` (19 GB, 32k ctx, 100% GPU, tool use confirmed 2026-06-30). The 64k variant spills 22% to CPU (25 GB) — stay at 32k. Keep tool-schema path descriptions neutral: the base model refuses with prose when a schema demands an "absolute path"
 - **Lightweight option** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
 
 The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no separate MLX server needed. Ollama's built-in MLX engine handles Apple Silicon natively; models tagged `-mlx` use it automatically. See [docs/LOCALLLMS.md](docs/LOCALLLMS.md#large-models-on-mac-mini-m4-pro-24gb) for details.
