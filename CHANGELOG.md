@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.5.1] — 2026-06-30
+
+### Removed
+- `.vibe/config.toml`: dropped the entire `[session_logging]` block. 1.5.0 only swapped its hardcoded `save_dir` from `/Users/jasperfrumau/...` to `/Users/j/...`, which is still a per-user absolute path baked into a committed config — it would break again on any other machine or user. All three keys were redundant: an empty `save_dir` makes Vibe derive `~/.vibe/logs/session` per-user at runtime (`SessionLoggingConfig.set_default_save_dir`), and `session_prefix = "session"` / `enabled = true` are already the defaults. With the block gone the config is portable.
+
+---
+
 ## [1.5.0] — 2026-06-30
 
 ### Added
