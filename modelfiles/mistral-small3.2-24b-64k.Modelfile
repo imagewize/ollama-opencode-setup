@@ -1,0 +1,13 @@
+# 64k-context variant of mistral-small3.2 (24B) for Open Code.
+#
+# Why: same /v1 num_ctx limitation as the 32k variant — see mistral-small3.2-24b-32k.Modelfile.
+#
+# Status: NOT recommended on 24GB. Tested 2026-06-30 on Mac Mini M4 Pro 24GB with
+# iogpu.wired_limit_mb=21504: loads at 25 GB and spills 22% to CPU (22%/78% CPU/GPU),
+# which tanks throughput. Use the 32k variant (19 GB, 100% GPU) instead. Kept here for
+# reference / for machines with more unified memory.
+#
+# Build:  ollama create mistral-small3.2:24b-64k -f modelfiles/mistral-small3.2-24b-64k.Modelfile
+
+FROM mistral-small3.2:latest
+PARAMETER num_ctx 65536

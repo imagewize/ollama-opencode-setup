@@ -63,6 +63,7 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 | `qwen3-coder:30b` | 19 GB | 256k | Yes | **Recommended for M4 24GB** — coding-optimized MoE (3.3B active), tool use confirmed (~34.5 tok/s warm; ~4.8 tok/s on the first cold load, tested 2026-06-28) |
 | `qwen3.6:27b-mlx` | 19 GB | 256k | Yes* | Dense 27B — OOM at default GPU limit; loads after raising `iogpu.wired_limit_mb` to 21504 (~9.3 tok/s warm; ~3.3 tok/s cold, tested 2026-06-28). Slower than the MoE; use `qwen3-coder:30b` for speed |
 | `qwen3.5:27b-mlx` | 20 GB | 256k | Yes | Ollama built-in MLX engine — confirmed tool use (9.9 tok/s, tested 2026-06-28) |
+| `mistral-small3.2:24b-32k` | 19 GB | 32k | Yes | Dense 24B, 100% GPU, tool use confirmed (tested 2026-06-30). Build from `modelfiles/`. The 64k variant spills 22% to CPU (25 GB) — use 32k. The base model refuses with prose if a tool schema asks for an "absolute path" — keep descriptions neutral |
 | `qwen3.5:latest` | 6.6 GB | 32k | Yes | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
 
 **Read-only (no tool use — analysis only):**
@@ -262,6 +263,7 @@ ollama pull qwen3.5:27b-mlx
 | `qwen3-coder:30b` | 19 GB | 256k | ✅ | **Recommended** — coding-optimized MoE (3.3B active), fits within 17.3 GiB ceiling; fastest (~34.5 tok/s warm, tested 2026-06-28) |
 | `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, confirmed (9.9 tok/s, tested 2026-06-28) |
 | `qwen3.6:27b-mlx` | 19 GB | 256k | ✅* | Dense 27B — needs raised `iogpu.wired_limit_mb` (21504); loads & passes after that (~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE — see [Raising the memory ceiling](#raising-the-memory-ceiling-for-dense-mlx-models) |
+| `mistral-small3.2:24b-32k` | 19 GB | 32k | ✅ | Dense 24B (Q4_K_M), 100% GPU at 32k, confirmed tool use (tested 2026-06-30). The 64k variant spills 22% to CPU (25 GB) — keep to 32k |
 | `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Confirmed tool use on M4 24GB (~18s, tested 2026-06-28) |
 
 ### Context and num_ctx on large models
