@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.4.1] — 2026-06-30
+
+### Added
+- `modelfiles/qwen3-coder-30b-32k.Modelfile` (new): 32k-context variant of `qwen3-coder` (30B MoE) for Open Code on Mac Mini M4 Pro 24GB. Needed because the base `qwen3-coder:30b` has no `num_ctx` baked in, so it runs at Ollama's 4k default inside Open Code despite the architecture's native 256k — effectively less context than `ministral-3:8b-32k`
+- `opencode.json`: added `qwen3-coder:30b-32k` to the Ollama provider and relabeled the base `qwen3-coder:30b` to note it runs at 4k in Open Code
+
+### Changed
+- `CLAUDE.md`, `docs/LOCALLLMS.md`, `modelfiles/README.md`: the recommended no-GPU-tuning M4 24GB model is now `mistral-small3.2:24b-32k` (100% GPU at the default ceiling). `qwen3-coder:30b-32k` is reclassified as the coding-MoE option that **requires** raising `iogpu.wired_limit_mb` — corrects the prior claim that `qwen3-coder:30b` "fits within the 17.3 GiB ceiling"
+
+### Test Results
+- `qwen3-coder:30b-32k` — tested 2026-06-30 on Mac Mini M4 Pro 24GB. At the **default** GPU ceiling it spills to CPU at every context: 16k → 12% CPU (20 GB), 24k → 15% CPU (21 GB), 32k → 19% CPU (21 GB). After `sudo sysctl -w iogpu.wired_limit_mb=21504` + Ollama restart, the 32k variant runs **98% GPU** (2% CPU, 21 GB). The 18 GB of MoE weights crowd the ~17.3 GiB wired limit, so any KV cache spills without the raised limit. Tool use confirmed, ~34.5 tok/s warm.
+
+---
+
 ## [1.4.0] — 2026-06-30
 
 ### Added

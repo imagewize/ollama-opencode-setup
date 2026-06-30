@@ -1,0 +1,14 @@
+# 32k-context variant of qwen3-coder (30B MoE) for Open Code on Mac Mini M4 Pro 24GB.
+#
+# Why: Open Code talks to Ollama via the OpenAI-compatible (/v1) endpoint, which
+# ignores options.num_ctx — so the base model loads at Ollama's 4096 default inside
+# Open Code despite the architecture supporting 256k. Baking num_ctx in guarantees the
+# real window is always active. Without this, the M4's flagship model effectively sees
+# only ~3,000 words — less than ministral-3:8b-32k.
+#
+# Tool use: confirmed (coding-optimized MoE, ~3B active params per token).
+#
+# Build:  ollama create qwen3-coder:30b-32k -f modelfiles/qwen3-coder-30b-32k.Modelfile
+
+FROM qwen3-coder:30b
+PARAMETER num_ctx 32768
