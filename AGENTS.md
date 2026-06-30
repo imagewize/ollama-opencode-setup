@@ -1,6 +1,8 @@
-# Custom Instructions for Vibe
+# AGENTS.md
 
-This file provides guidance to Mistral Vibe when working with code in this repository.
+Instructions for AI coding agents (Mistral Vibe, and any other tool that reads
+`AGENTS.md`) working in this repository. The Claude Code companion file is
+[CLAUDE.md](CLAUDE.md) — keep the two in sync when changing shared guidance.
 
 ## Repository Purpose
 
@@ -13,17 +15,14 @@ This is a **documentation and configuration repository** for running Open Code C
 
 This repository does NOT contain application code - it's a reference repository meant to be symlinked or copied into other projects.
 
-## Primary Directive
-
-Always follow the rules and conventions in this file and [CLAUDE.md](CLAUDE.md). This file takes precedence for Vibe-specific guidance.
-
 ## Key Configuration Files
 
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models (tool use, confirmed)**: `ministral-3:8b-32k` (recommended), `ministral-3:8b-16k`, `ministral-3:8b`, `qwen3:8b-16k`, `qwen3:8b`, `qwen3:4b`
-- **Models (read-only, confirmed)**: `deepseek-coder-v2:16b`, `qwen3.5:9b`, `qwen3.5:4b`, `phi4`, `gemma4:e4b`, `mistral-nemo:12b-instruct-2407-q4_K_M`, `granite3.1-moe`
+- **Models (tool use, M1 16GB)**: `ministral-3:8b-32k` (recommended), `ministral-3:8b-16k`, `ministral-3:8b`, `qwen3:8b-16k`, `qwen3:8b`, `qwen3:4b`
+- **Models (tool use, M4 24GB)**: `mistral-small3.2:24b-32k` (recommended, no GPU tuning), `qwen3-coder:30b-32k` (coding MoE, needs raised GPU limit), `qwen3.5:27b-mlx`, `qwen3.5:latest`
+- **Models (read-only)**: `deepseek-coder-v2:16b`, `qwen3.5:9b`, `qwen3.5:4b`, `phi4`, `gemma4:e4b`, `mistral-nemo:12b-instruct-2407-q4_K_M`, `granite3.1-moe`
 
 When adding new models, update this file with the model name and display name, then run `ollama pull <model-name>`.
 
@@ -32,19 +31,21 @@ Custom Modelfiles for creating extended context variants:
 - `ministral-3-8b-32k.Modelfile` - 32k context variant of ministral-3:8b (recommended, 100% GPU on M1 16GB)
 - `ministral-3-8b-16k.Modelfile` - 16k context variant of ministral-3:8b (memory-constrained fallback)
 - `qwen3-8b-16k.Modelfile` - 16k context variant of qwen3:8b
-- `ministral-3-8b-64k.Modelfile` - 64k variant (do not use on M1 16GB — causes CPU spillover)
+- `mistral-small3.2-24b-32k.Modelfile` - 32k variant for M4 24GB (recommended, no GPU tuning)
+- `qwen3-coder-30b-32k.Modelfile` - 32k variant of the qwen3-coder 30B MoE for M4 24GB (needs raised GPU limit)
 - Create new variants using: `ollama create <model-name> -f modelfiles/<filename>.Modelfile`
 
 ## Custom Model Context
 
 ### Extended Context Models
-The `ministral-3:8b-16k` and `qwen3:8b-16k` models are **custom variants** with 16k context windows (vs standard 8k). This is needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` parameter — so the base model would run at Ollama's default context inside Open Code.
+Custom variants with `num_ctx` baked in are needed because Open Code talks to Ollama via the OpenAI-compatible endpoint, which does not pass Ollama's `num_ctx` — so base models run at Ollama's small default context inside Open Code. Each variant has a committed Modelfile for reproducible builds:
 
-Build from a committed Modelfile (reproducible):
 ```bash
-ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile  # recommended
+ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile  # recommended (M1 16GB)
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
+ollama create mistral-small3.2:24b-32k -f modelfiles/mistral-small3.2-24b-32k.Modelfile  # M4 24GB (recommended)
+ollama create qwen3-coder:30b-32k -f modelfiles/qwen3-coder-30b-32k.Modelfile           # M4 24GB (coding MoE)
 ```
 
 ## Ollama Commands Reference
@@ -81,15 +82,26 @@ ollama create <model-name> -f <modelfile-path>
 - 16k tokens: ~12,000 words, 3-5 medium files
 - 32k+ tokens: Large multi-file analysis
 
-**Model recommendations (M1 16GB, tested 2026-05-31):**
-- **Default / fast tool use** → `ministral-3:8b` (6.0 GB, tool use confirmed, ~4s warm — recommended)
+**Model recommendations (M1 16GB, tested 2026-06-01):**
+- **Recommended for Open Code** → `ministral-3:8b-32k` (11 GB, 32k ctx, 100% GPU, tool use confirmed)
+- **Memory-constrained fallback** → `ministral-3:8b-16k` (6.5 GB, 16k ctx, 100% GPU, tool use confirmed)
 - **Quick file ops** → `qwen3:4b` (2.5 GB, tool use confirmed)
 - **Standard file ops** → `qwen3:8b` (5.2 GB, tool use confirmed, ~26s)
-- **Multi-file ops** → `ministral-3:8b-16k` or `qwen3:8b-16k` (16k ctx, tool use confirmed)
+- **Multi-file ops** → `qwen3:8b-16k` (5.2 GB, 16k ctx, tool use confirmed)
 - **Large context analysis** → `qwen3.5:9b` (6.6 GB, 32k ctx, read-only — no tool use)
 - **Read-only analysis** → `mistral-nemo:12b-instruct-2407-q4_K_M` (7.5 GB, read-only)
 
+**Model recommendations (Mac Mini M4 Pro 24GB, tested 2026-06-30):**
+- **Recommended (no GPU tuning)** → `mistral-small3.2:24b-32k` (19 GB, 32k ctx, 100% GPU, tool use confirmed). The 64k variant spills 22% to CPU — stay at 32k.
+- **Coding MoE (needs raised GPU limit)** → `qwen3-coder:30b-32k` (21 GB, 32k ctx, ~34.5 tok/s warm). Reaches 98% GPU only after `sudo sysctl -w iogpu.wired_limit_mb=21504` + Ollama restart.
+- **Lightweight option** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
+
+See [docs/LOCALLLMS.md](docs/LOCALLLMS.md) and [modelfiles/README.md](modelfiles/README.md) for the full GPU test results.
+
 ## Documentation Structure
+
+### [docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md)
+How to wire this repo's config into a new or existing project — symlink vs copy, per-project vs global config, launching OpenCode and selecting a model.
 
 ### [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md)
 Complete Open Code CLI commands reference including all 15 built-in slash commands, bash integration, agent switching, custom command creation, and troubleshooting.
@@ -98,21 +110,10 @@ Complete Open Code CLI commands reference including all 15 built-in slash comman
 Tool usage discovery, model capability limitations, diagnosing models that plan but do not create files, hybrid workflow strategies, and model selection flowchart.
 
 ### [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
-- Open Code configuration with local models
-- Custom model creation workflows
-- Context window comparison
-- Model selection guidelines
-- Troubleshooting (Ollama not running, model not found, performance issues)
-- Known Open Code CLI issues
+Open Code configuration with local models, custom model creation, context window comparison, model selection guidelines, troubleshooting, and known Open Code CLI issues.
 
 ### [docs/AGENTS.md](docs/AGENTS.md)
-- How OpenCode works: the agentic loop (tool-use wrapper pattern)
-- Build and plan agents (Tab key switching)
-- Model capabilities for agent workflows
-- Agent workflow patterns (autonomous, iterative, analysis-then-action, batch)
-- Think mode behavior understanding
-- Performance benchmarks by model
-- Best practices for autonomous task execution
+How OpenCode works (the agentic loop / tool-use wrapper pattern), build and plan agents (Tab key switching), model capabilities, agent workflow patterns, think-mode behavior, performance benchmarks, and best practices. This is the human-facing agents guide; the file you are reading (`AGENTS.md` at the repo root) is the agent instruction file.
 
 ### [examples/](examples/)
 - [code-review.md](examples/code-review.md) - Code review workflows
@@ -121,30 +122,13 @@ Tool usage discovery, model capability limitations, diagnosing models that plan 
 - [batch-processing.md](examples/batch-processing.md) - Batch operation scripts
 
 ### [test-opencode.md](test-opencode.md)
-- Test suite for validating Open Code CLI setup
-- Performance benchmarks
-- Think mode validation
-- Comparison matrix for all models
+Test suite for validating Open Code CLI setup, performance benchmarks, think mode validation, and the comparison matrix for all models.
 
 ## Before Responding
 
-1. **Review this file and CLAUDE.md** for:
-   - Repository purpose and structure
-   - Key configuration files and their locations
-   - Ollama commands and model management
-   - Documentation structure
-   - Model selection guidelines
-
-2. **Check Current Context**:
-   - Verify you're in `/Users/jasperfrumau/code/ollama-opencode-setup`
-   - Confirm the current branch and git status
-   - Review any recent commits for relevant changes
-
-3. **Adhere to Key Principles**:
-   - This is a documentation/configuration repository, not an application codebase
-   - All file paths are relative to this repository root
-   - Model operations use Ollama CLI
-   - Configuration changes require updates to both opencode.json and documentation
+1. **Review this file and [CLAUDE.md](CLAUDE.md)** for repository purpose and structure, key configuration files, Ollama commands, documentation structure, and model selection guidelines.
+2. **Check current context**: confirm the working directory is the repository root (`ollama-opencode-setup`), the current branch, and git status; review recent commits for relevant changes.
+3. **Adhere to key principles**: this is a documentation/configuration repository, not an application codebase; file paths are relative to the repository root; model operations use the Ollama CLI; configuration changes require updates to both `opencode.json` and the documentation.
 
 ## Response Guidelines
 
@@ -170,7 +154,7 @@ When making changes:
 - Update [docs/AGENTS.md](docs/AGENTS.md) for agent workflow and usage patterns
 - Add new workflows to [examples/](examples/) directory
 - Update [test-opencode.md](test-opencode.md) with new test cases
-- Keep [README.md](README.md) in sync with major changes
+- Keep [README.md](README.md) and [CLAUDE.md](CLAUDE.md) in sync with major changes
 
 ## Common Issues
 
@@ -200,7 +184,7 @@ Local models are 3-10x slower than cloud models:
 - Privacy requirements mandate local processing
 - Learning/experimenting without API costs
 
-**Use cloud models (Mistral/Vibe API) when:**
+**Use cloud models when:**
 - Real-time interactive development
 - Complex multi-file operations requiring fast iteration
 - Time-sensitive tasks
@@ -209,22 +193,10 @@ Local models are 3-10x slower than cloud models:
 
 ## Git Commit Rules
 
-- **Always create a new branch** for commits - never commit directly to main
+- **Always create a new branch** for commits — never commit directly to `main`.
 - **Always use atomic commits**: each commit must represent one logical change or logical group of changes. Atomic commits can be per logical group or single file depending on change size. Do not bundle unrelated edits into a single commit.
-- **Commit message format**: Use imperative mood, present tense. Be concise but descriptive.
+- **Commit message format**: imperative mood, present tense; concise but descriptive.
   - Good: `Add qwen3:8b-16k to opencode.json`
   - Bad: `Added model` or `Updating models`
-- **Never add AI attribution** to commit messages - no "Co-authored-by", "Generated by", or similar.
-- **Prefix commits** when appropriate:
-  - `docs:` for documentation changes
-  - `config:` for configuration file updates
-  - `test:` for test suite updates
-  - `examples:` for example workflow additions
-
-## NO Mistral Vibe Attribution in Any Commits
-
-- Do NOT include "Generated by Mistral Vibe. Co-Authored-By: Mistral Vibe <vibe@mistral.ai>" attribution
-- Keep all commits professional and attribution-free
-- This applies to ALL files and directories in the entire repository
-- Follow standard git commit message format as described above
-- **All commits must be atomic** - one logical change or logical group per commit
+- **Prefix commits** when appropriate: `docs:`, `config:`, `test:`, `examples:`.
+- **Never add AI attribution** to commit messages — no "Co-authored-by", "Generated by", "Co-Authored-By: Mistral Vibe", or similar. Keep all commits professional and attribution-free. This applies to every file and directory in the repository.

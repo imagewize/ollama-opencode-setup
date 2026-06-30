@@ -6,7 +6,7 @@ auto_compact_threshold = 200000
 context_warnings = false
 textual_theme = "catppuccin-mocha"
 instructions = ""
-system_prompt_id = "vibe"
+system_prompt_id = "cli"
 include_commit_signature = true
 include_model_info = true
 include_project_context = true
@@ -17,6 +17,9 @@ tool_paths = []
 mcp_servers = []
 enabled_tools = []
 disabled_tools = []
+applied_migrations = [
+    "bash_read_only_defaults_v1",
+]
 
 [[providers]]
 name = "mistral"
@@ -40,6 +43,7 @@ temperature = 1.0
 input_price = 1.5
 output_price = 7.5
 thinking = "high"
+supports_images = true
 
 [[models]]
 name = "devstral-small-latest"
@@ -68,35 +72,53 @@ max_dirs_per_level = 20
 timeout_seconds = 2.0
 
 [session_logging]
-save_dir = "/Users/jasperfrumau/.vibe/logs/session"
+save_dir = "/Users/j/.vibe/logs/session"
 session_prefix = "session"
 enabled = true
-
-[tools.search_replace]
-permission = "ask"
-allowlist = []
-denylist = []
-max_content_size = 100000
-create_backup = false
-fuzzy_threshold = 0.9
 
 [tools.bash]
 permission = "ask"
 allowlist = [
+    "basename",
     "cat",
+    "comm",
+    "cut",
+    "date",
+    "diff",
+    "dirname",
+    "du",
     "echo",
     "file",
     "find",
+    "fmt",
+    "fold",
     "git diff",
     "git log",
     "git status",
+    "grep",
     "head",
+    "join",
+    "less",
     "ls",
+    "md5sum",
+    "more",
+    "nl",
+    "od",
+    "paste",
     "pwd",
+    "readlink",
+    "sha1sum",
+    "sha256sum",
+    "shasum",
+    "sort",
     "stat",
+    "sum",
+    "tac",
     "tail",
+    "tr",
     "tree",
     "uname",
+    "uniq",
     "wc",
     "which",
     "whoami",
@@ -165,13 +187,6 @@ exclude_patterns = [
 ]
 codeignore_file = ".vibeignore"
 
-[tools.read_file]
-permission = "always"
-allowlist = []
-denylist = []
-max_read_bytes = 64000
-max_state_history = 10
-
 [tools.todo]
 permission = "always"
 allowlist = []
@@ -184,3 +199,16 @@ allowlist = []
 denylist = []
 max_write_bytes = 64000
 create_parent_dirs = true
+
+[tools.read]
+permission = "always"
+allowlist = []
+denylist = []
+max_read_bytes = 64000
+max_state_history = 10
+
+[tools.edit]
+permission = "ask"
+allowlist = []
+denylist = []
+fuzzy_threshold = 0.9
