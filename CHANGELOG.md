@@ -6,6 +6,25 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.4.0] — 2026-06-30
+
+### Added
+- `modelfiles/mistral-small3.2-24b-32k.Modelfile` (new): 32k-context variant of `mistral-small3.2` (24B) for Open Code on Mac Mini M4 Pro 24GB — loads 100% GPU at 19 GB, tool use confirmed
+- `modelfiles/mistral-small3.2-24b-64k.Modelfile` (new): 64k variant, **marked not-recommended** — loads at 25 GB and spills 22% to CPU on a 24GB M4 even with `iogpu.wired_limit_mb=21504`
+- `opencode.json`: added `mistral-small3.2:24b-32k` to the Ollama provider
+- `docs/TROUBLESHOOTING.md`: new "A tool-capable model returns prose instead of calling the tool" section — documents that `mistral-small3.2` refuses with prose when a tool schema's path description says "absolute path," with the before/after diagnosis table
+- `README.md`, `CLAUDE.md`, `docs/LOCALLLMS.md`, `modelfiles/README.md`: added `mistral-small3.2:24b-32k` to the M4 24GB tables/recommendations and the build command, plus the 64k CPU-spillover caveat
+
+### Fixed
+- `scripts/tool-call-test.sh`: changed the `write` tool's `filePath` description from `"Absolute path of the file to write"` to `"Path of the file to write"`. The word "absolute" caused `mistral-small3.2` to refuse the task as prose (false negative); the neutral wording is also more representative of how Open Code calls the write tool.
+
+### Test Results
+- `mistral-small3.2:24b-32k` — tested 2026-06-30 on Mac Mini M4 Pro 24GB: **✅ PASS** tool call, 100% GPU at 19 GB, 32k context. Earlier "FAIL — returned prose" verdict was a false negative from the test script's `"Absolute path"` schema wording, not a real tool-use limitation (warm model, 100% GPU during every failure — not cold-vs-warm).
+- Root-cause isolation (warm, identical request, only `filePath` description changed): `"Absolute path of the file to write"` → 3/3 prose refusals; `"Path of the file to write"` → 3/3 ✅ tool calls.
+- `mistral-small3.2:24b-64k` — loads at 25 GB with 22%/78% CPU/GPU split (wired limit 21504); tool call technically passes but at **0.1 tok/s (902 s)** — unusable. Use the 32k variant.
+
+---
+
 ## [1.3.1] — 2026-06-28
 
 ### Changed
