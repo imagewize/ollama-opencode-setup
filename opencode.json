@@ -51,7 +51,10 @@
           "name": "Qwen3.5 9B (tool use, 32k ctx, M4 24GB confirmed)"
         },
         "qwen3-coder:30b": {
-          "name": "Qwen3-Coder 30B (tool use, 256k ctx, M4 24GB recommended)"
+          "name": "Qwen3-Coder 30B (tool use, runs at 4k in Open Code - use :30b-32k variant)"
+        },
+        "qwen3-coder:30b-32k": {
+          "name": "Qwen3-Coder 30B (tool use, 32k ctx, M4 24GB - needs wired_limit 21504)"
         },
         "qwen3.5:27b-mlx": {
           "name": "Qwen3.5 27B MLX (tool use, 256k ctx, M4 24GB via Ollama MLX)"
