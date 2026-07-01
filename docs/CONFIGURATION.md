@@ -36,6 +36,7 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 | Model | Size | Context | Tool Usage | Description |
 |-------|------|---------|------------|-------------|
 | `mistral-small3.2:24b-32k` | 19 GB | 32k | Yes | **Recommended for M4 24GB (no GPU tuning)** — dense 24B, 100% GPU at 32k, tool use confirmed (tested 2026-06-30). The 64k variant spills 22% to CPU (25 GB) — use 32k. The base model refuses with prose if a tool schema asks for an "absolute path" — keep descriptions neutral |
+| `mistral-small3.2:24b-16k` | 16 GB | 16k | Yes | Lighter 16k variant of the recommended model — smaller KV cache than 32k (a bit more free RAM, marginally faster load) for work scoped to ~3-5 files. 100% GPU, tool use confirmed (tested 2026-07-01). The 32k variant already runs 100% GPU, so prefer it by default and reach for 16k only when you want the smaller footprint |
 | `qwen3-coder:30b-32k` | 21 GB | 32k | Yes* | Coding-optimized MoE (3.3B active), fastest (~34.5 tok/s warm) — but spills ~19% to CPU at the default ceiling; 98% GPU only with raised `iogpu.wired_limit_mb` (21504), tested 2026-06-30. Base `qwen3-coder:30b` runs at 4k in Open Code — use this variant |
 | `qwen3.6:27b-mlx` | 19 GB | 256k | Yes* | Dense 27B — OOM at default GPU limit; loads after raising `iogpu.wired_limit_mb` to 21504 (~9.3 tok/s warm; ~3.3 tok/s cold, tested 2026-06-28). Slower than the MoE; use `qwen3-coder:30b-32k` for speed |
 | `qwen3.5:27b-mlx` | 20 GB | 256k | Yes | Ollama built-in MLX engine — confirmed tool use (9.9 tok/s, tested 2026-06-28) |

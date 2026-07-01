@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.6.0] — 2026-07-01
+
+### Added
+- `modelfiles/mistral-small3.2-24b-16k.Modelfile` (new): 16k-context variant of `mistral-small3.2` (24B) for Open Code on Mac Mini M4 Pro 24GB. A lighter companion to the recommended 32k variant — smaller KV cache (more free RAM, marginally faster load) for work deliberately scoped to ~3-5 files. Tested 2026-07-01: **100% GPU, 16 GB, CONTEXT=16384**
+- `opencode.json`: added `mistral-small3.2:24b-16k` to the Ollama provider
+- `README.md`, `docs/CONFIGURATION.md`, `modelfiles/README.md`: added the `mistral-small3.2:24b-16k` row to the M4 24GB tables and the Modelfile table
+
+### Changed
+- All `modelfiles/*.Modelfile`: added a `# Context window:` comment translating each model's token count into approximate words / medium files (e.g. 16k ≈ 12,000 words / 3-5 files), cross-referencing `docs/CONTEXT-WINDOWS.md`. Makes the practical reach of each variant legible at the point of use
+- `modelfiles/README.md`: the "Adding a new variant" steps now require the context-in-words comment, with the token→word/file conversions inline
+
+---
+
 ## [1.5.3] — 2026-07-01
 
 ### Changed

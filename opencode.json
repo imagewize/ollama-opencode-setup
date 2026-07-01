@@ -61,6 +61,9 @@
         },
         "mistral-small3.2:24b-32k": {
           "name": "Mistral Small 3.2 24B (32k context, tool use, M4 24GB confirmed)"
+        },
+        "mistral-small3.2:24b-16k": {
+          "name": "Mistral Small 3.2 24B (16k context, tool use, M4 24GB - lighter KV cache)"
         }
       }
     }
