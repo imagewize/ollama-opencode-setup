@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.6.1] — 2026-07-01
+
+### Fixed
+- `modelfiles/README.md`: "Why these exist" said base models run at Ollama's `~2k` default inside Open Code — corrected to `~4k on <=24GB Macs`, matching `docs/CONTEXT-WINDOWS.md` and every Modelfile comment (Ollama's RAM-based default is 4,096 tokens on 16–24GB machines)
+
+### Changed
+- `modelfiles/README.md`: the "Adding a new variant" steps now list `README.md` (hardware table) alongside `opencode.json` and `docs/CONFIGURATION.md` as a place to register the model, matching the actual process used for `mistral-small3.2:24b-16k`
+
+---
+
 ## [1.6.0] — 2026-07-01
 
 ### Added

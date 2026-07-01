@@ -6,7 +6,7 @@ Reproducible Modelfile definitions for custom Ollama model variants used with Op
 
 Open Code talks to Ollama via the OpenAI-compatible (`/v1`) endpoint, which does not
 forward Ollama's `num_ctx` option. Without a baked-in context size, base models run at
-Ollama's small default (~2k) inside Open Code — too small for agentic tool loops.
+Ollama's small default (~4k on <=24GB Macs) inside Open Code — too small for agentic tool loops.
 Each Modelfile here bakes a `num_ctx` value into a named variant so the correct
 context window is always active regardless of how Open Code calls the model.
 
@@ -27,4 +27,4 @@ context window is always active regardless of how Open Code calls the model.
 
 1. Create `modelfiles/<base-model-slug>-<ctx>.Modelfile` following the existing pattern. Include a `# Context window:` comment translating the token count into approximate words / medium files (see the [CONTEXT-WINDOWS.md](../docs/CONTEXT-WINDOWS.md) reality-check table: 16k ≈ 12k words / 3-5 files, 32k ≈ 24k words / 6-10 files, 64k ≈ 48k words).
 2. Add a row to the table above.
-3. Add the new model name to `opencode.json` and `docs/CONFIGURATION.md`.
+3. Add the new model name to `opencode.json`, `README.md` (hardware table), and `docs/CONFIGURATION.md`.
