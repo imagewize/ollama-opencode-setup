@@ -32,22 +32,33 @@ This directory contains documentation for running Open Code CLI with local Ollam
 
 ## Quick Reference
 
-### Available Models (Confirmed Tool Use)
+### Tool Use Confirmed — MacBook M1 16GB
 | Model | Size | Context | Tool Use | Speed |
 |-------|------|---------|----------|-------|
-| `ministral-3:8b-32k` | 11 GB | 32k | Yes | ~4s warm |
+| `ministral-3:8b-32k` (recommended) | 11 GB | 32k | Yes | ~4s warm |
 | `ministral-3:8b-16k` | 6.5 GB | 16k | Yes | ~4-10s |
 | `ministral-3:8b` | 6.0 GB | ~4k default | Yes | ~4s |
 | `qwen3:8b-16k` | 5.2 GB | 16k | Yes | ~26s |
 | `qwen3:8b` | 5.2 GB | 8k | Yes | ~26s |
 | `qwen3:4b` | 2.5 GB | 8k | Yes | Fast |
 
+### Tool Use Confirmed — Mac Mini M4 Pro 24GB
+| Model | Size | Context | Tool Use | Notes |
+|-------|------|---------|----------|-------|
+| `mistral-small3.2:24b-32k` (recommended) | 19 GB | 32k | Yes | 100% GPU at 32k, no GPU tuning |
+| `qwen3-coder:30b-32k` | 21 GB | 32k | Yes | Coding MoE, ~34.5 tok/s; needs `iogpu.wired_limit_mb=21504` for full GPU |
+| `qwen3.5:27b-mlx` | 20 GB | 256k | Yes | Ollama built-in MLX engine, ~9.9 tok/s |
+| `qwen3.5:latest` | 6.6 GB | 32k | Yes | Lightweight, ~18s |
+
 ### Read-Only Models (Analysis Only)
 | Model | Size | Context | Tool Use | Best For |
 |-------|------|---------|----------|---------|
 | `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | No | Code review, analysis |
+| `deepseek-coder-v2:16b` | 8.9 GB | 128k | No | FIM/completion, no tool support |
 | `qwen3.5:9b` | 6.6 GB | 32k | No | Large context analysis |
 | `qwen3.5:4b` | 2.5 GB | 32k | No | Light analysis |
+| `phi4:latest` | ~5 GB | 16k | No | Analysis |
+| `gemma4:e4b` | ~5.5 GB | 32k | No | Analysis |
 | `granite3.1-moe` | 2.0 GB | 8k | No | Fast analysis |
 
 ### Essential Ollama Commands
