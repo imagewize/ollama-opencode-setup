@@ -6,14 +6,14 @@ This directory contains documentation for running Open Code CLI with local Ollam
 
 | File | Purpose | Key Topics |
 |------|---------|------------|
-| [LOCALLLMS.md](./LOCALLLMS.md) | **Core Configuration** | Model setup, context windows, Ollama commands, custom Modelfiles |
+| [localllms/](./localllms/) | **Core Configuration** | Model setup, context windows (**RAM-based defaults**), Ollama commands, custom Modelfiles |
 | [AGENTS.md](./AGENTS.md) | **Agent Workflows** | Agent modes, capabilities by model, workflow patterns, performance benchmarks |
 | [OPENCODE-COMMANDS.md](./OPENCODE-COMMANDS.md) | **CLI Reference** | All slash commands, bash integration, keybindings, troubleshooting |
 | [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) | **Issue Resolution** | Tool usage discovery, model limitations, hybrid workflows, model selection |
 
 ## Getting Started
 
-1. **Understand the configuration** → [LOCALLLMS.md](./LOCALLLMS.md)
+1. **Understand the configuration** → [localllms/](./localllms/)
 2. **Learn the CLI** → [OPENCODE-COMMANDS.md](./OPENCODE-COMMANDS.md)
 3. **Explore agent workflows** → [AGENTS.md](./AGENTS.md)
 4. **Solve issues** → [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
