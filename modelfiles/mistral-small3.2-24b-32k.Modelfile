@@ -8,6 +8,8 @@
 # Tool use: confirmed. Note the base model (a "Le Chat" assistant persona) will refuse
 # with prose if a tool schema demands an "absolute path" — keep tool descriptions neutral.
 #
+# Context window: 32k tokens (~24,000 words, 6-10 medium files — see docs/CONTEXT-WINDOWS.md).
+#
 # Build:  ollama create mistral-small3.2:24b-32k -f modelfiles/mistral-small3.2-24b-32k.Modelfile
 
 FROM mistral-small3.2:latest

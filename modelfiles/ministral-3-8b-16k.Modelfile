@@ -8,6 +8,8 @@
 # 16k is the safe sweet spot on 16GB unified memory (~8GB total footprint).
 # The base model natively supports up to 256k, but that would swap on 16GB.
 #
+# Context window: 16k tokens (~12,000 words, 3-5 medium files — see docs/CONTEXT-WINDOWS.md).
+#
 # Build:  ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 
 FROM ministral-3:8b

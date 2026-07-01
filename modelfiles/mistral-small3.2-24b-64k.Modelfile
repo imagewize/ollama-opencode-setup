@@ -7,6 +7,8 @@
 # which tanks throughput. Use the 32k variant (19 GB, 100% GPU) instead. Kept here for
 # reference / for machines with more unified memory.
 #
+# Context window: 64k tokens (~48,000 words, ~12-20 medium files — see docs/CONTEXT-WINDOWS.md).
+#
 # Build:  ollama create mistral-small3.2:24b-64k -f modelfiles/mistral-small3.2-24b-64k.Modelfile
 
 FROM mistral-small3.2:latest

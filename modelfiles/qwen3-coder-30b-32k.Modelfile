@@ -8,6 +8,8 @@
 #
 # Tool use: confirmed (coding-optimized MoE, ~3B active params per token).
 #
+# Context window: 32k tokens (~24,000 words, 6-10 medium files — see docs/CONTEXT-WINDOWS.md).
+#
 # Build:  ollama create qwen3-coder:30b-32k -f modelfiles/qwen3-coder-30b-32k.Modelfile
 
 FROM qwen3-coder:30b
