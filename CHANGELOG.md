@@ -6,6 +6,23 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.5.2] — 2026-07-01
+
+### Changed
+- `docs/localllms/` flattened into `docs/` — since the entire repo is about local LLMs, the subdirectory added no value. All files now live directly under `docs/`
+- `docs/localllms/COMMANDS.md` → `docs/OLLAMA-COMMANDS.md`: renamed to distinguish from `docs/OPENCODE-COMMANDS.md`
+- `docs/localllms/TROUBLESHOOTING.md`: merged as a new "Ollama Service Checks" section in `docs/TROUBLESHOOTING.md` (Ollama not running, model not found, out of memory, "Cannot Read Binary File")
+- `docs/localllms/README.md`: absorbed into `docs/README.md` — index table expanded to list all individual files with descriptions
+- `docs/CONFIGURATION.md`, `docs/CONTEXT-WINDOWS.md`, `docs/CUSTOM-MODELS.md`, `docs/MLX-RUNTIME.md`, `docs/MODEL-SELECTION.md`: moved from `docs/localllms/` as-is; internal links and Modelfile paths updated
+- `docs/README.md`: rewritten to reflect flat structure; now indexes all 10 docs directly with purpose and key topics
+- `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/AGENTS-USAGE.md`, `examples/README.md`, `modelfiles/README.md`: all `docs/localllms/` cross-references updated to the new paths
+
+### Removed
+- `docs/localllms/` directory (all contents moved to `docs/`)
+- `docs/LOCALLLMS.md`: deprecated redirect stub, no longer needed
+
+---
+
 ## [1.5.1] — 2026-06-30
 
 ### Removed
