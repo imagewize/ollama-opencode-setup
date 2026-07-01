@@ -1,0 +1,24 @@
+# 16k-context variant of mistral-small3.2 (24B) for Open Code on Mac Mini M4 Pro 24GB.
+#
+# Why: Open Code talks to Ollama via the OpenAI-compatible (/v1) endpoint, which
+# ignores options.num_ctx — so the base model loads at Ollama's 4096 default inside
+# Open Code (verified: /v1 + num_ctx=16384 still loads CONTEXT=4096, while the native
+# /api/chat honors it). Baking num_ctx in guarantees the real window is always active.
+#
+# Context window: 16k tokens (~12,000 words, 3-5 medium files — see docs/CONTEXT-WINDOWS.md).
+#
+# When to use: the 32k variant already runs 100% GPU (19 GB), so this 16k variant does
+# not buy GPU headroom — its value is a smaller KV cache (a bit more free RAM, marginally
+# faster load) for work you deliberately scope to ~3-5 files / ~12k words. Reach for the
+# 32k variant by default; use this when you want the lighter footprint.
+#
+# GPU fit: tested 2026-07-01 on Mac Mini M4 Pro 24GB — 100% GPU, 16 GB, CONTEXT=16384.
+#
+# Tool use: confirmed on the 32k variant. Note the base model (a "Le Chat" assistant
+# persona) will refuse with prose if a tool schema demands an "absolute path" — keep
+# tool descriptions neutral.
+#
+# Build:  ollama create mistral-small3.2:24b-16k -f modelfiles/mistral-small3.2-24b-16k.Modelfile
+
+FROM mistral-small3.2:latest
+PARAMETER num_ctx 16384

@@ -5,6 +5,8 @@
 # systems and is the natural middle ground between the 16k sweet spot and the
 # 64k target recommended by Ollama docs for agentic tools.
 #
+# Context window: 32k tokens (~24,000 words, 6-10 medium files — see docs/CONTEXT-WINDOWS.md).
+#
 # Build:  ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile
 
 FROM ministral-3:8b

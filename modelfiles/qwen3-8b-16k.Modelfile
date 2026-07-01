@@ -9,6 +9,8 @@
 # The base model natively supports up to 32k, but 16k balances context depth
 # against memory headroom for other processes.
 #
+# Context window: 16k tokens (~12,000 words, 3-5 medium files — see docs/CONTEXT-WINDOWS.md).
+#
 # Build:  ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 
 FROM qwen3:8b

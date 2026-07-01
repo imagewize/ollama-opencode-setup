@@ -14,6 +14,8 @@
 #   ollama ps
 #   # Look for "100% GPU" — anything less means CPU spillover and slower inference.
 #
+# Context window: 64k tokens (~48,000 words, ~12-20 medium files — see docs/CONTEXT-WINDOWS.md).
+#
 # Build:  ollama create ministral-3:8b-64k -f modelfiles/ministral-3-8b-64k.Modelfile
 
 FROM ministral-3:8b
