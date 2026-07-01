@@ -9,7 +9,7 @@ Instructions for AI coding agents (Mistral Vibe, and any other tool that reads
 This is a **documentation and configuration repository** for running Open Code CLI with local Ollama models. It contains:
 - Open Code configuration ([opencode.json](opencode.json))
 - Custom Modelfiles for extended context variants ([modelfiles/](modelfiles/))
-- Comprehensive documentation ([docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md), [docs/LOCALLLMS.md](docs/LOCALLLMS.md), [docs/AGENTS.md](docs/AGENTS.md), [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md))
+- Comprehensive documentation ([docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md), [docs/localllms/](docs/localllms/), [docs/AGENTS-USAGE.md](docs/AGENTS-USAGE.md), [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md))
 - Example workflows ([examples/](examples/))
 - Test suite ([test-opencode.md](test-opencode.md))
 
@@ -96,7 +96,7 @@ ollama create <model-name> -f <modelfile-path>
 - **Coding MoE (needs raised GPU limit)** → `qwen3-coder:30b-32k` (21 GB, 32k ctx, ~34.5 tok/s warm). Reaches 98% GPU only after `sudo sysctl -w iogpu.wired_limit_mb=21504` + Ollama restart.
 - **Lightweight option** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
 
-See [docs/LOCALLLMS.md](docs/LOCALLLMS.md) and [modelfiles/README.md](modelfiles/README.md) for the full GPU test results.
+See [docs/localllms/MLX-RUNTIME.md](docs/localllms/MLX-RUNTIME.md) and [modelfiles/README.md](modelfiles/README.md) for the full GPU test results.
 
 ## Documentation Structure
 
@@ -109,10 +109,10 @@ Complete Open Code CLI commands reference including all 15 built-in slash comman
 ### [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
 Tool usage discovery, model capability limitations, diagnosing models that plan but do not create files, hybrid workflow strategies, and model selection flowchart.
 
-### [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
+### [docs/localllms/](docs/localllms/)
 Open Code configuration with local models, custom model creation, context window comparison, model selection guidelines, troubleshooting, and known Open Code CLI issues.
 
-### [docs/AGENTS.md](docs/AGENTS.md)
+### [docs/AGENTS-USAGE.md](docs/AGENTS-USAGE.md)
 How OpenCode works (the agentic loop / tool-use wrapper pattern), build and plan agents (Tab key switching), model capabilities, agent workflow patterns, think-mode behavior, performance benchmarks, and best practices. This is the human-facing agents guide; the file you are reading (`AGENTS.md` at the repo root) is the agent instruction file.
 
 ### [examples/](examples/)
@@ -138,7 +138,7 @@ Test suite for validating Open Code CLI setup, performance benchmarks, think mod
 - Prioritize verification over assumptions
 - When unsure, ask for clarification before acting
 - For Open Code CLI specifics, reference [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md)
-- For model selection, reference [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
+- For model selection, reference [docs/localllms/MODEL-SELECTION.md](docs/localllms/MODEL-SELECTION.md)
 
 ## Repository Workflow
 
@@ -150,7 +150,7 @@ This repository is designed to be:
 When making changes:
 - Update [opencode.json](opencode.json) when adding/removing models
 - Add corresponding Modelfile to [modelfiles/](modelfiles/) for custom variants
-- Update [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for technical documentation changes
+- Update [docs/localllms/](docs/localllms/) for technical documentation changes
 - Update [docs/AGENTS.md](docs/AGENTS.md) for agent workflow and usage patterns
 - Add new workflows to [examples/](examples/) directory
 - Update [test-opencode.md](test-opencode.md) with new test cases
