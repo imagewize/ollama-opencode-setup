@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **documentation and configuration repository** for running Open Code CLI with local Ollama models. It contains:
 - Open Code configuration ([opencode.json](opencode.json))
-- Comprehensive documentation ([docs/LOCALLLMS.md](docs/LOCALLLMS.md), [docs/AGENTS.md](docs/AGENTS.md))
+- Comprehensive documentation ([docs/](docs/), [docs/AGENTS-USAGE.md](docs/AGENTS-USAGE.md))
 - Example workflows ([examples/](examples/))
 - Test suite ([test-opencode.md](test-opencode.md))
 
@@ -85,7 +85,7 @@ ollama serve
 - **Fits only with raised GPU limit** → `qwen3.6:27b-mlx` (dense 27B / 18.4 GiB weights — OOM at the default ~17.3 GiB ceiling; loads after `sudo sysctl -w iogpu.wired_limit_mb=21504` + Ollama restart, ~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE
 - **Lightweight option** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
 
-The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no separate MLX server needed. Ollama's built-in MLX engine handles Apple Silicon natively; models tagged `-mlx` use it automatically. See [docs/LOCALLLMS.md](docs/LOCALLLMS.md#large-models-on-mac-mini-m4-pro-24gb) for details.
+The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no separate MLX server needed. Ollama's built-in MLX engine handles Apple Silicon natively; models tagged `-mlx` use it automatically. See [docs/MLX-RUNTIME.md](docs/MLX-RUNTIME.md) for details.
 
 ## Documentation Structure
 
@@ -104,15 +104,29 @@ The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no sep
 - Common workflows and best practices
 - Command troubleshooting
 
-### [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
-- Open Code configuration
-- Custom model creation
-- Context window comparison
-- Model selection guidelines
-- Troubleshooting (Ollama not running, model not found, performance issues)
-- Known Open Code CLI issues (thinking mode behavior, binary file detection)
+### [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
+- Available models and their context/tool-use status
+- Provider setup and `opencode.json` reference
 
-### [docs/AGENTS.md](docs/AGENTS.md)
+### [docs/CONTEXT-WINDOWS.md](docs/CONTEXT-WINDOWS.md)
+- RAM-based context defaults, why base models run at 4k
+- Why we bake `num_ctx` via Modelfiles
+
+### [docs/CUSTOM-MODELS.md](docs/CUSTOM-MODELS.md)
+- Creating context-baked variants with Modelfiles
+- Verification steps
+
+### [docs/MODEL-SELECTION.md](docs/MODEL-SELECTION.md)
+- Model recommendations by hardware and task type
+- Performance benchmarks, local vs cloud guidance
+
+### [docs/OLLAMA-COMMANDS.md](docs/OLLAMA-COMMANDS.md)
+- Complete Ollama CLI reference
+
+### [docs/MLX-RUNTIME.md](docs/MLX-RUNTIME.md)
+- Mac-specific GPU memory tuning for dense MLX models on M4 24GB+
+
+### [docs/AGENTS-USAGE.md](docs/AGENTS-USAGE.md)
 - How OpenCode works: the agentic loop (tool-use wrapper pattern)
 - Build and plan agents (Tab key switching)
 - Model capabilities for agent workflows
@@ -187,8 +201,8 @@ This repository is designed to be:
 
 When making changes:
 - Update [opencode.json](opencode.json) when adding/removing models
-- Update [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for technical documentation changes
-- Update [docs/AGENTS.md](docs/AGENTS.md) for agent workflow and usage patterns
+- Update [docs/](docs/) for technical documentation changes
+- Update [docs/AGENTS-USAGE.md](docs/AGENTS-USAGE.md) for agent workflow and usage patterns
 - Add new workflows to [examples/](examples/) directory
 - Update [test-opencode.md](test-opencode.md) with new test cases
 - Keep [README.md](README.md) in sync with major changes

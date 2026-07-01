@@ -6,6 +6,27 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.5.2] — 2026-07-01
+
+### Added
+- `docs/CONFIGURATION.md` — available models, provider setup, `opencode.json` reference (split from `docs/LOCALLLMS.md`)
+- `docs/CONTEXT-WINDOWS.md` — RAM-based context defaults, why base models run at 4k, why we bake `num_ctx` via Modelfiles (split from `docs/LOCALLLMS.md`)
+- `docs/CUSTOM-MODELS.md` — creating extended-context variants, all Modelfile build commands, verification steps (split from `docs/LOCALLLMS.md`)
+- `docs/MODEL-SELECTION.md` — model recommendations by hardware and task, performance benchmarks, local vs cloud guidance (split from `docs/LOCALLLMS.md`)
+- `docs/MLX-RUNTIME.md` — GPU memory ceiling on M4 24GB, raising `iogpu.wired_limit_mb`, recommended large models (split from `docs/LOCALLLMS.md`)
+- `docs/OLLAMA-COMMANDS.md` — complete Ollama CLI reference (split from `docs/LOCALLLMS.md`)
+- `docs/TROUBLESHOOTING.md`: new "Ollama Service Checks" section — Ollama not running, model not found, out of memory, "Cannot Read Binary File" error (content from `docs/LOCALLLMS.md`)
+
+### Changed
+- `docs/AGENTS.md` → `docs/AGENTS-USAGE.md`: renamed to avoid confusion with the repo-root `AGENTS.md` agent instruction file
+- `docs/README.md`: rewritten as a flat index of all 10 docs with purpose and key topics per file
+- `AGENTS.md`, `CLAUDE.md`, `README.md`, `docs/README.md`, `examples/README.md`, `modelfiles/README.md`: all cross-references updated to new file names
+
+### Removed
+- `docs/LOCALLLMS.md` (650 lines): monolithic file split into the six focused docs above
+
+---
+
 ## [1.5.1] — 2026-06-30
 
 ### Removed

@@ -224,6 +224,6 @@ Have a useful workflow? Please contribute!
 
 ## Additional Resources
 
-- [Main Documentation](../docs/LOCALLLMS.md)
+- [Main Documentation](../docs/)
 - [Open Code Documentation](https://opencode.ai/docs)
 - [Ollama Model Library](https://ollama.ai/library)

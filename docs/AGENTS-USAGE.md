@@ -77,7 +77,7 @@ opencode
 
 ## Agent Capabilities by Model
 
-Only models with confirmed tool use are listed here. For read-only models, see [LOCALLLMS.md](./LOCALLLMS.md).
+Only models with confirmed tool use are listed here. For read-only models, see [MODEL-SELECTION.md](./MODEL-SELECTION.md).
 
 ### ministral-3:8b-16k (6.0 GB, 16k context) — Recommended
 **Agent suitability:** ⭐⭐⭐⭐⭐ Excellent
