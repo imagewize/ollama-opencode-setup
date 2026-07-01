@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.5.3] — 2026-07-01
+
+### Changed
+- `docs/README.md`: Quick Reference brought in sync with `opencode.json`. Split the single "Available Models" table into two tool-use tables by hardware — added the missing Mac Mini M4 Pro 24GB lineup (`mistral-small3.2:24b-32k` recommended, `qwen3-coder:30b-32k`, `qwen3.5:27b-mlx`, `qwen3.5:latest`), which existed in CONFIGURATION.md and MODEL-SELECTION.md but not in the index. Completed the read-only table with `deepseek-coder-v2:16b`, `phi4:latest`, and `gemma4:e4b`
+
+---
+
 ## [1.5.2] — 2026-07-01
 
 ### Added
