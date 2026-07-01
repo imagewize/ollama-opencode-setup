@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **documentation and configuration repository** for running Open Code CLI with local Ollama models. It contains:
 - Open Code configuration ([opencode.json](opencode.json))
-- Comprehensive documentation ([docs/LOCALLLMS.md](docs/LOCALLLMS.md), [docs/AGENTS.md](docs/AGENTS.md))
+- Comprehensive documentation ([docs/localllms/](docs/localllms/), [docs/AGENTS-USAGE.md](docs/AGENTS-USAGE.md))
 - Example workflows ([examples/](examples/))
 - Test suite ([test-opencode.md](test-opencode.md))
 
@@ -85,7 +85,7 @@ ollama serve
 - **Fits only with raised GPU limit** → `qwen3.6:27b-mlx` (dense 27B / 18.4 GiB weights — OOM at the default ~17.3 GiB ceiling; loads after `sudo sysctl -w iogpu.wired_limit_mb=21504` + Ollama restart, ~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE
 - **Lightweight option** → `qwen3.5:latest` (6.6 GB, 32k ctx, tool use confirmed, ~18s)
 
-The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no separate MLX server needed. Ollama's built-in MLX engine handles Apple Silicon natively; models tagged `-mlx` use it automatically. See [docs/LOCALLLMS.md](docs/LOCALLLMS.md#large-models-on-mac-mini-m4-pro-24gb) for details.
+The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no separate MLX server needed. Ollama's built-in MLX engine handles Apple Silicon natively; models tagged `-mlx` use it automatically. See [docs/localllms/MLX-RUNTIME.md](docs/localllms/MLX-RUNTIME.md) for details.
 
 ## Documentation Structure
 
@@ -104,10 +104,10 @@ The Mac Mini M4 24GB runs 19–20GB models entirely on GPU via Ollama — no sep
 - Common workflows and best practices
 - Command troubleshooting
 
-### [docs/LOCALLLMS.md](docs/LOCALLLMS.md)
+### [docs/localllms/](docs/localllms/)
 - Open Code configuration
 - Custom model creation
-- Context window comparison
+- Context window comparison (including **RAM-based defaults**)
 - Model selection guidelines
 - Troubleshooting (Ollama not running, model not found, performance issues)
 - Known Open Code CLI issues (thinking mode behavior, binary file detection)
@@ -187,7 +187,7 @@ This repository is designed to be:
 
 When making changes:
 - Update [opencode.json](opencode.json) when adding/removing models
-- Update [docs/LOCALLLMS.md](docs/LOCALLLMS.md) for technical documentation changes
+- Update [docs/localllms/](docs/localllms/) for technical documentation changes
 - Update [docs/AGENTS.md](docs/AGENTS.md) for agent workflow and usage patterns
 - Add new workflows to [examples/](examples/) directory
 - Update [test-opencode.md](test-opencode.md) with new test cases
