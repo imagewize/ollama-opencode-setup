@@ -18,7 +18,7 @@ The `qwen3:8b-16k` model is a custom variant created from the base `qwen3:8b` mo
 
 ```bash
 # From the repo root
-ollama create qwen3:8b-16k -f ../../modelfiles/qwen3-8b-16k.Modelfile
+ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 
 # Verify
 ollama show qwen3:8b-16k --modelfile | grep num_ctx
@@ -42,7 +42,7 @@ Ollama docs recommend at least 32k context for agentic tools; 64k was tested but
 
 ```bash
 # From the repo root
-ollama create ministral-3:8b-32k -f ../../modelfiles/ministral-3-8b-32k.Modelfile
+ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile
 
 # Verify
 ollama show ministral-3:8b-32k --modelfile | grep num_ctx
@@ -54,7 +54,7 @@ ollama show ministral-3:8b-32k --modelfile | grep num_ctx
 `ministral-3:8b-16k` is the memory-constrained fallback — 100% GPU at ~6.5 GB. Use this if 32k causes issues on your machine.
 
 ```bash
-ollama create ministral-3:8b-16k -f ../../modelfiles/ministral-3-8b-16k.Modelfile
+ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 ```
 
 The base model natively supports up to 256k context. 32k is the recommended sweet spot on M1 16GB; 64k saturates all 16 GB and spills to CPU.
@@ -72,7 +72,7 @@ The base model natively supports up to 256k context. 32k is the recommended swee
 
 ## Available Modelfiles
 
-This repository includes pre-configured Modelfiles in [`modelfiles/`](../../modelfiles/) directory:
+This repository includes pre-configured Modelfiles in [`modelfiles/`](../modelfiles/) directory:
 
 | Modelfile | Base Model | Context | Notes |
 |-----------|------------|---------|-------|
@@ -84,7 +84,7 @@ This repository includes pre-configured Modelfiles in [`modelfiles/`](../../mode
 
 **Usage**:
 ```bash
-# General pattern
+# General pattern (run from repo root)
 ollama create <new-name> -f modelfiles/<Modelfile>.Modelfile
 
 # Example: Create all recommended variants

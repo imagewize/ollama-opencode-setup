@@ -364,6 +364,44 @@ opencode --model ollama/qwen3:8b-16k
 
 ---
 
+## Ollama Service Checks
+
+### Ollama Not Running
+
+**Check**: `curl http://localhost:11434/v1/models`
+
+**Fix**: `ollama serve` (or start the menubar app)
+
+### Model Not Found
+
+**Check**: `ollama list`
+
+**Fix**: `ollama pull <model-name>`
+
+### Out of Memory
+
+**Solutions**:
+1. Use smaller models: `qwen3:4b` (2.5 GB), `granite3.1-moe` (2.0 GB)
+2. Close other applications
+3. For M4 24GB with dense MLX: `sudo sysctl -w iogpu.wired_limit_mb=21504` then restart Ollama (see [MLX-RUNTIME.md](./MLX-RUNTIME.md))
+4. Create a variant with lower context via Modelfile
+
+### "Cannot Read Binary File" Error
+
+**Cause**: Unicode box-drawing characters in documentation files.
+
+**Verify**: `file <filename>.md` — should show "ASCII text" or "UTF-8 Unicode text", not "data".
+
+**Fix**:
+```bash
+LC_ALL=C tr -cd '\11\12\15\40-\176' < file.md > file_clean.md
+mv file_clean.md file.md
+```
+
+**Prevention**: Don't copy/paste `tree` command output into docs. Use ASCII (`-`, `*`, spaces) instead of box-drawing characters.
+
+---
+
 ## Update Log
 
 **2025-11-18:**

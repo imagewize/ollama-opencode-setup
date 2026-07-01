@@ -23,9 +23,9 @@
 ```bash
 ollama create <new-name> -f <path-to-Modelfile>
 
-# Examples:
-ollama create ministral-3:8b-32k -f ../../modelfiles/ministral-3-8b-32k.Modelfile
-ollama create qwen3:8b-16k -f ../../modelfiles/qwen3-8b-16k.Modelfile
+# Examples (run from repo root):
+ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile
+ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
 ```
 
 ### Copy a Model

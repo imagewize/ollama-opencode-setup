@@ -26,4 +26,4 @@ context window is always active regardless of how Open Code calls the model.
 
 1. Create `modelfiles/<base-model-slug>-<ctx>.Modelfile` following the existing pattern.
 2. Add a row to the table above.
-3. Add the new model name to `opencode.json` and `docs/localllms/CONFIGURATION.md`.
+3. Add the new model name to `opencode.json` and `docs/CONFIGURATION.md`.

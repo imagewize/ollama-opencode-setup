@@ -70,7 +70,7 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 |-------|------|---------|----------|-------|
 | `mistral-small3.2:24b-32k` ⭐ | 19 GB | 32k | ✅ | **Recommended for M4 24GB (no GPU tuning)** — dense 24B, 100% GPU at 32k, tool use confirmed (tested 2026-06-30). Build from `modelfiles/`. **64k OOMs to CPU on 24GB — use 32k.** Keep tool-schema paths neutral (it refuses "absolute path" prompts) |
 | `qwen3-coder:30b-32k` | 21 GB | 32k | ✅* | Coding-optimized MoE, fastest (~34.5 tok/s warm) — but spills ~19% to CPU at the default ceiling; 98% GPU only with raised `iogpu.wired_limit_mb` (21504), tested 2026-06-30. Base `qwen3-coder:30b` runs at 4k in Open Code — build the 32k variant from `modelfiles/` |
-| `qwen3.6:27b-mlx` | 19 GB | 256k | ✅* | Dense 27B — OOM at the default GPU limit; loads after raising `iogpu.wired_limit_mb` to 21504 (~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE — see [docs/localllms/MLX-RUNTIME.md](docs/localllms/MLX-RUNTIME.md#raising-the-memory-ceiling-for-dense-mlx-models) |
+| `qwen3.6:27b-mlx` | 19 GB | 256k | ✅* | Dense 27B — OOM at the default GPU limit; loads after raising `iogpu.wired_limit_mb` to 21504 (~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE — see [docs/MLX-RUNTIME.md](docs/MLX-RUNTIME.md#raising-the-memory-ceiling-for-dense-mlx-models) |
 | `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, tool use confirmed (9.9 tok/s, tested 2026-06-28) |
 | `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
 
@@ -81,10 +81,14 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 | Doc | Contents |
 |-----|----------|
 | [docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md) | Symlink vs copy, new/existing project setup, committing the config |
-| [docs/localllms/](docs/localllms/) | Custom model creation, context windows (**RAM-based defaults**), Ollama commands, performance |
-| [docs/AGENTS.md](docs/AGENTS.md) | Agent modes (build/plan), tool-use patterns, benchmarks |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Available models, provider setup, `opencode.json` |
+| [docs/CUSTOM-MODELS.md](docs/CUSTOM-MODELS.md) | Creating context-baked variants via Modelfiles |
+| [docs/CONTEXT-WINDOWS.md](docs/CONTEXT-WINDOWS.md) | RAM-based defaults, why we bake `num_ctx` |
+| [docs/MODEL-SELECTION.md](docs/MODEL-SELECTION.md) | Model recommendations by hardware and task |
+| [docs/MLX-RUNTIME.md](docs/MLX-RUNTIME.md) | GPU memory tuning for dense MLX models on M4 24GB+ |
+| [docs/AGENTS-USAGE.md](docs/AGENTS-USAGE.md) | Agent modes (build/plan), tool-use patterns, benchmarks |
 | [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) | All slash commands, bash integration, custom command creation |
-| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Tool-call failures, think mode, model selection flowchart |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Tool-call failures, think mode, Ollama service checks |
 | [modelfiles/README.md](modelfiles/README.md) | Why custom Modelfiles exist, GPU test results, adding new variants |
 
 ---

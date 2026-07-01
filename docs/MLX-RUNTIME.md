@@ -66,7 +66,7 @@ Ollama's MLX engine leans on Apple's unified memory and Metal-backed acceleratio
 The same `num_ctx` baking rule applies — Ollama's OpenAI-compatible endpoint ignores context length, so the base `qwen3-coder:30b` runs at **4K default** inside Open Code. Bake a variant to get the real window:
 
 ```bash
-ollama create qwen3-coder:30b-32k -f ../../modelfiles/qwen3-coder-30b-32k.Modelfile
+ollama create qwen3-coder:30b-32k -f modelfiles/qwen3-coder-30b-32k.Modelfile
 ```
 
 **GPU-footprint catch**: The 18 GB of MoE weights plus a 32k KV cache total ~21 GB, which exceeds the default ~17.3 GiB wired ceiling — so the 32k variant spills ~19% to CPU. It only runs 98% GPU after raising `iogpu.wired_limit_mb` to 21504. If you'd rather not tune the GPU limit, use `mistral-small3.2:24b-32k`, which is 100% GPU at 32k out of the box.

@@ -4,7 +4,7 @@
 
 ## Open Code Configuration
 
-Open Code is configured via [`opencode.json`](../../opencode.json) in the repository root. This file defines available LLM providers and models.
+Open Code is configured via [`opencode.json`](../opencode.json) in the repository root. This file defines available LLM providers and models.
 
 ### Current Configuration
 
@@ -56,7 +56,7 @@ Open Code is configured via [`opencode.json`](../../opencode.json) in the reposi
 
 ## Updating Configuration
 
-When adding or removing Ollama models, update [`opencode.json`](../../opencode.json):
+When adding or removing Ollama models, update [`opencode.json`](../opencode.json):
 
 ```json
 {
