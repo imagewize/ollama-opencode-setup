@@ -8,18 +8,22 @@ All notable changes to this project will be documented in this file.
 
 ## [1.5.2] — 2026-07-01
 
+### Added
+- `docs/CONFIGURATION.md` — available models, provider setup, `opencode.json` reference (split from `docs/LOCALLLMS.md`)
+- `docs/CONTEXT-WINDOWS.md` — RAM-based context defaults, why base models run at 4k, why we bake `num_ctx` via Modelfiles (split from `docs/LOCALLLMS.md`)
+- `docs/CUSTOM-MODELS.md` — creating extended-context variants, all Modelfile build commands, verification steps (split from `docs/LOCALLLMS.md`)
+- `docs/MODEL-SELECTION.md` — model recommendations by hardware and task, performance benchmarks, local vs cloud guidance (split from `docs/LOCALLLMS.md`)
+- `docs/MLX-RUNTIME.md` — GPU memory ceiling on M4 24GB, raising `iogpu.wired_limit_mb`, recommended large models (split from `docs/LOCALLLMS.md`)
+- `docs/OLLAMA-COMMANDS.md` — complete Ollama CLI reference (split from `docs/LOCALLLMS.md`)
+- `docs/TROUBLESHOOTING.md`: new "Ollama Service Checks" section — Ollama not running, model not found, out of memory, "Cannot Read Binary File" error (content from `docs/LOCALLLMS.md`)
+
 ### Changed
-- `docs/localllms/` flattened into `docs/` — since the entire repo is about local LLMs, the subdirectory added no value. All files now live directly under `docs/`
-- `docs/localllms/COMMANDS.md` → `docs/OLLAMA-COMMANDS.md`: renamed to distinguish from `docs/OPENCODE-COMMANDS.md`
-- `docs/localllms/TROUBLESHOOTING.md`: merged as a new "Ollama Service Checks" section in `docs/TROUBLESHOOTING.md` (Ollama not running, model not found, out of memory, "Cannot Read Binary File")
-- `docs/localllms/README.md`: absorbed into `docs/README.md` — index table expanded to list all individual files with descriptions
-- `docs/CONFIGURATION.md`, `docs/CONTEXT-WINDOWS.md`, `docs/CUSTOM-MODELS.md`, `docs/MLX-RUNTIME.md`, `docs/MODEL-SELECTION.md`: moved from `docs/localllms/` as-is; internal links and Modelfile paths updated
-- `docs/README.md`: rewritten to reflect flat structure; now indexes all 10 docs directly with purpose and key topics
-- `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/AGENTS-USAGE.md`, `examples/README.md`, `modelfiles/README.md`: all `docs/localllms/` cross-references updated to the new paths
+- `docs/AGENTS.md` → `docs/AGENTS-USAGE.md`: renamed to avoid confusion with the repo-root `AGENTS.md` agent instruction file
+- `docs/README.md`: rewritten as a flat index of all 10 docs with purpose and key topics per file
+- `AGENTS.md`, `CLAUDE.md`, `README.md`, `docs/README.md`, `examples/README.md`, `modelfiles/README.md`: all cross-references updated to new file names
 
 ### Removed
-- `docs/localllms/` directory (all contents moved to `docs/`)
-- `docs/LOCALLLMS.md`: deprecated redirect stub, no longer needed
+- `docs/LOCALLLMS.md` (650 lines): monolithic file split into the six focused docs above
 
 ---
 
