@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.6.2] — 2026-07-02
+
+### Added
+- `docs/MLX-RUNTIME.md`: new "Execution Backends on Apple Silicon (Metal / MLX / ANE)" section — clarifies that unified memory means "RAM vs GPU" isn't a PC-style split, that there's no separate class of "CPU model" (same models, different backend), and compares the three backends: Metal/GGUF (default, what the "spills X% to CPU" notes describe), MLX (Apple's unified-memory framework, most optimized practical path), and the Neural Engine via Core ML (not viable for LLM generation today due to the growing KV-cache of autoregressive decoding). Notes that CPU-only inference only makes sense when weights don't fit the GPU ceiling
+
+---
+
 ## [1.6.1] — 2026-07-01
 
 ### Fixed
