@@ -8,6 +8,24 @@ Ollama includes a built-in **MLX engine** that handles Apple Silicon natively �
 
 ---
 
+## Execution Backends on Apple Silicon (Metal / MLX / ANE)
+
+A common misconception is that "RAM vs GPU vs CPU" works like it does on a PC. It doesn't. On Apple Silicon, the CPU, GPU, and Neural Engine all share **one unified memory pool** — there's no separate VRAM to copy weights into. So when a model appears to "use RAM and GPU," that's not two competing things: it's the GPU doing the math on weights that live in shared RAM. That's exactly what you want, and it's why Macs punch above their weight for local LLMs.
+
+There is no separate class of "CPU model" vs "GPU model" — it's the **same models** run through a different backend. What changes is *where the math executes*:
+
+| Backend | What it is | Status here |
+|---------|-----------|-------------|
+| **Metal (GGUF)** | llama.cpp/Ollama compile the math to Metal GPU shaders. The default, fastest general path. | What you use for most models. The "spills X% to CPU" notes are overflow layers falling back to CPU cores when weights + KV-cache exceed the GPU wired-memory ceiling — same memory, slower compute unit. |
+| **MLX** | Apple's own framework, purpose-built for unified memory. Ollama's built-in MLX engine uses it automatically for `-mlx` tags. | The most Apple-optimized *practical* path — higher quality/speed than the older GGUF path for the same models (see below). |
+| **ANE (Core ML)** | The Apple Neural Engine — the truly Mac-specific accelerator, very power-efficient. | **Not used for LLM generation today.** The ANE likes fixed shapes and can't cleanly handle the growing KV-cache of autoregressive decoding. No mainstream runtime (Ollama included) uses it for text generation — mostly a research/edge path for now. |
+
+**What about CPU-only?** You *can* run any GGUF model CPU-only (llama.cpp `-ngl 0`), and small quantized models (~1–4B) are genuinely usable that way. But it's the same models, just slower — no model is inherently "better on CPU." On unified-memory Macs the GPU path almost always wins; CPU-only only makes sense when weights don't fit the GPU ceiling.
+
+**Bottom line:** Metal (GGUF) and MLX are the two best paths, and Ollama gives you both. There's no untapped "CPU model" category to chase, and the one genuinely Apple-specific accelerator you're *not* using — the Neural Engine — isn't ready for LLM generation yet.
+
+---
+
 ## Memory Ceiling on Mac Mini M4 Pro 24GB
 
 Ollama reserves headroom for the OS, leaving **~17.3 GiB** available for model weights on a 24GB M4. This means:
