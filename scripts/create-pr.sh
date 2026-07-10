@@ -90,6 +90,9 @@ if [ "$AI_TOOL" != "claude" ] && [ "$AI_TOOL" != "codex" ] && [ "$AI_TOOL" != "v
 fi
 
 # CLI command names can be overridden via environment if needed
+# Availability is checked via `command -v` against the caller's PATH, so a tool
+# installed after the current shell started (e.g. vibe added to ~/.local/bin)
+# won't be detected until PATH is re-sourced (new terminal tab or `source ~/.zshrc`).
 CLAUDE_COMMAND=${CLAUDE_COMMAND:-claude}
 CODEX_COMMAND=${CODEX_COMMAND:-codex}
 VIBE_COMMAND=${VIBE_COMMAND:-vibe}
@@ -323,7 +326,77 @@ detect_categories() {
     echo "$categories"
 }
 
+# Function to detect a version *bump* from the diff.
+#
+# Keying off the diff (added lines) rather than the current file content means
+# we only report a version when one was genuinely introduced in this branch.
+# Touching package.json/composer.json for an unrelated reason no longer produces
+# a false "bump" signal, and we always return the NEW value, not a stale one.
+detect_version() {
+    local version=""
+
+    # Grep the added lines for a given file, matching lines against $2.
+    added_version_line() {
+        local file="$1"
+        local line_pattern="$2"
+        git diff "$BASE_BRANCH".."$CURRENT_BRANCH" -- "$file" 2>/dev/null \
+            | grep -E '^\+' \
+            | grep -iE "$line_pattern" \
+            | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1 || true
+    }
+
+    # Try CHANGELOG first (human-authoritative). Match added heading lines
+    # (## [1.3.1] or ## 1.3.1) so changelog body text can't be mistaken for the bump.
+    local changelog_files
+    changelog_files=$(echo "$CHANGED_FILES" | awk '{print $2}' | grep -i "CHANGELOG" || true)
+    for file in $changelog_files; do
+        version=$(added_version_line "$file" '^\+##[[:space:]]*\[?[0-9]+\.[0-9]+\.[0-9]+')
+        if [ -n "$version" ]; then
+            echo "$version"
+            return
+        fi
+    done
+
+    # Try package.json (added "version": "x.y.z" line)
+    local pkg_files
+    pkg_files=$(echo "$CHANGED_FILES" | awk '{print $2}' | grep -E "package\.json$" || true)
+    for file in $pkg_files; do
+        version=$(added_version_line "$file" '"version"[[:space:]]*:')
+        if [ -n "$version" ]; then
+            echo "$version"
+            return
+        fi
+    done
+
+    # Try WordPress plugin/theme headers: an added "Version: x.y.z" line in any
+    # changed .php file (plugin main file) or a theme's style.css. Diff-based and
+    # filename-agnostic, so it works in any repo rather than a specific plugin file.
+    local header_files
+    header_files=$(echo "$CHANGED_FILES" | awk '{print $2}' | grep -E '\.php$|(^|/)style\.css$' || true)
+    for file in $header_files; do
+        version=$(added_version_line "$file" 'Version:[[:space:]]*[0-9]')
+        if [ -n "$version" ]; then
+            echo "$version"
+            return
+        fi
+    done
+
+    # Try composer.json (added "version": "x.y.z" line)
+    local composer_files
+    composer_files=$(echo "$CHANGED_FILES" | awk '{print $2}' | grep -E "composer\.json$" || true)
+    for file in $composer_files; do
+        version=$(added_version_line "$file" '"version"[[:space:]]*:')
+        if [ -n "$version" ]; then
+            echo "$version"
+            return
+        fi
+    done
+
+    echo ""
+}
+
 CHANGE_CATEGORIES=$(detect_categories)
+VERSION_BUMP=$(detect_version)
 
 # Generate files changed section with clickable links grouped by status
 generate_file_list() {
@@ -494,6 +567,8 @@ CATEGORIES DETECTED: $CHANGE_CATEGORIES
 
 LOCK FILES UPDATED: $(echo "$LOCK_FILES" | awk '{print $2}' | xargs basename -a 2>/dev/null | tr '\n' ', ' | sed 's/, $//' || echo "none")
 
+${VERSION_BUMP:+VERSION BUMP: $VERSION_BUMP}
+
 Now provide ONLY the description content (no meta-commentary). Start directly with the summary paragraph."
 
     local ai_command ai_args=()
@@ -603,6 +678,14 @@ $COMMITS
 **Files Changed:**
 
 $FILES_SECTION"
+fi
+
+# Prepend the detected version deterministically so it is always correct,
+# regardless of whether (or how well) the AI backend surfaced it in the prose.
+if [ -n "$VERSION_BUMP" ]; then
+    PR_BODY="**Version:** \`$VERSION_BUMP\`
+
+$PR_BODY"
 fi
 
 # Create or update PR
