@@ -30,6 +30,10 @@
 | **4. Extended** | `qwen3:8b-16k` | 5.2 GB | 16k | ~26s | Verbose think mode |
 | **5. Standard** | `qwen3:8b` | 5.2 GB | 8k | ~26s | Think-mode overhead |
 | **6. Compact** | `qwen3:4b` | 2.5 GB | 8k | ~5-15s | Quickest for single-file |
+| **7. Higher-quality** | `qwen3:14b-16k` | 9.3 GB | 16k | slower (think mode) | Biggest Qwen3 fitting 16GB; ~12 GB total with KV cache |
+| Vision / screenshots | `qwen3-vl:8b` | 6.2 GB | 256k native | — | Vision + tool use; base runs at ~4k in Open Code |
+| Tool-capable Gemma | `gemma4:12b` | 7.7 GB | 256k native | — | Sibling of read-only `gemma4:e4b`, with tool calling + vision |
+| Non-Qwen fallback | `llama3.1:8b` | 4.9 GB | 128k native | — | Most-pulled tool-capable model in the Ollama library |
 
 ### Confirmed NO Tool Use
 
@@ -93,7 +97,7 @@
 |-----------|---------|---------|
 | Quick single-file edit | `ministral-3:8b` or `qwen3:4b` | `qwen3.5:latest` |
 | Standard file operations | `ministral-3:8b-32k` | `mistral-small3.2:24b-32k` |
-| Multi-file analysis (3-5 files) | `ministral-3:8b-32k` | `qwen3-coder:30b-32k` |
+| Multi-file analysis (3-5 files) | `ministral-3:8b-32k` or `qwen3:14b-16k` (higher quality, slower) | `qwen3-coder:30b-32k` |
 | Large context analysis | `ministral-3:8b-32k` | `qwen3.5:27b-mlx` |
 | Whole codebase analysis | Cloud (Sonnet 4) | Cloud or `qwen3.6:27b-mlx` |
 | Read-only code review | `mistral-nemo:12b` | `mistral-nemo:12b` |

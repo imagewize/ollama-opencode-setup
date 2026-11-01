@@ -186,6 +186,16 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 
 ---
 
+### New M1 16GB models (tool-call test, tested 2026-11-01, via `scripts/tool-call-test.sh`, num_ctx=16384)
+
+- **qwen3:14b-16k** — ✅ PASS, 243s cold (9.3 GB model load dominates the time), **12 GB total, 93% GPU / 7% CPU** at 16k — fits M1 16GB; `num_ctx 16384` verified baked in via `ollama show`
+- **qwen3:14b** — ✅ PASS, 36s, 10.0 tok/s
+- **gemma4:12b** — ✅ PASS, 14s, 8.1 tok/s (vision + tools capability declared)
+- **qwen3-vl:8b** — ✅ PASS, 36s, 19.2 tok/s (vision + tools — reads screenshots/UI)
+- **llama3.1:8b** — ✅ PASS, 5s, 7.6 tok/s (non-Qwen fallback)
+
+All five declare the `tools` capability in `ollama show` and emitted a valid `write` tool_call.
+
 ### Additional Test Results Needed:
 - qwen3:4b
 - gemma4:e4b
@@ -207,6 +217,11 @@ See [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) for complete command 
 | gemma4:e4b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
 | phi4 | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
 | qwen3.5:4b | ❓ | ❓ | ❓ | ❓ | ❓ | Not tested yet |
+| qwen3:14b-16k | ✅ PASS | ❓ | ❓ | ❓ | ✅ Full tool usage | 9.3 GB, 16k ctx, 12 GB total, 93% GPU (2026-11-01) |
+| qwen3:14b | ✅ PASS | ❓ | ❓ | ❓ | ✅ Full tool usage | 9.3 GB, 10.0 tok/s (2026-11-01) |
+| gemma4:12b | ✅ PASS | ❓ | ❓ | ❓ | ✅ Full tool usage | 7.7 GB, vision, 8.1 tok/s (2026-11-01) |
+| qwen3-vl:8b | ✅ PASS | ❓ | ❓ | ❓ | ✅ Full tool usage | 6.2 GB, vision, 19.2 tok/s (2026-11-01) |
+| llama3.1:8b | ✅ PASS | ❓ | ❓ | ❓ | ✅ Full tool usage | 4.9 GB, 7.6 tok/s (2026-11-01) |
 
 ## Critical Findings
 
