@@ -41,6 +41,21 @@
         "qwen3:4b": {
           "name": "Qwen3 4B"
         },
+        "qwen3:14b": {
+          "name": "Qwen3 14B (tool use, 40k native ctx - use :14b-16k variant in Open Code)"
+        },
+        "qwen3:14b-16k": {
+          "name": "Qwen3 14B (16k context, tool use, M1 16GB)"
+        },
+        "gemma4:12b": {
+          "name": "Gemma 4 12B (tool use, 256k ctx, vision, M1 16GB)"
+        },
+        "qwen3-vl:8b": {
+          "name": "Qwen3-VL 8B (vision + tool use, 256k ctx, M1 16GB)"
+        },
+        "llama3.1:8b": {
+          "name": "Llama 3.1 8B (tool use, 128k ctx, M1 16GB)"
+        },
         "mistral-nemo:12b-instruct-2407-q4_K_M": {
           "name": "Mistral Nemo 12B (read-only)"
         },
