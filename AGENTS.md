@@ -20,7 +20,7 @@ This repository does NOT contain application code - it's a reference repository 
 ### [opencode.json](opencode.json)
 The main Open Code CLI configuration defining available Ollama models:
 - **Provider**: Ollama (local) at `http://localhost:11434/v1`
-- **Models (tool use, M1 16GB)**: `ministral-3:8b-32k` (recommended), `ministral-3:8b-16k`, `ministral-3:8b`, `qwen3:8b-16k`, `qwen3:8b`, `qwen3:4b`
+- **Models (tool use, M1 16GB)**: `ministral-3:8b-32k` (recommended), `ministral-3:8b-16k`, `ministral-3:8b`, `qwen3:8b-16k`, `qwen3:8b`, `qwen3:4b`, `qwen3:14b-16k`, `qwen3:14b`, `gemma4:12b`, `qwen3-vl:8b`, `llama3.1:8b`
 - **Models (tool use, M4 24GB)**: `mistral-small3.2:24b-32k` (recommended, no GPU tuning), `qwen3-coder:30b-32k` (coding MoE, needs raised GPU limit), `qwen3.5:27b-mlx`, `qwen3.5:latest`
 - **Models (read-only)**: `deepseek-coder-v2:16b`, `qwen3.5:9b`, `qwen3.5:4b`, `phi4`, `gemma4:e4b`, `mistral-nemo:12b-instruct-2407-q4_K_M`, `granite3.1-moe`
 
@@ -44,6 +44,7 @@ Custom variants with `num_ctx` baked in are needed because Open Code talks to Ol
 ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile  # recommended (M1 16GB)
 ollama create ministral-3:8b-16k -f modelfiles/ministral-3-8b-16k.Modelfile
 ollama create qwen3:8b-16k -f modelfiles/qwen3-8b-16k.Modelfile
+ollama create qwen3:14b-16k -f modelfiles/qwen3-14b-16k.Modelfile
 ollama create mistral-small3.2:24b-32k -f modelfiles/mistral-small3.2-24b-32k.Modelfile  # M4 24GB (recommended)
 ollama create qwen3-coder:30b-32k -f modelfiles/qwen3-coder-30b-32k.Modelfile           # M4 24GB (coding MoE)
 ```
@@ -88,6 +89,7 @@ ollama create <model-name> -f <modelfile-path>
 - **Quick file ops** → `qwen3:4b` (2.5 GB, tool use confirmed)
 - **Standard file ops** → `qwen3:8b` (5.2 GB, tool use confirmed, ~26s)
 - **Multi-file ops** → `qwen3:8b-16k` (5.2 GB, 16k ctx, tool use confirmed)
+- **Higher-quality multi-file ops** → `qwen3:14b-16k` (9.3 GB, 16k ctx, ~12 GB total, tool use, think-mode overhead); vision/screenshots → `qwen3-vl:8b`
 - **Large context analysis** → `qwen3.5:9b` (6.6 GB, 32k ctx, read-only — no tool use)
 - **Read-only analysis** → `mistral-nemo:12b-instruct-2407-q4_K_M` (7.5 GB, read-only)
 

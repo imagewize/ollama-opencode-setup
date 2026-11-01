@@ -6,6 +6,21 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.7.0] — 2026-11-01
+
+### Added
+- `opencode.json`: five new tool-use models for M1 16GB — `qwen3:14b`, `qwen3:14b-16k`, `gemma4:12b`, `qwen3-vl:8b`, `llama3.1:8b`
+- `modelfiles/qwen3-14b-16k.Modelfile` (new): 16k-context variant of `qwen3:14b` for Open Code on M1 16GB. 16k chosen because 9.3 GB weights + ~2-3 GB KV cache ≈ 12 GB total (93% GPU, 7% CPU); 32k would reach ~14 GB and spill. Build: `ollama create qwen3:14b-16k -f modelfiles/qwen3-14b-16k.Modelfile`
+- `README.md`, `docs/CONFIGURATION.md`, `docs/MODEL-SELECTION.md`, `modelfiles/README.md`, `AGENTS.md`, `CLAUDE.md`: new models added to the M1 16GB tables, model lists, and build commands
+
+### Test Results
+- All five models pulled and verified on MacBook Pro 14" M1 Pro 16GB (2026-11-01); `ollama show` declares the `tools` capability for each (`qwen3:14b-16k` verified with `num_ctx 16384` baked in)
+- `scripts/tool-call-test.sh` (num_ctx=16384): all ✅ PASS — `qwen3:14b-16k` 243s cold (12 GB, 93% GPU/7% CPU), `qwen3:14b` 36s (10.0 tok/s), `gemma4:12b` 14s (8.1 tok/s), `qwen3-vl:8b` 36s (19.2 tok/s), `llama3.1:8b` 5s (7.6 tok/s)
+- `test-opencode.md`: comparison matrix and results updated for the new models
+- `granite4:small-h` was evaluated and dropped: ~20 GB download, does not fit 16 GB unified memory
+
+---
+
 ## [1.6.2] — 2026-07-02
 
 ### Added

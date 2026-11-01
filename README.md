@@ -46,7 +46,7 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 
 > **⚠️ Tool calling requires a model trained for it — fitting in RAM is not enough.** Models marked ✅ below can create and edit files; models marked ❌ are read-only (they plan and analyze but output bash instead of invoking the write tool). Verify any model yourself with [`scripts/tool-call-test.sh`](scripts/tool-call-test.sh); full details in [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
-**Ollama models** — tested on M1 16GB (2026-05-31):
+**Ollama models** — tested on M1 16GB (2026-05-31; additions 2026-11-01):
 
 | Model | Size | Context | Tool Use | Notes |
 |-------|------|---------|----------|-------|
@@ -56,6 +56,11 @@ Configuration and documentation for running Open Code CLI with local Ollama mode
 | `qwen3:8b-16k` | 5.2 GB | 16k | ✅ | Multi-file analysis, verbose think mode (~26s) |
 | `qwen3:8b` | 5.2 GB | 8k | ✅ | General file ops, verbose think mode |
 | `qwen3:4b` | 2.5 GB | 8k | ✅ | Quick edits, smallest footprint |
+| `qwen3:14b-16k` | 9.3 GB | 16k | ✅ | Biggest Qwen3 that fits 16GB (~12 GB with KV cache); build from `modelfiles/`; think-mode overhead |
+| `qwen3:14b` | 9.3 GB | ~4k default | ✅ | Base model — use the 16k variant in Open Code |
+| `gemma4:12b` | 7.7 GB | 256k native (~4k in Open Code) | ✅ | Tool-capable sibling of `gemma4:e4b`; vision input |
+| `qwen3-vl:8b` | 6.2 GB | 256k native (~4k in Open Code) | ✅ | Vision + tool use — reads screenshots and UI |
+| `llama3.1:8b` | 4.9 GB | 128k native (~4k in Open Code) | ✅ | Reliable non-Qwen tool-caller |
 | `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Tool use confirmed on Mac Mini M4 (2026-06-28, ~18s) |
 | `deepseek-coder-v2:16b` | 8.9 GB | 128k | ❌ | FIM/completion model, no tool calling |
 | `qwen3.5:9b` / `qwen3.5:4b` | 6.6 / ~2.5 GB | 32k | ❌ | Read-only — outputs bash instead of the write tool |

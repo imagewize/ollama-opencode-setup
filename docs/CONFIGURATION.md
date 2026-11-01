@@ -30,6 +30,11 @@ Open Code is configured via [`opencode.json`](../opencode.json) in the repositor
 | `qwen3:8b-16k` | 5.2 GB | 16k | Yes | Custom 16k variant — verbose think mode (~26s) |
 | `qwen3:8b` | 5.2 GB | 8k | Yes | Standard Qwen3 8B — ~26s for a write tool call (think-mode overhead) |
 | `qwen3:4b` | 2.5 GB | 8k | Yes | Compact, quick for single-file edits |
+| `qwen3:14b-16k` | 9.3 GB | 16k | Yes | Custom 16k variant — biggest Qwen3 that fits 16GB (~12 GB total with KV cache); think-mode overhead |
+| `qwen3:14b` | 9.3 GB | ~4k default | Yes | Base 14B — use the 16k variant for agentic use |
+| `gemma4:12b` | 7.7 GB | 256k native | Yes | Gemma 4 12B — tool-capable sibling of `gemma4:e4b`, vision input |
+| `qwen3-vl:8b` | 6.2 GB | 256k native | Yes | Vision-language 8B with tool calling — handles screenshots/UI |
+| `llama3.1:8b` | 4.9 GB | 128k native | Yes | Most-pulled tool-capable model in the Ollama library; non-Qwen fallback |
 
 ### Mac Mini M4 Pro 24GB — Tool Use Confirmed
 
