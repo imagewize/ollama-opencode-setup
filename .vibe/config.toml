@@ -1,11 +1,9 @@
 active_model = "mistral-medium-3.5"
-vim_keybindings = false
 disable_welcome_banner_animation = false
 displayed_workdir = ""
 auto_compact_threshold = 200000
 context_warnings = false
-textual_theme = "catppuccin-mocha"
-instructions = ""
+theme = "catppuccin-mocha"
 system_prompt_id = "cli"
 include_commit_signature = true
 include_model_info = true
@@ -13,7 +11,6 @@ include_project_context = true
 include_prompt_detail = true
 enable_update_checks = true
 api_timeout = 720.0
-tool_paths = []
 mcp_servers = []
 enabled_tools = []
 disabled_tools = []
@@ -52,6 +49,7 @@ alias = "devstral-small"
 temperature = 0.2
 input_price = 0.1
 output_price = 0.3
+thinking = "off"
 
 [[models]]
 name = "devstral"
@@ -62,13 +60,7 @@ input_price = 0.0
 output_price = 0.0
 
 [project_context]
-max_chars = 40000
 default_commit_count = 5
-max_doc_bytes = 32768
-truncation_buffer = 1000
-max_depth = 3
-max_files = 1000
-max_dirs_per_level = 20
 timeout_seconds = 2.0
 
 [tools.bash]
@@ -195,15 +187,14 @@ denylist = []
 max_write_bytes = 64000
 create_parent_dirs = true
 
-[tools.read]
-permission = "always"
-allowlist = []
-denylist = []
-max_read_bytes = 64000
-max_state_history = 10
-
 [tools.edit]
 permission = "ask"
 allowlist = []
 denylist = []
 fuzzy_threshold = 0.9
+
+[tools.read_file]
+permission = "always"
+allowlist = []
+denylist = []
+max_read_bytes = 64000
